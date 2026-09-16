@@ -1,0 +1,12 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "\"plan: a webhook that notifies on task completion\"",
+  "expected_behavior": [
+    "contract sample with every failure line",
+    "consumer personas (integrator",
+    "on-call)",
+    "no HTML prototype."
+  ]
+}

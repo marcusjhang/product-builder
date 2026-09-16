@@ -1,0 +1,10 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "`/product-builder continue` typed on a branch named `<slug>/p2-\u2026`",
+  "expected_behavior": [
+    "the slug and slice are inferred from the branch and the ledger",
+    "and the implement playbook resumes at the right step without a question."
+  ]
+}

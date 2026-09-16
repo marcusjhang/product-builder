@@ -1,0 +1,10 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "a diff touching a shared helper",
+  "expected_behavior": [
+    "the one safety fact is named and proven by a script",
+    "or marked unproven."
+  ]
+}

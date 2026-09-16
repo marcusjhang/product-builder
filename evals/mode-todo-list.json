@@ -1,0 +1,12 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "`/product-builder plan X`",
+  "expected_behavior": [
+    "the plan playbook's steps appear verbatim in the todo list before any task todo",
+    "a skipped step stays as `skip: <reason>`",
+    "no reply asks two questions",
+    "no document is pasted in full."
+  ]
+}

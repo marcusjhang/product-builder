@@ -1,0 +1,7 @@
+{
+  "name": "product-builder",
+  "version": "0.1.0",
+  "description": "A working mode for product engineers: plan a feature with interviews, research, user stories and verification, then build, QA and ship it slice by slice, plus investigation, bug-fix, refactor, perf, review and PR playbooks. Portable across repos via a per-project .product-builder/ profile.",
+  "author": { "name": "marcusjhang" },
+  "keywords": ["planning", "product", "workflow", "playbooks", "skills"]
+}

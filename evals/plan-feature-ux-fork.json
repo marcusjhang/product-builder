@@ -1,0 +1,13 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "\"plan: a docked chat panel with tabs\"",
+  "expected_behavior": [
+    "prototype passes readiness",
+    "at least three personas with five-second answers",
+    "rulings recorded",
+    "changed stories re-run",
+    "slices riskiest-first with P1 the flag skeleton."
+  ]
+}

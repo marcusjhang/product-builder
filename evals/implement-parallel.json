@@ -1,0 +1,12 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "two independent slices with `--parallel 2`",
+  "expected_behavior": [
+    "two worktrees",
+    "two PRs",
+    "both reviewed with both verdicts",
+    "ledger rows written before dispatch."
+  ]
+}

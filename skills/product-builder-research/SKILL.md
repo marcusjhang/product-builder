@@ -1,0 +1,19 @@
+---
+name: product-builder-research
+description: Maps the current system for a plan area with parallel read-only explorers (entry points, data flow, persistence, events, tests, seams, permissions, constraints, each with file:line at a named SHA), finds the closest existing feature and the PR that added it, runs a prior-art teardown of comparable products, and time-boxed spikes (API probe, mock API, feasibility script) when a fact cannot be read. Writes docs/plans/<slug>/research.md. Use when the Plan playbook reaches research, or alone for "map this area", "re-research, main moved", "how do others do X".
+argument-hint: [slug] [--system|--prior-art|--spikes|--delta]
+---
+
+# product-builder-research
+
+Writes `docs/plans/<slug>/research.md` from the template in `${CLAUDE_SKILL_DIR}/../product-builder/references/templates.md`. Read `.product-builder/learnings.md` first when it exists. Every anchor's line number comes from `grep -n` or `sed -n '<n>p'`, never counted from a range. When the profile names a document outside the worktree (a design doc in another checkout), read it at its stated path, record its size and mtime in `research.md` so a later run can tell whether it changed, anchor claims `spec:<path>:<line>`, and search open and closed PRs and sibling worktrees for a newer version of the same document; if one exists, say which the plan is anchored to and why.
+
+1. Inputs: read `decisions.md` and the draft `product.md` (on the Bounded path the draft may hold only the frame answers so far; that is enough); derive keywords, candidate paths (grep), user-facing surfaces, roles, third-party services. Say in one line what will run.
+2. Baseline: confirm the SHA. If `research.md` exists at a different SHA, `--delta`: `git diff <old>..<new> --stat -- <paths>`, refresh only the changed anchors.
+3. System map: invoke **product-builder-how** with `--map` for the area and keywords. Bounded size: dispatch one explorer directly with the how skill's explorer contract instead of nesting the skill. A subagent that dies mid-run is not retried more than once; finish its slice yourself and say so in the reply.
+4. Closest existing feature: the one feature already in the product this most resembles, its files, the PR that added it (`git log`, `gh pr list --search`), the conventions it followed (component, route, service, test, flag, event). The plan models on it unless research shows why not.
+5. Prior art, in parallel with 3 and 4: three to five comparable products or tools; for each, how they solve it, table stakes, differentiators, pitfalls, sources with retrieval date; then the three layers: what everyone already knows, what current discourse says, where conventional wisdom fails for this problem. Use the profile's research agent when it names one, else web search and fetch. Time-box about ten fetches.
+6. Spikes, only for facts that cannot be read: a third-party API's real shape or limits (a probe script with a real call, secrets redacted, never production credentials); an unknown contract (a mock stub so the plan can proceed); feasibility (does library X do Y); rough performance. Scratch under `docs/plans/<slug>/spikes/<name>/`, at most about thirty tool calls each, one verdict line, never merged into app code.
+7. Write `research.md`: Current system; Closest existing feature; Prior art; Spikes; What this changes about the framing; New questions for Interview 2 (each with the fact that raised it and a recommended answer).
+
+**Reply:** at most ten lines: what was mapped, the closest feature, prior-art count, spike verdicts, what changed the framing. Path of `research.md`.

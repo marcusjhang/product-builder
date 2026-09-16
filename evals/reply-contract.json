@@ -1,0 +1,13 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "the final reply of any playbook",
+  "expected_behavior": [
+    "opens with who the work is for and what changes for them",
+    "names the principles that shaped the calls",
+    "carries evidence next to every claim",
+    "lists ASSUMED rows first",
+    "ends with the next move."
+  ]
+}

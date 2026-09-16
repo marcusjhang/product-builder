@@ -1,0 +1,10 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "the run reaches \"chips or a date picker?\"",
+  "expected_behavior": [
+    "no question is asked",
+    "a prototype settles it and the reply reports the result and the principle."
+  ]
+}

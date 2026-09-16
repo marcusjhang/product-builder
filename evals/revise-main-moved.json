@@ -1,0 +1,12 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "existing plan, 200 commits on main touching a cited file",
+  "expected_behavior": [
+    "delta research",
+    "refreshed anchors",
+    "superseded decision",
+    "revision log, Definition of Ready re-checked."
+  ]
+}

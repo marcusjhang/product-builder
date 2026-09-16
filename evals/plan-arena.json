@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "a Feature-size plan",
+  "expected_behavior": [
+    "two or three candidate approaches compared in a table",
+    "one recommended",
+    "the rest recorded as simpler alternatives."
+  ]
+}

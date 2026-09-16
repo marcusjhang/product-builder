@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "a new session and \"where was I on <slug>\"",
+  "expected_behavior": [
+    "a capsule with tagged threads",
+    "ledger-versus-git discrepancies named",
+    "and one next move."
+  ]
+}

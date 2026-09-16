@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "a diff that satisfies the acceptance lines but adds an unplanned abstraction",
+  "expected_behavior": [
+    "spec-compliance pass",
+    "quality finding on the abstraction",
+    "deviation flagged for revise."
+  ]
+}

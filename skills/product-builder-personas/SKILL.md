@@ -1,0 +1,17 @@
+---
+name: product-builder-personas
+description: Casts 3-5 target-audience personas from .product-builder/personas.md and the plan's user stories, gives each a concrete intention, and runs each as a subagent that drives the prototype or the live app in a real browser (or reads a contract sample as a consumer), runs a five-second first-impression test, attempts the stories thinking aloud, and is interviewed afterwards. Synthesises findings per story into act on / consider / noted / dismissed, discusses them with the developer, records rulings in the ledger, applies accepted edits, and re-runs only the changed stories. Use when the Plan or QA playbook reaches verification, or for "have users try this", "walk through as a new user", "usability pass".
+argument-hint: [slug] [--target url|path] [--stories S1,S3] [--paper]
+---
+
+# product-builder-personas
+
+1. Inputs: plan folder; target (prototype dir → serve it with the prototype skill's `serve.sh`; URL → live mode, read `.product-builder/drive.md` for login, seed, flag; contract sample → consumer mode); story filter. Refuse to run before the prototype readiness check has passed.
+2. Cast three to five cards from `.product-builder/personas.md` and the stories. Always one first-time user, one skeptic or power user, one edge (wrong role or no permission, mobile width, slow network, or the person who receives the output); for non-UI surfaces, the integrator and the on-call engineer. Card: name, role, context, what they know, goal for this session in their words, stories to attempt, what makes them give up, success from their point of view. Show the cast as a table; the user may swap; do not wait.
+3. Driver per the profile. Shared browser → personas run one at a time, each in a fresh tab. No driver reachable from subagents, or `--paper` → the persona reads the rendered page text or the HTML and the report says "paper walkthrough". Say the fallback in one line and continue.
+4. Run one subagent per persona with `${CLAUDE_SKILL_DIR}/references/persona-prompt.md` filled in. Each opens with the five-second test before any task.
+5. Synthesise: five-second answers side by side; per story, pass / partial / fail per persona; findings table (severity, story, personas hit n/N, what happened, what they expected, recommendation); consensus; copy problems; missing states; permission surprises.
+6. Discuss: at most eight findings in one block, grouped by bucket with source and confidence, proposed rulings attached. Apply the reversible ones (stories, copy, states, prototype catalog) and list them. Ask, with one multi-select, only the rulings that cut scope or change a product call; for each accepted finding record one of: change the plan, change the prototype, accept the risk (with the reason), needs real users (an open question with an owner). Re-run only the changed stories with one or two personas.
+7. Close with the limitation paragraph: LLM personas over-deliberate, carry stereotype bias, and are a pilot session, not a substitute for real users; use them for flow gaps, unclear copy, missing states, and permission surprises, not for quantitative claims.
+
+**Reply:** the cast, the driver used, the findings block, what was applied, what needs the user, the limitation paragraph.

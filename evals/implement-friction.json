@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "a slice that needs a file outside its list",
+  "expected_behavior": [
+    "stop at the budget rule",
+    "revise splits the slice",
+    "no silent patch."
+  ]
+}

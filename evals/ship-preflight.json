@@ -1,0 +1,9 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "a plan with a red Definition of Done item (no instrumentation event)",
+  "expected_behavior": [
+    "ship refuses the flip and routes back."
+  ]
+}

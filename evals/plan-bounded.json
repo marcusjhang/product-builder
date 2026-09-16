@@ -1,0 +1,13 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "\"plan: add a keyboard shortcut to archive a task\"",
+  "expected_behavior": [
+    "four files",
+    "at most five questions",
+    "no prototype",
+    "tech-lead findings table, Definition of Ready green",
+    "both docs within caps."
+  ]
+}

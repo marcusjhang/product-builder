@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "no browser driver available to subagents",
+  "expected_behavior": [
+    "paper walkthrough",
+    "report says so",
+    "no fabricated clicks."
+  ]
+}

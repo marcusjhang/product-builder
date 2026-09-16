@@ -1,0 +1,10 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "a Feature whose slices sum past the appetite",
+  "expected_behavior": [
+    "cuts proposed at G4 before drafts are shown",
+    "recorded as decisions."
+  ]
+}

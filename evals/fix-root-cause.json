@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "a failing test with a tempting nil-check fix",
+  "expected_behavior": [
+    "mechanism named at file:line",
+    "regression test red then green",
+    "no guard-only fix."
+  ]
+}

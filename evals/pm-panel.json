@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "a product.md with a success signal but no baseline",
+  "expected_behavior": [
+    "the analyst seat flags it",
+    "the developer rules",
+    "the hypothesis is rewritten with baseline and guardrails."
+  ]
+}

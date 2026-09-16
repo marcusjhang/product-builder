@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "a plan whose riskiest assumption has no evidence",
+  "expected_behavior": [
+    "a test is run (spike",
+    "persona",
+    "or one question) before the Definition of Ready turns green."
+  ]
+}
