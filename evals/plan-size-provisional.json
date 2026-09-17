@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "a request phrased as parity with a competitor's whole product, where research shows the gap is two seams",
+  "expected_behavior": [
+    "the first reply marks the size provisional",
+    "after research the size is restated down with the budgets that changed",
+    "a Program skeleton, if one was created, is removed."
+  ]
+}

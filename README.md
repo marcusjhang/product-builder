@@ -6,7 +6,7 @@ A working mode for product engineers in Claude Code. One command takes a feature
 /product-builder <what you want, in plain words>
 ```
 
-The mode reads your repo's profile, sizes the work, matches a playbook, and copies the playbook's steps into the todo list. Steps call leaf skills. You are asked one question at a time, only for product calls, always with a recommended answer you can accept with "ok". Anything observable is prototyped or spiked instead of asked. Reversible work is done and shown; merges, pushes and flag flips wait for you.
+The mode reads your repo's profile, probes the default branch for what already ships, sizes the work (provisionally, until research confirms it), matches a playbook, and copies the playbook's steps into the todo list. Steps call leaf skills. You are asked one question at a time, only for product calls, always with a recommended answer you can accept with "ok". Anything observable is prototyped or spiked instead of asked. Reversible work is done and shown; merges, pushes and flag flips wait for you.
 
 ## Install
 
@@ -35,7 +35,7 @@ Product track:
 
 | Playbook | What it does |
 |---|---|
-| plan | interview → research → decisions, user stories, assumptions → approach arena, drafts, appetite check → prototype if a decision needs one → personas, product panel, tech lead → Definition of Ready |
+| plan | probe the default branch, size → interview → research, resize → decisions, user stories, assumptions → spikes, approach arena, drafts, appetite check → prototype if a decision needs one → personas, product panel, tech lead → Definition of Ready, printed with evidence |
 | revise | classify the trigger, re-run only the affected steps, supersede decisions, ledger it |
 | implement | one PR per slice, tests from acceptance lines, verified on the surface, reviewed, PR body shown before anything opens, stop at merge |
 | qa | acceptance per story on the real app, both flag states, every role, exploratory pass, report with a verdict |

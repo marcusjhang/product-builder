@@ -31,7 +31,7 @@ Apply to plan documents, PR bodies, ledger rows, and the UI copy written inside 
 
 - Sentence case headings. No decorative emoji.
 - No em dashes or en dashes in prose you write. End the sentence or use a comma. Verbatim quotes of code, error messages, docs, and the user's own words keep their punctuation.
-- Colons only before a list or an example, never as a mid-sentence connector.
+- Colons only before a list or an example, never as a mid-sentence connector in prose. Digest lines, table cells, and key-value lines in a findings or capsule block are exempt; there a colon is a separator.
 - Bold a lead-in that names an item and is followed by new detail. Do not bold every noun.
 - Lists for parallel items only; a line of argument stays in prose.
 - Tables when three or more items share the same fields.

@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder-techlead"
+  ],
+  "query": "a tech-lead panel returns nine findings, of which the block shows five act on and two consider",
+  "expected_behavior": [
+    "the ledger gains nine rows, including the noted and dismissed ones with reasons",
+    "the block's counts equal the rows added",
+    "no finding is left without a row."
+  ]
+}

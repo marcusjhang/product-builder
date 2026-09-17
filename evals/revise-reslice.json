@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "a plan at Ready with four slices, and the user says I want only two PRs",
+  "expected_behavior": [
+    "the Revise playbook is matched, not an inline edit",
+    "the tech lead runs on every new boundary including each commit stacked inside a PR",
+    "a commit that cannot compile without a file from a later commit is named before Ready is restored."
+  ]
+}

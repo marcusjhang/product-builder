@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "the plan reaches the Definition of Ready with one assumption still pending",
+  "expected_behavior": [
+    "the checklist is printed in the reply with evidence per box",
+    "the assumption box is red and names the step it goes back to",
+    "Ready is not declared."
+  ]
+}

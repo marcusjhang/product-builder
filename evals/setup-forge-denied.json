@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder-setup"
+  ],
+  "query": "setup in a repo where gh repo view returns could not resolve to a repository for the active account",
+  "expected_behavior": [
+    "the Forge section is written UNKNOWN with the failing command and the accounts tried",
+    "one question asks which account has access",
+    "gh is not recorded as the forge."
+  ]
+}

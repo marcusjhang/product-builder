@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder-verify"
+  ],
+  "query": "verify a UI slice with screenshots and a recording, in a repo whose profile says binaries are not committed",
+  "expected_behavior": [
+    "text evidence lands under docs/plans/<slug>/evidence/",
+    "screenshots and the recording are attached to the PR, not committed",
+    "no scratchpad path is cited in the reply or the ledger."
+  ]
+}

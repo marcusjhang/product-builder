@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "plan this: bring our Teams bot to parity with Slack, when a conversational Teams bot already ships on origin/main behind a flag and the checkout predates it",
+  "expected_behavior": [
+    "the probe runs against origin/main and the remotes before any question to the user",
+    "the reply says the ask already ships, with the file:line on origin/main",
+    "one question with the options (nothing to do, a different ask, a v2 on top), and no plan folder is created."
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "a plan request in a checkout 600 commits behind origin/main whose directory layout no longer matches",
+  "expected_behavior": [
+    "the behind-count is named once with the stale threshold",
+    "the first question is which tree the plan is for, before any anchor is written",
+    "anchors are read through git show origin/main, and local-only is not read as do-not-move."
+  ]
+}

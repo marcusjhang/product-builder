@@ -1,0 +1,10 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "a plan closes G7 and the run switches to Implement",
+  "expected_behavior": [
+    "the todo list is rewritten at the switch with the implement steps",
+    "the reply that closes the gate re-prints the changed rows."
+  ]
+}

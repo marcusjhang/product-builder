@@ -3,7 +3,7 @@
 Written by `product-builder-setup`. Every section is optional; a playbook that needs a missing section says so and continues. `UNKNOWN` means detection could not settle it; the first playbook that needs the value reads the repo, fills it in, and notes where it was read.
 
 ## Baseline
-`git fetch origin --prune && git rev-list --left-right --count HEAD...origin/<default-branch>`. If the branch has no unique commits and `git status --porcelain --untracked-files=no` is empty, `git reset --hard origin/<default-branch>`; otherwise rebase. Record the SHA and the behind-count in every plan header.
+`git fetch origin --prune && git rev-list --left-right --count HEAD...origin/<default-branch>`. If the branch has no unique commits and `git status --porcelain --untracked-files=no` is empty, `git reset --hard origin/<default-branch>`; otherwise rebase. Record the SHA and the behind-count in every plan header. Stale threshold: 100 commits behind. Above it, or when the ask names a path the checkout lacks, the plan asks which tree is the target before any anchor is written and reads anchors from `origin/<default-branch>`. Local-only work (no push, no shared branch, no shared database) still moves a local worktree onto `origin/<default-branch>`; never write "do not move" here.
 
 ## Stack and commands
 Language and package manager: UNKNOWN. Run from `<dir>`:
@@ -50,6 +50,12 @@ None. Add `path glob → agent` rows as reviewer agents are added.
 
 ## Tracker
 None. Tickets only when the user asks.
+
+## Forge
+Tool: `gh`. Repo: UNKNOWN. Account with access: UNKNOWN (permission UNKNOWN), verified by `gh repo view --json nameWithOwner,viewerPermission` on <date>. Accounts tried and denied: none yet. A playbook that pushes reads this section first and stops on UNKNOWN.
+
+## Evidence
+Text evidence (command transcripts, response bodies, log lines, exit codes): `docs/plans/<slug>/evidence/<slice>-<scenario>.txt`, committed with the plan. Screenshots and recordings: attached to the PR (uploaded, not committed) unless an artifact store is named here: UNKNOWN. Binaries are committed to the repo only when this line says so: no. Prototype screenshots: `docs/plans/<slug>/prototype/shots/`, gitignored. The scratchpad is staging and is never the path a ledger row or a reply cites.
 
 ## Observability
 UNKNOWN. Where logs, traces, and error tracking live and how to query them.
