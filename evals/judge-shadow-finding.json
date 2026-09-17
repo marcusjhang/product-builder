@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder-review"
+  ],
+  "query": "a review in a repo whose profile names a judge in shadow mode; a seat reports a finding at confidence 85 that the judge buckets noted at 0.4",
+  "expected_behavior": [
+    "the finding gate is run over every returned finding with --batch",
+    "the seat's bucket stands and the judge's verdict is logged beside it",
+    "the reply does not describe the judge's verdict as the ruling."
+  ]
+}

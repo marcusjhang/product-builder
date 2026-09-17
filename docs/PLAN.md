@@ -217,6 +217,7 @@ Every skill starts by reading `${CLAUDE_PROJECT_DIR}/.product-builder/profile.md
 | Required reviewers by path | review, implement, fix | path glob → reviewer agent (security, migrations, billing, sandbox) |
 | Tracker | plan, implement, qa, fix | how to create and link tickets, only on request |
 | Observability | why, fix, perf, verify, ship | where logs, traces, and error tracking live and how to query them |
+| Judge | the question-gate hook, how, research, pm, techlead, review, personas, babysit, reflect | a decision model (`typesafe/jev-latest` or `none`) and its mode (`shadow` logs verdicts beside the session's own, `gate` lets them route); the gates and thresholds live in the suite's `references/judge-questions.json`, the client in `scripts/judge`, the verdict log in `.product-builder/judge-log.jsonl` |
 
 `.product-builder/learnings.md` sits beside the profile: append-only entries written by `product-builder-reflect` after approval and read by the planning and review skills before they recommend.
 
@@ -240,7 +241,7 @@ Per-role model choices, written by `product-builder-setup` after a budget questi
 
 ### 4.7 What stays generic
 
-No skill may name a framework, a package manager, a file path outside the plan root, an MCP tool, or an agent. Those come from the profile. Before shipping, grep the suite for `bun`, `npm`, `svelte`, `react`, `app/`, `mcp__`, `gh ` and move every hit into the profile or behind a "per the profile" clause. `gh` is allowed in the Opening a PR playbook and the Babysit playbook with a profile override for other forges.
+No skill may name a framework, a package manager, a file path outside the plan root, an MCP tool, or an agent. Those come from the profile. Before shipping, grep the suite for `bun`, `npm`, `svelte`, `react`, `app/`, `mcp__`, `gh ` and move every hit into the profile or behind a "per the profile" clause. `gh` is allowed in the Opening a PR playbook and the Babysit playbook with a profile override for other forges. The judge is named only as "the profile's judge" and its gates; the endpoint lives in `scripts/judge` and the model in the profile, and every gate has a no-judge fallback (the session model judges, said once).
 
 ## 5. Playbooks and leaf skills: product track (plan, build, QA, ship)
 

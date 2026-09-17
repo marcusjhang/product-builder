@@ -1,0 +1,335 @@
+{
+  "_about": "Every question and threshold the profile's judge uses, in one file so a human can review them. scripts/judge reads this file; the skills name gates, never questions. Instructions and criteria may be strings or JSON objects (System One models read structure). Keys in backticks refer to fields of the state the calling step hands over; the state shape for each gate is under state_shape.",
+  "gates": {
+    "question-gate": {
+      "purpose": "Every question to the user, before the question tool opens. Deflects a question an experiment or a read would settle; checks the one-question-with-a-default rule.",
+      "state_shape": {
+        "header": "the question tool's header chip",
+        "question": "the question text",
+        "options": [{"label": "…", "description": "…"}],
+        "multi_select": false
+      },
+      "questions": {
+        "kind": {
+          "type": "choice",
+          "instructions": {
+            "question": "What kind of question is `question` (with its `options`) to the human?",
+            "focus": "Judge what would settle it, not whether it matters.",
+            "rule": "A fact that could be observed by reading the code or by running something is not the human's to answer. Only intent, priority, preference, naming, scope, defaults, who sees what, and what gets cut are the human's."
+          },
+          "criteria": {
+            "observable_by_running": {
+              "what": "An experiment settles it: behaviour, timing, layout feel, density, interaction, output, whether a query returns rows, whether a library does a thing",
+              "not_for": "A preference no experiment can settle",
+              "examples": [
+                "chips or a date picker?",
+                "does the sweeper run often enough?",
+                "does the reducer restore state on reconnect?",
+                "which of the two layouts reads better at mobile width?"
+              ]
+            },
+            "answerable_from_repo": {
+              "what": "The code, git history, docs, the plan ledger, or the profile already hold the answer",
+              "not_for": "A decision the repo cannot have made for the user",
+              "examples": [
+                "do we already have a snooze column?",
+                "which flag helper does the app use?",
+                "has this been tried before?",
+                "what does the glossary call this object?"
+              ]
+            },
+            "product_or_preference": {
+              "what": "Intent, priority, naming, scope, a default, permissions, visibility, what gets cut, or a trade-off between two things the user could legitimately want",
+              "not_for": "Anything an experiment or a read would settle",
+              "examples": [
+                "can a member snooze an action that is not theirs?",
+                "is this one PR this week, or a program?",
+                "which story is cut first if the appetite runs out?",
+                "the glossary says Stack and you said bundle; which word?"
+              ]
+            }
+          }
+        },
+        "irreversible": {
+          "type": "noul",
+          "instructions": "Does `question` ask permission for an action that cannot be undone: a merge, a push to a shared branch, a migration against a shared database, a delete, an external message, a production flag flip?",
+          "criteria": {
+            "true": "The question is a gate before an irreversible or outward-facing action, such as 'open the PR, keep the branch, or discard' or 'flip the flag for everyone?'",
+            "false": "The action is reversible or is only a plan, a draft, a prototype, or a read"
+          }
+        },
+        "has_default": {
+          "type": "noul",
+          "instructions": "Does the question carry a recommended answer with a reason: an option marked Recommended, or text such as 'Recommended: … because …'?",
+          "criteria": {
+            "true": "One option is marked as recommended, or the question text names the recommended answer and gives a reason",
+            "false": "No option is recommended, or a recommendation is given with no reason"
+          }
+        },
+        "bundled": {
+          "type": "noul",
+          "instructions": "Does `question` bundle two or more separate decisions that could be answered differently?",
+          "criteria": {
+            "true": "Two decisions joined by 'and', or options that vary on two axes at once, so one answer settles two things",
+            "false": "One decision with alternatives on one axis. A multi-select over reviewer rulings, a numbered story list to edit, or a premises block to agree with counts as one"
+          }
+        }
+      },
+      "thresholds": {
+        "deflect_confidence": 0.8,
+        "irreversible_pass": 0.3,
+        "has_default_min": 0.3,
+        "bundled_max": 0.8
+      }
+    },
+    "anchor": {
+      "purpose": "A file:line claim from an explorer, research.md, or implementation.md against the code at the anchor.",
+      "state_shape": {
+        "claim": "the sentence that carries the anchor",
+        "anchor": {"path": "…", "line": 0, "sha": "…"},
+        "excerpt": "numbered lines from `sed -n` around the anchor at that SHA, about ten"
+      },
+      "questions": {
+        "supported": {
+          "type": "noul",
+          "instructions": "Does `excerpt`, the code at `anchor.path` around `anchor.line`, show what `claim` says?",
+          "criteria": {
+            "true": "The excerpt contains the mechanism, symbol, or behaviour the claim describes, at or near the cited line",
+            "false": "The excerpt is about something else, or shows only a name without the behaviour claimed"
+          }
+        },
+        "contradicted": {
+          "type": "noul",
+          "instructions": "Does `excerpt` contradict `claim`?",
+          "criteria": {
+            "true": "The code does the opposite of, or something materially different from, what the claim states",
+            "false": "No contradiction; the excerpt may be unrelated or incomplete, but it does not say otherwise"
+          }
+        },
+        "needs_more_context": {
+          "type": "noul",
+          "instructions": "Would settling `claim` need code outside `excerpt`, such as another file, a caller, or a config value?",
+          "criteria": {
+            "true": "The claim is about a flow, a caller, or a value the excerpt only references",
+            "false": "The excerpt alone is enough to judge the claim"
+          }
+        }
+      },
+      "thresholds": {
+        "supported_min": 0.7,
+        "contradicted_min": 0.7
+      }
+    },
+    "spec-line": {
+      "purpose": "One acceptance line against the test that claims to cover it (review --contract, implement step 5, the Definition of Ready).",
+      "state_shape": {
+        "story": "S1",
+        "acceptance": {"id": "S1-a", "when": "…", "then": "…"},
+        "test": {"name": "…", "source": "the test function's source"}
+      },
+      "questions": {
+        "exercises": {
+          "type": "noul",
+          "instructions": "Does `test.source` set up the situation in `acceptance.when` and check the result in `acceptance.then`?",
+          "criteria": {
+            "true": "The test triggers the WHEN condition and asserts the THEN outcome",
+            "false": "The test covers a different path, only part of the line, or a neighbouring behaviour"
+          }
+        },
+        "asserts_literal": {
+          "type": "noul",
+          "instructions": "Does `test.source` assert a specific expected value or state, such as a literal, a count, a status, or rendered text, rather than only that no error was thrown or that a call happened?",
+          "criteria": {
+            "true": "At least one assertion compares against a concrete expected value that the THEN line implies",
+            "false": "The assertions only check for no exception, a truthy result, or that a function was called"
+          }
+        },
+        "subject_mocked": {
+          "type": "noul",
+          "instructions": "Is the code that `acceptance` is about replaced by a mock or a stub in `test.source`, so the test cannot fail if that code is wrong?",
+          "criteria": {
+            "true": "The unit under test, or the seam the THEN depends on, is mocked away",
+            "false": "Only collaborators outside the acceptance line are mocked, or nothing is"
+          }
+        }
+      },
+      "thresholds": {
+        "exercises_min": 0.7,
+        "asserts_min": 0.7,
+        "mocked_max": 0.5
+      }
+    },
+    "finding": {
+      "purpose": "One finding from a pm, techlead, review, or persona seat: bucket, severity, whether the plan already answers it, whether it names an edit. The judge's bucket and confidence replace the seat's self-reported ones.",
+      "state_shape": {
+        "finding": {
+          "seat": "…",
+          "severity_claimed": "critical | high | medium | low",
+          "confidence_claimed": 0,
+          "section": "the plan section, file:line, or story it names",
+          "text": "what is wrong, in the seat's words",
+          "failure_scenario": "…",
+          "suggested_change": "…"
+        },
+        "plan_excerpt": "the plan section, diff hunk, or story the finding names, verbatim"
+      },
+      "questions": {
+        "bucket": {
+          "type": "choice",
+          "instructions": {
+            "question": "Which bucket does `finding` belong in, judged against `plan_excerpt`?",
+            "focus": "Judge whether the failure is concrete and whether the plan already handles it, not how strongly the seat worded it."
+          },
+          "criteria": {
+            "act_on": {
+              "what": "A concrete failure scenario the plan or diff would produce, with an edit that removes it",
+              "not_for": "Style, taste, or a risk the plan already accepts with a reason",
+              "examples": [
+                "the realtime payload lacks snoozed_until, so the dot flickers back until the next fetch",
+                "the migration drops the column in the same PR that stops writing it; a rolling deploy breaks"
+              ]
+            },
+            "consider": {
+              "what": "A real trade-off or a risk worth a ruling, where the plan could reasonably go either way",
+              "not_for": "A finding whose edit is obvious and safe; that is act on",
+              "examples": [
+                "why not dismiss with a reminder instead of snooze",
+                "the success signal has no baseline; either read one from existing data or accept the gap"
+              ]
+            },
+            "noted": {
+              "what": "True but changes nothing now: a future concern, a nit, an observation without an edit",
+              "not_for": "Anything with a concrete failure in the current scope",
+              "examples": [
+                "the sweeper will need pagination past a few thousand rows",
+                "the component name could be shorter"
+              ]
+            },
+            "dismissed": {
+              "what": "Wrong about the code, already answered in `plan_excerpt`, outside the stated intent, or a generic remark not about this plan",
+              "not_for": "A finding that is inconvenient but correct",
+              "examples": [
+                "add error handling, when the excerpt names the error, its trigger, and what the user sees",
+                "consider a feature flag, when the plan's rollout section already declares one"
+              ]
+            }
+          }
+        },
+        "severity": {
+          "type": "score",
+          "instructions": "How severe is the failure `finding.failure_scenario` describes, if it is real?",
+          "criteria": [
+            "low: cosmetic, a nit, or an inconvenience with a workaround",
+            "medium: a bug or a gap a user would hit in an edge case",
+            "high: a bug on the main path, a data or permission gap, or a wrong result",
+            "critical: data loss, a security hole, or a silent failure on the main path"
+          ]
+        },
+        "already_answered": {
+          "type": "noul",
+          "instructions": "Does `plan_excerpt` already address what `finding.text` raises?",
+          "criteria": {
+            "true": "The excerpt contains the decision, the state, the test, or the reason the finding asks for",
+            "false": "The excerpt is silent on it, or addresses a different case"
+          }
+        },
+        "actionable": {
+          "type": "noul",
+          "instructions": "Does `finding.suggested_change` name a concrete edit, such as a file, a section, or a line to add or remove?",
+          "criteria": {
+            "true": "A reader could make the edit without asking what was meant",
+            "false": "The suggestion is 'reconsider', 'be careful', or names no place"
+          }
+        }
+      },
+      "thresholds": {
+        "bucket_confidence_min": 0.6,
+        "already_answered_min": 0.8
+      }
+    },
+    "finding-pair": {
+      "purpose": "Two findings, for the agreement map: the same underlying problem from two seats counts once and is high-signal.",
+      "state_shape": {
+        "a": {"seat": "…", "text": "…", "section": "…"},
+        "b": {"seat": "…", "text": "…", "section": "…"}
+      },
+      "questions": {
+        "same_issue": {
+          "type": "noul",
+          "instructions": "Do `a` and `b` describe the same underlying problem, even if worded differently or seen from different seats?",
+          "criteria": {
+            "true": "Fixing one would fix the other; they name the same mechanism or the same gap",
+            "false": "They are about different mechanisms, different sections, or only share a topic"
+          }
+        }
+      },
+      "thresholds": {
+        "same_min": 0.8
+      }
+    },
+    "pr-comment": {
+      "purpose": "One review comment on a PR (babysit step 3): act, push back, or clarify, and whether a bot comment is noise.",
+      "state_shape": {
+        "comment": {"author": "…", "is_bot": false, "body": "…", "path": "…", "line": 0},
+        "hunk": "the diff hunk the comment targets",
+        "intent": "the PR's intent in two sentences"
+      },
+      "questions": {
+        "bucket": {
+          "type": "choice",
+          "instructions": {
+            "question": "What should the author do with `comment`, given `hunk` and `intent`?",
+            "focus": "Judge the comment against the code it points at, not against its tone."
+          },
+          "criteria": {
+            "act": {
+              "what": "Names a real defect, a missed case, or a violated convention in `hunk` that the author should change",
+              "not_for": "A request for scope the PR deliberately excludes",
+              "examples": [
+                "this returns before releasing the lock on the error path",
+                "the new column has no default, so the expand step fails on existing rows"
+              ]
+            },
+            "push_back": {
+              "what": "Wrong about the code, contradicts `intent`, or asks for scope the PR deliberately excludes; deserves a reasoned reply, not a change",
+              "not_for": "A comment the author simply dislikes",
+              "examples": [
+                "asks to handle a case the hunk already handles two lines above",
+                "asks to add the settings page, which the PR body lists under non-goals"
+              ]
+            },
+            "clarify": {
+              "what": "Cannot be judged from `hunk` and `intent`; the author needs to ask what was meant or where",
+              "not_for": "A comment that is clear but unwelcome",
+              "examples": [
+                "'this feels off' with no line or scenario",
+                "a reference to an internal convention the repo does not document"
+              ]
+            }
+          }
+        },
+        "noise": {
+          "type": "noul",
+          "instructions": "Is `comment` noise: a generic remark not about this diff, a style point a formatter already enforces, a false positive from a pattern match, or a restatement of what the diff does?",
+          "criteria": {
+            "true": "The comment would read the same on any diff, or points at something the hunk does not contain",
+            "false": "The comment is specific to a line, a value, or a path in `hunk`"
+          }
+        },
+        "real_bug": {
+          "type": "noul",
+          "instructions": "Does `comment` describe a concrete way `hunk` fails, such as an input, a state, or a sequence, that would hold if the code shipped as written?",
+          "criteria": {
+            "true": "A reader could write the failing test from the comment",
+            "false": "The comment is advice, style, or a question, not a failure"
+          }
+        }
+      },
+      "thresholds": {
+        "noise_min": 0.9,
+        "real_bug_max": 0.2,
+        "bucket_confidence_min": 0.5
+      }
+    }
+  }
+}

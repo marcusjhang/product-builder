@@ -4,7 +4,7 @@
 
 1. Read the PR, its checks, and its comments.
 2. For each failing check: root cause per `playbooks/bug-fix.md`, never a retry-until-green.
-3. Comment triage table: comment, bucket (act, push back, clarify), reason, action. Bots catch real bugs and file noise; dismiss noise with a concrete reason.
+3. Comment triage table: comment, bucket (act, push back, clarify), reason, action. Bots catch real bugs and file noise; dismiss noise with a concrete reason. When the profile names a judge, run its `pr-comment` gate per comment through `${CLAUDE_SKILL_DIR}/scripts/judge` (`--batch`; state: the comment, the hunk it targets, the PR intent in two sentences); in `gate` mode the bucket column is the verdict with its confidence shown and `dismissed` carries the judge's reason plus one line of yours, in `shadow` mode the verdict is logged beside yours.
 4. Rebase, push, re-run **product-builder-verify** after changes.
 5. Report: checks, open comments, what changed since the last report.
 6. Stop at merge-ready. The merge is the user's.

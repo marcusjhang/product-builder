@@ -1,0 +1,109 @@
+#!/usr/bin/env python3
+"""question-gate: PreToolUse hook on AskUserQuestion. Runs the profile's judge over each question
+before the question tool opens.
+
+Reads the hook JSON from stdin ({tool_name, tool_input, cwd, ...}). For each question it hands
+{header, question, options, multi_select} to `judge question-gate`. Then:
+
+  no Judge section, Model: none, or no key   → allow, silently (the skill says the fallback once)
+  Mode: shadow                                → allow; one systemMessage line with the verdicts
+  Mode: gate, every verdict is "ask"          → allow
+  Mode: gate, a verdict deflects or fixes     → deny, with the reason fed back to the model
+  the question carries "product call because" → allow; logged as overridden
+
+Any error allows the question and says so in one line. Never blocks on its own failure.
+"""
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+JUDGE = HERE / "judge"
+OVERRIDE = "product call because"
+
+
+def find_profile(start: Path):
+    for d in [start, *start.parents]:
+        p = d / ".product-builder" / "profile.md"
+        if p.exists():
+            return p
+    return None
+
+
+def out(obj):
+    print(json.dumps(obj))
+
+
+def main():
+    try:
+        data = json.load(sys.stdin)
+    except Exception:
+        return 0
+    if data.get("tool_name") != "AskUserQuestion":
+        return 0
+    cwd = Path(data.get("cwd") or os.getcwd())
+    profile = find_profile(cwd)
+    if not profile:
+        return 0
+    questions = (data.get("tool_input") or {}).get("questions") or []
+    if not questions:
+        return 0
+
+    verdicts = []
+    mode = "shadow"
+    try:
+        for i, q in enumerate(questions, 1):
+            text = q.get("question", "")
+            if OVERRIDE in text.lower():
+                verdicts.append({"n": i, "verdict": "ask", "reason": "overridden: stated as a product call", "override": True})
+                continue
+            state = {
+                "header": q.get("header", ""),
+                "question": text,
+                "options": [{"label": o.get("label", ""), "description": o.get("description", "")}
+                            for o in q.get("options", [])],
+                "multi_select": bool(q.get("multiSelect", False)),
+            }
+            proc = subprocess.run(
+                [sys.executable, str(JUDGE), "question-gate", "--profile", str(profile), "--caller", "hook:AskUserQuestion"],
+                input=json.dumps(state), capture_output=True, text=True, timeout=25,
+            )
+            if proc.returncode == 3:
+                return 0  # no judge configured or no key: silent pass-through
+            if proc.returncode != 0:
+                out({"systemMessage": f"judge: {proc.stderr.strip()[:200]}; question allowed"})
+                return 0
+            res = json.loads(proc.stdout)
+            mode = res.get("mode", mode)
+            v = res["verdict"]
+            verdicts.append({"n": i, "verdict": v["verdict"], "reason": v["reason"], "question": text[:80]})
+    except Exception as e:
+        out({"systemMessage": f"judge: {type(e).__name__}: {str(e)[:160]}; question allowed"})
+        return 0
+
+    summary = " · ".join(f"Q{v['n']} {v['verdict']}" for v in verdicts)
+    blocking = [v for v in verdicts if v["verdict"].startswith(("deflect:", "fix:"))]
+
+    if mode != "gate" or not blocking:
+        if verdicts and mode != "gate":
+            out({"systemMessage": f"judge (shadow): {summary}"})
+        return 0
+
+    lines = [f"Question gate ({mode}): {len(blocking)} of {len(verdicts)} blocked."]
+    for v in blocking:
+        lines.append(f"Q{v['n']} \"{v['question']}\" → {v['verdict']}: {v['reason']}.")
+    lines.append("Deflected: settle it and report the result; do not ask. Fix: rewrite the question. "
+                 f"A genuine product call is re-asked with the words '{OVERRIDE} <reason>' in the question.")
+    reason = "\n".join(lines)
+    out({
+        "hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "deny",
+                               "permissionDecisionReason": reason},
+        "systemMessage": f"judge (gate): {summary}",
+    })
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

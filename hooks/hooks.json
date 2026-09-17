@@ -1,0 +1,17 @@
+{
+  "description": "product-builder question gate: runs the profile's judge over every question before the question tool opens. Silent when the profile names no judge or no key is set.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/skills/product-builder/scripts/question-gate\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

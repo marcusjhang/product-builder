@@ -27,6 +27,8 @@ It reads the repo before it asks you anything, then writes `.product-builder/pro
 
 Prerequisite: the `grill-me` skill (Matt Pocock, MIT) at `~/.claude/skills/grill-me` for the interview discipline; the rules are also inlined in `skills/product-builder/playbooks/plan-interview.md`. A browser driver that subagents can reach (Playwright MCP, Claude in Chrome) makes persona click-throughs and live verification real; without one they run in paper mode and say so.
 
+Optional: a judge. With `TYPESAFE_API_KEY` in the environment, setup writes a `Judge` section to the profile and six gates get a second opinion from a decision model (TypeSafe's Jev): every question to you is classified before it opens (observable by running, answerable from the repo, or a product call), file:line claims are checked against their excerpts, acceptance lines against the tests that claim them, panel and review findings are bucketed with a calibrated confidence, and PR comments are triaged. It starts in `shadow` mode, which logs verdicts beside the session's own and changes nothing; `product-builder-reflect` reports the agreement rate and proposes `gate`. The questions and thresholds are one file, `skills/product-builder/references/judge-questions.json`, meant to be read and edited. Without a key every gate is judged by the session model and the first reply says so. The question gate is a `PreToolUse` hook on the question tool; the plugin registers it from `hooks/hooks.json`, and a copy-install adds that entry to `.claude/settings.json` by hand.
+
 ## Playbooks
 
 Product track:
@@ -55,6 +57,18 @@ Engineering track:
 ## Leaf skills
 
 `product-builder-setup` · `-how` · `-why` · `-research` · `-prototype` · `-personas` · `-pm` · `-techlead` · `-review` · `-verify` · `-resume` · `-reflect` · `-plain`. Each is callable on its own (`/product-builder-how how does the queue claim a job`).
+
+## Judge gates
+
+| Gate | Runs in | State it judges | Verdicts |
+|---|---|---|---|
+| question-gate | the hook, before the question tool opens | the question and its options | ask · deflect (observable, from the repo) · fix (add a default, split) |
+| anchor | how, research | a claim, its file:line, ten lines of the code at the SHA | holds · unclear · refuted |
+| spec-line | review `--contract`, implement | an acceptance line and the test that claims it | covered · uncovered (does not exercise it, no literal assertion, subject mocked) |
+| finding, finding-pair | pm, techlead, review, personas | a finding and the section or hunk it names; two findings | act on · consider · noted · dismissed; same · different |
+| pr-comment | babysit | a comment, its hunk, the PR intent | act · push back · clarify · dismissed (noise) |
+
+`skills/product-builder/scripts/judge --gates` prints the state shapes; `--self-test` runs the threshold rules on canned answers; `--dry-run` prints a request without sending it.
 
 ## What a run leaves behind
 

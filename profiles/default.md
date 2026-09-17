@@ -53,3 +53,7 @@ None. Tickets only when the user asks.
 
 ## Observability
 UNKNOWN. Where logs, traces, and error tracking live and how to query them.
+
+## Judge
+Model: none. `typesafe/jev-latest` when `TYPESAFE_API_KEY` is in the environment; `none` means every judge gate is judged by the session model and the first reply of a run says so.
+Mode: shadow. `shadow` logs each verdict to `.product-builder/judge-log.jsonl` beside the session's own call and changes nothing; `gate` lets the verdict route (the question-gate hook blocks a deflected question, findings take the judge's bucket, an uncovered acceptance line stays uncovered). Gates, questions, and thresholds: the suite's `references/judge-questions.json`. Switch to `gate` when `product-builder-reflect` reports the agreement rate supports it.
