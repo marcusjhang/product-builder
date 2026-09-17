@@ -180,7 +180,8 @@ Sources: <URLs, retrieval date>
 ```markdown
 # <Feature>: decisions ledger
 
-**Status:** Draft · **Size:** <size> · **Budgets:** <from the sizing table> · **Last revision:** <date> · **Baseline:** `<sha>`
+**Status:** Draft · **Size:** <size> (provisional until Researched) · **Budgets:** <from the sizing table> · **Last revision:** <date> · **Baseline:** `<sha>` (<n> behind, anchors read from <checkout | origin/<default>>)
+**Probe:** <ships | partial | absent> (<file:line on origin/<default>, or the exact search that failed>) · **Closest feature:** <name, path> · **Prior art:** <spec or plan folder found, or none>
 
 ## Decisions
 | # | Decision | Options considered | Why | Who | Date | Status |
@@ -286,18 +287,18 @@ Sources: <URLs, retrieval date>
 
 ## Definition of Ready
 
-A plan may be built when all hold. the Plan playbook prints this list with each box checked before hand-off; a red item sends the plan back to the phase that owns it.
+A plan may be built when all hold. The Plan playbook prints this list in the reply before hand-off, each box with the evidence that checks it; a box without evidence is red, a list that was not printed has not run, and a red item sends the plan back to the phase that owns it.
 
 - [ ] Problem statement, audience, today's workaround, appetite, success signal, and kill criterion are written and confirmed at G1.
 - [ ] Every must-story has WHEN/THEN acceptance including at least one failure or edge line, a surface with five states (UI) or a consumer and contract sample (non-UI), and a permissions line where roles exist.
 - [ ] Non-goals and rabbit holes are written with reasons.
 - [ ] Every current-state claim in `implementation.md` has a file:line anchor at the baseline SHA (or a `spec:` anchor when the plan is on hold against a design doc, which keeps this item red until code exists), and the closest existing feature is named.
 - [ ] Simpler alternatives are listed with the story or constraint each fails; at Feature and Program size the approach was chosen from at least two candidates.
-- [ ] The riskiest assumptions each have a test verdict or an accepted risk with a reason.
-- [ ] Slices are vertical, ordered riskiest-first, sized S/M/L, each with stories, files, data, flag, named tests per acceptance line, live check, regression, rollback; a schema expand is its own first slice; P1 is the walking skeleton when a flag exists.
+- [ ] The riskiest assumptions each have a test verdict or an accepted risk with a reason; `pending` is red.
+- [ ] Slices are vertical, ordered riskiest-first, sized S/M/L, each with stories, files, data, flag, named tests per acceptance line, live check, regression, rollback; a schema expand is its own first slice; P1 is the walking skeleton when a flag exists. Each slice, and each commit contract stacked inside a PR, compiles and its tests are green with only what lands before it; a change that widens an exhaustive type or registry (a union, an enum, a `Record` over one) lists every consumer in the same slice.
 - [ ] The appetite check passed, or the cuts were made and recorded.
 - [ ] Instrumentation events and the success-signal query are named; rollout (flag, cohorts, kill switch, flag-off behaviour) is written.
-- [ ] Tech-lead findings have no open "act on"; product-panel and persona findings, when those were cast, have no open "act on" (Bounded: "not cast, Bounded" is green); unverified assumptions have a spike verdict or an owner.
+- [ ] Tech-lead findings have no open "act on"; product-panel and persona findings, when those were cast, have no open "act on" (Bounded: "not cast, Bounded" is green); the rulings table has one row per finding the panels returned and its counts match the findings blocks; a high-importance assumption has a spike verdict or an accepted risk with a reason, and only a low-importance one may pass with an owner.
 - [ ] Open questions each have a recommendation and an owner; ASSUMED decisions are listed.
 
 ## Definition of Done

@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "a plan run in a repo whose profile's Judge section reads Model: none",
+  "expected_behavior": [
+    "the first reply says in one line that the judge gates are judged by the session model",
+    "scripts/judge is never called",
+    "the run continues without asking about it."
+  ]
+}

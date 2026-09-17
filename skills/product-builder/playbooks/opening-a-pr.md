@@ -13,7 +13,7 @@ Body, in this order, drop a section with nothing to say:
 ## Scope          real symbols and paths; mechanical or generated files listed apart from logic
 ## Tradeoffs      rejected alternatives a reviewer would otherwise ask about
 ## Blast radius   who or what this touches, why it is safe or risky, flag state
-## Verification   each real run path and its outcome; numbered "to see it yourself" steps; before/after screenshots or a recording for UI; perf as before → after with a unit
+## Verification   each real run path and its outcome; numbered "to see it yourself" steps; before/after screenshots or a recording for UI, attached to the PR (uploaded in the body), not committed, unless the profile's Evidence section says otherwise; perf as before → after with a unit
 Plan: docs/plans/<slug>/ · Stories: S1, S3 · Slice: P2        (when a plan exists)
 ```
 

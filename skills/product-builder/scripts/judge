@@ -1,0 +1,423 @@
+#!/usr/bin/env python3
+"""judge: the profile's judge for product-builder gates (a System One model over the TypeSafe API).
+
+A gate is a named set of typed questions in references/judge-questions.json. A step hands
+over a state, the judge returns typed answers with calibrated confidence, and the script
+applies the gate's thresholds to give one verdict. It never reads the repo, never writes,
+and never explains; the step that called it owns the result.
+
+  judge <gate> < state.json                 one state → {gate, model, mode, verdict, answers, usage}
+  judge <gate> --batch < states.json        a JSON array of states → an array of results, in order
+  judge <gate> --dry-run < state.json       print the request that would be sent; no call, no log
+  judge --raw < request.json                send {state, questions} as given; no verdict
+  judge --gates                             list gates, their purpose, and the state shape each expects
+  judge --self-test                         run the verdict rules on canned answers; no call
+
+Config: the `## Judge` section of .product-builder/profile.md (found by walking up from cwd, or
+--profile PATH): `Model: typesafe/jev-latest | none` and `Mode: shadow | gate`. Env overrides:
+PRODUCT_BUILDER_JUDGE_MODEL, PRODUCT_BUILDER_JUDGE_MODE, TYPESAFE_API_URL.
+Key: TYPESAFE_API_KEY (JEV_API_KEY is accepted). Log: .product-builder/judge-log.jsonl, one line
+per call, unless --no-log.
+
+Exit: 0 ok · 2 bad input · 3 no judge (no profile section, Model: none, or no key) · 4 API error.
+"""
+import argparse
+import concurrent.futures as cf
+import datetime as dt
+import hashlib
+import json
+import os
+import re
+import sys
+import time
+import urllib.error
+import urllib.request
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+QUESTIONS = HERE.parent / "references" / "judge-questions.json"
+DEFAULT_URL = "https://api.typesafe.ai/v1/systemone"
+TIMEOUT = float(os.environ.get("PRODUCT_BUILDER_JUDGE_TIMEOUT", "15"))
+RETRIES = 3
+WORKERS = 6
+
+
+# ----------------------------------------------------------------------------- config
+
+def find_profile(start: Path):
+    for d in [start, *start.parents]:
+        p = d / ".product-builder" / "profile.md"
+        if p.exists():
+            return p
+    return None
+
+
+def judge_config(profile):
+    """{'model': 'jev-latest' | None, 'mode': 'shadow' | 'gate', 'profile': Path | None}."""
+    model, mode = None, "shadow"
+    if profile and profile.exists():
+        txt = profile.read_text(errors="ignore")
+        m = re.search(r"^## Judge\s*$(.*?)(?=^## |\Z)", txt, re.S | re.M)
+        if m:
+            sect = m.group(1)
+            mm = re.search(r"^Model:\s*`?([^\s`.,]+)", sect, re.M)
+            if mm:
+                val = mm.group(1).strip()
+                model = None if val.lower() == "none" else val.split("/")[-1]
+            md = re.search(r"^Mode:\s*`?(shadow|gate)", sect, re.M | re.I)
+            if md:
+                mode = md.group(1).lower()
+    env_model = os.environ.get("PRODUCT_BUILDER_JUDGE_MODEL")
+    if env_model:
+        model = None if env_model.lower() == "none" else env_model.split("/")[-1]
+    mode = os.environ.get("PRODUCT_BUILDER_JUDGE_MODE", mode).lower()
+    return {"model": model, "mode": mode, "profile": profile}
+
+
+def api_key():
+    return os.environ.get("TYPESAFE_API_KEY") or os.environ.get("JEV_API_KEY")
+
+
+def load_gates():
+    with open(QUESTIONS) as f:
+        return json.load(f)["gates"]
+
+
+# ----------------------------------------------------------------------------- request
+
+def build_request(gate: dict, state, model: str) -> dict:
+    return {"state": state, "model": model, "questions": gate["questions"]}
+
+
+def call(request: dict, key: str) -> dict:
+    url = os.environ.get("TYPESAFE_API_URL", DEFAULT_URL)
+    body = json.dumps(request).encode()
+    delay = 1.0
+    last = None
+    for attempt in range(RETRIES):
+        req = urllib.request.Request(
+            url, data=body, method="POST",
+            headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+                return json.loads(r.read().decode())
+        except urllib.error.HTTPError as e:
+            detail = e.read().decode(errors="ignore")[:400]
+            last = f"HTTP {e.code}: {detail}"
+            if e.code in (429, 529) and attempt < RETRIES - 1:
+                time.sleep(delay)
+                delay *= 2
+                continue
+            raise RuntimeError(last)
+        except (urllib.error.URLError, TimeoutError, OSError) as e:
+            last = f"{type(e).__name__}: {e}"
+            if attempt < RETRIES - 1:
+                time.sleep(delay)
+                delay *= 2
+                continue
+            raise RuntimeError(last)
+    raise RuntimeError(last or "no response")
+
+
+# ----------------------------------------------------------------------------- verdicts
+# One function per gate. Each takes the answers map and the gate's thresholds and returns a
+# dict with at least {"verdict": str, "reason": str}. Thresholds live in judge-questions.json.
+
+def _noul(ans, k):
+    return float(ans[k]["noul"])
+
+
+def _choice(ans, k):
+    a = ans[k]
+    return a["choice"], float(a.get("confidence", 0.0))
+
+
+def v_question_gate(ans, t):
+    kind, conf = _choice(ans, "kind")
+    irreversible = _noul(ans, "irreversible")
+    has_default = _noul(ans, "has_default")
+    bundled = _noul(ans, "bundled")
+    out = {"kind": kind, "kind_confidence": round(conf, 2), "irreversible": round(irreversible, 2),
+           "has_default": round(has_default, 2), "bundled": round(bundled, 2)}
+    if irreversible < t["irreversible_pass"] and kind != "product_or_preference" and conf >= t["deflect_confidence"]:
+        settle = "prototype or spike" if kind == "observable_by_running" else "read the repo"
+        return {**out, "verdict": f"deflect:{kind}",
+                "reason": f"judged {kind} at {conf:.2f}; settle it ({settle}) and report the result, or re-ask with 'product call because <reason>'"}
+    if has_default < t["has_default_min"]:
+        return {**out, "verdict": "fix:add_default",
+                "reason": f"no recommended answer with a reason ({has_default:.2f}); add one, 'ok' must be able to accept it"}
+    if bundled >= t["bundled_max"]:
+        return {**out, "verdict": "fix:split",
+                "reason": f"bundles more than one decision ({bundled:.2f}); ask one at a time"}
+    why = "irreversible action, always the user's" if irreversible >= t["irreversible_pass"] else f"{kind} at {conf:.2f}"
+    return {**out, "verdict": "ask", "reason": why}
+
+
+def v_anchor(ans, t):
+    s, c, n = _noul(ans, "supported"), _noul(ans, "contradicted"), _noul(ans, "needs_more_context")
+    out = {"supported": round(s, 2), "contradicted": round(c, 2), "needs_more_context": round(n, 2)}
+    if c >= t["contradicted_min"]:
+        return {**out, "verdict": "refuted", "reason": f"excerpt contradicts the claim ({c:.2f}); drop or relabel the claim and say so"}
+    if s >= t["supported_min"] and c < 0.5:
+        return {**out, "verdict": "holds", "reason": f"excerpt supports the claim ({s:.2f})"}
+    return {**out, "verdict": "unclear", "reason": f"supported {s:.2f}, needs more context {n:.2f}; read it yourself"}
+
+
+def v_spec_line(ans, t):
+    e, a, m = _noul(ans, "exercises"), _noul(ans, "asserts_literal"), _noul(ans, "subject_mocked")
+    out = {"exercises": round(e, 2), "asserts_literal": round(a, 2), "subject_mocked": round(m, 2)}
+    reasons = []
+    if e < t["exercises_min"]:
+        reasons.append(f"does not exercise the WHEN/THEN ({e:.2f})")
+    if a < t["asserts_min"]:
+        reasons.append(f"asserts no literal expected value ({a:.2f})")
+    if m >= t["mocked_max"]:
+        reasons.append(f"the subject is mocked away ({m:.2f})")
+    if reasons:
+        return {**out, "verdict": "uncovered", "reason": "; ".join(reasons)}
+    return {**out, "verdict": "covered", "reason": f"exercises {e:.2f}, literal assertion {a:.2f}"}
+
+
+def v_finding(ans, t):
+    bucket, conf = _choice(ans, "bucket")
+    sev = ans["severity"]
+    severity = float(sev["score"])
+    legend = sev.get("legend", {})
+    level = legend.get(str(int(round(severity))), "").split(":")[0] or str(round(severity, 1))
+    already = _noul(ans, "already_answered")
+    actionable = _noul(ans, "actionable")
+    out = {"bucket_judged": bucket, "bucket_confidence": round(conf, 2), "severity": level,
+           "severity_score": round(severity, 2), "already_answered": round(already, 2),
+           "actionable": round(actionable, 2)}
+    if already >= t["already_answered_min"]:
+        return {**out, "verdict": "dismissed", "reason": f"the plan already answers it ({already:.2f})"}
+    if conf < t["bucket_confidence_min"]:
+        return {**out, "verdict": "noted", "reason": f"bucket confidence {conf:.2f} below {t['bucket_confidence_min']}; noted, not applied"}
+    return {**out, "verdict": bucket, "reason": f"{bucket} at {conf:.2f}, severity {level}"}
+
+
+def v_finding_pair(ans, t):
+    s = _noul(ans, "same_issue")
+    return {"same_issue": round(s, 2), "verdict": "same" if s >= t["same_min"] else "different",
+            "reason": f"same issue {s:.2f}"}
+
+
+def v_pr_comment(ans, t):
+    bucket, conf = _choice(ans, "bucket")
+    noise, bug = _noul(ans, "noise"), _noul(ans, "real_bug")
+    out = {"bucket_judged": bucket, "bucket_confidence": round(conf, 2), "noise": round(noise, 2), "real_bug": round(bug, 2)}
+    if noise >= t["noise_min"] and bug < t["real_bug_max"]:
+        return {**out, "verdict": "dismissed", "reason": f"noise {noise:.2f}, no concrete failure ({bug:.2f})"}
+    if conf < t["bucket_confidence_min"]:
+        return {**out, "verdict": "clarify", "reason": f"bucket confidence {conf:.2f} below {t['bucket_confidence_min']}"}
+    return {**out, "verdict": bucket, "reason": f"{bucket} at {conf:.2f}, real bug {bug:.2f}"}
+
+
+VERDICTS = {
+    "question-gate": v_question_gate,
+    "anchor": v_anchor,
+    "spec-line": v_spec_line,
+    "finding": v_finding,
+    "finding-pair": v_finding_pair,
+    "pr-comment": v_pr_comment,
+}
+
+
+# ----------------------------------------------------------------------------- run
+
+def digest(state) -> str:
+    return hashlib.sha256(json.dumps(state, sort_keys=True).encode()).hexdigest()[:12]
+
+
+def log_line(cfg, entry):
+    if not cfg.get("profile"):
+        return
+    p = cfg["profile"].parent / "judge-log.jsonl"
+    with open(p, "a") as f:
+        f.write(json.dumps(entry, sort_keys=True) + "\n")
+
+
+def judge_one(gate_name, gate, state, cfg, key, caller, do_log):
+    request = build_request(gate, state, cfg["model"])
+    t0 = time.time()
+    resp = call(request, key)
+    answers = resp.get("answers", {})
+    verdict = VERDICTS[gate_name](answers, gate.get("thresholds", {}))
+    result = {"gate": gate_name, "model": resp.get("model", cfg["model"]), "mode": cfg["mode"],
+              "verdict": verdict, "answers": answers, "usage": resp.get("usage"),
+              "latency_s": round(time.time() - t0, 2)}
+    if do_log:
+        log_line(cfg, {"ts": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+                       "gate": gate_name, "mode": cfg["mode"], "model": result["model"],
+                       "state_digest": digest(state), "caller": caller,
+                       "verdict": verdict, "usage": result["usage"], "latency_s": result["latency_s"]})
+    return result
+
+
+def self_test():
+    """Verdict rules on canned answers. No API call; proves the thresholds route as documented."""
+    gates = load_gates()
+    T = {g: gates[g].get("thresholds", {}) for g in gates}
+    checks = [
+        ("question-gate", {"kind": {"choice": "observable_by_running", "confidence": 0.87},
+                           "irreversible": {"noul": 0.05}, "has_default": {"noul": 0.9}, "bundled": {"noul": 0.1}},
+         "deflect:observable_by_running"),
+        ("question-gate", {"kind": {"choice": "product_or_preference", "confidence": 0.9},
+                           "irreversible": {"noul": 0.05}, "has_default": {"noul": 0.9}, "bundled": {"noul": 0.1}},
+         "ask"),
+        ("question-gate", {"kind": {"choice": "observable_by_running", "confidence": 0.95},
+                           "irreversible": {"noul": 0.92}, "has_default": {"noul": 0.9}, "bundled": {"noul": 0.1}},
+         "ask"),
+        ("question-gate", {"kind": {"choice": "observable_by_running", "confidence": 0.6},
+                           "irreversible": {"noul": 0.05}, "has_default": {"noul": 0.9}, "bundled": {"noul": 0.1}},
+         "ask"),
+        ("question-gate", {"kind": {"choice": "product_or_preference", "confidence": 0.9},
+                           "irreversible": {"noul": 0.05}, "has_default": {"noul": 0.1}, "bundled": {"noul": 0.1}},
+         "fix:add_default"),
+        ("question-gate", {"kind": {"choice": "product_or_preference", "confidence": 0.9},
+                           "irreversible": {"noul": 0.05}, "has_default": {"noul": 0.9}, "bundled": {"noul": 0.9}},
+         "fix:split"),
+        ("anchor", {"supported": {"noul": 0.9}, "contradicted": {"noul": 0.05}, "needs_more_context": {"noul": 0.1}}, "holds"),
+        ("anchor", {"supported": {"noul": 0.1}, "contradicted": {"noul": 0.85}, "needs_more_context": {"noul": 0.1}}, "refuted"),
+        ("anchor", {"supported": {"noul": 0.5}, "contradicted": {"noul": 0.3}, "needs_more_context": {"noul": 0.8}}, "unclear"),
+        ("spec-line", {"exercises": {"noul": 0.9}, "asserts_literal": {"noul": 0.85}, "subject_mocked": {"noul": 0.1}}, "covered"),
+        ("spec-line", {"exercises": {"noul": 0.9}, "asserts_literal": {"noul": 0.2}, "subject_mocked": {"noul": 0.1}}, "uncovered"),
+        ("spec-line", {"exercises": {"noul": 0.9}, "asserts_literal": {"noul": 0.9}, "subject_mocked": {"noul": 0.8}}, "uncovered"),
+        ("finding", {"bucket": {"choice": "act_on", "confidence": 0.85},
+                     "severity": {"score": 2.2, "legend": {"0": "low: x", "1": "medium: x", "2": "high: x", "3": "critical: x"}},
+                     "already_answered": {"noul": 0.1}, "actionable": {"noul": 0.9}}, "act_on"),
+        ("finding", {"bucket": {"choice": "act_on", "confidence": 0.85},
+                     "severity": {"score": 2.2, "legend": {}}, "already_answered": {"noul": 0.9}, "actionable": {"noul": 0.9}}, "dismissed"),
+        ("finding", {"bucket": {"choice": "act_on", "confidence": 0.4},
+                     "severity": {"score": 1.0, "legend": {}}, "already_answered": {"noul": 0.1}, "actionable": {"noul": 0.9}}, "noted"),
+        ("finding-pair", {"same_issue": {"noul": 0.9}}, "same"),
+        ("finding-pair", {"same_issue": {"noul": 0.3}}, "different"),
+        ("pr-comment", {"bucket": {"choice": "act", "confidence": 0.8}, "noise": {"noul": 0.05}, "real_bug": {"noul": 0.8}}, "act"),
+        ("pr-comment", {"bucket": {"choice": "act", "confidence": 0.8}, "noise": {"noul": 0.95}, "real_bug": {"noul": 0.05}}, "dismissed"),
+        ("pr-comment", {"bucket": {"choice": "push_back", "confidence": 0.3}, "noise": {"noul": 0.2}, "real_bug": {"noul": 0.3}}, "clarify"),
+    ]
+    failed = 0
+    for gate, ans, expect in checks:
+        got = VERDICTS[gate](ans, T[gate])["verdict"]
+        ok = got == expect
+        failed += 0 if ok else 1
+        print(f"{'ok  ' if ok else 'FAIL'} {gate:<14} expect {expect:<32} got {got}")
+    print(f"self-test: {len(checks) - failed}/{len(checks)} verdict rules ok (canned answers, no API call)")
+    return 0 if failed == 0 else 1
+
+
+def validate_gates(gates):
+    """Shape check against the documented request schema: types, criteria shapes, thresholds present."""
+    problems = []
+    for name, g in gates.items():
+        if name not in VERDICTS:
+            problems.append(f"{name}: no verdict function")
+        for qid, q in g.get("questions", {}).items():
+            t = q.get("type")
+            if t not in ("choice", "score", "noul"):
+                problems.append(f"{name}.{qid}: bad type {t!r}")
+            if "instructions" not in q:
+                problems.append(f"{name}.{qid}: no instructions")
+            c = q.get("criteria")
+            if t == "choice" and (not isinstance(c, dict) or not c):
+                problems.append(f"{name}.{qid}: choice criteria must be a non-empty map")
+            if t == "score" and (not isinstance(c, list) or len(c) < 2):
+                problems.append(f"{name}.{qid}: score criteria must be an array of at least two levels")
+            if t == "noul" and c is not None and (not isinstance(c, dict) or set(c) - {"true", "false"}):
+                problems.append(f"{name}.{qid}: noul criteria keys must be true/false")
+    return problems
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(add_help=False)
+    ap.add_argument("gate", nargs="?")
+    ap.add_argument("--batch", action="store_true")
+    ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--raw", action="store_true")
+    ap.add_argument("--gates", action="store_true")
+    ap.add_argument("--self-test", action="store_true")
+    ap.add_argument("--no-log", action="store_true")
+    ap.add_argument("--profile")
+    ap.add_argument("--caller", default="")
+    ap.add_argument("-h", "--help", action="store_true")
+    a = ap.parse_args(argv)
+
+    if a.help or (not a.gate and not (a.raw or a.gates or a.self_test)):
+        print(__doc__.strip())
+        return 0
+
+    gates = load_gates()
+    problems = validate_gates(gates)
+    if problems:
+        print("judge-questions.json: " + "; ".join(problems), file=sys.stderr)
+        return 2
+
+    if a.gates:
+        for name, g in gates.items():
+            print(f"{name}\n  {g['purpose']}\n  questions: {', '.join(g['questions'])}\n  thresholds: {json.dumps(g.get('thresholds', {}))}\n  state: {json.dumps(g['state_shape'])}\n")
+        return 0
+    if a.self_test:
+        return self_test()
+
+    profile = Path(a.profile) if a.profile else find_profile(Path.cwd())
+    cfg = judge_config(profile)
+
+    try:
+        payload = json.load(sys.stdin)
+    except json.JSONDecodeError as e:
+        print(f"stdin is not JSON: {e}", file=sys.stderr)
+        return 2
+
+    if a.raw:
+        request = payload
+        if not isinstance(request, dict) or "state" not in request or "questions" not in request:
+            print("--raw expects {state, questions[, model]}", file=sys.stderr)
+            return 2
+        request.setdefault("model", cfg["model"] or "jev-latest")
+    else:
+        if a.gate not in gates:
+            print(f"unknown gate {a.gate!r}; one of: {', '.join(gates)}", file=sys.stderr)
+            return 2
+        gate = gates[a.gate]
+
+    if a.dry_run:
+        if a.raw:
+            print(json.dumps(request, indent=1))
+        else:
+            states = payload if a.batch else [payload]
+            for s in states:
+                print(json.dumps(build_request(gate, s, cfg["model"] or "jev-latest"), indent=1))
+        return 0
+
+    if not cfg["model"]:
+        where = f"{cfg['profile']}" if cfg["profile"] else "no .product-builder/profile.md above cwd"
+        print(f"no judge: Model is none or the Judge section is missing ({where})", file=sys.stderr)
+        return 3
+    key = api_key()
+    if not key:
+        print("no judge: TYPESAFE_API_KEY is not set", file=sys.stderr)
+        return 3
+
+    try:
+        if a.raw:
+            print(json.dumps(call(request, key)))
+            return 0
+        do_log = not a.no_log
+        if a.batch:
+            if not isinstance(payload, list):
+                print("--batch expects a JSON array of states", file=sys.stderr)
+                return 2
+            with cf.ThreadPoolExecutor(max_workers=WORKERS) as ex:
+                results = list(ex.map(lambda s: judge_one(a.gate, gate, s, cfg, key, a.caller, do_log), payload))
+            print(json.dumps(results))
+        else:
+            print(json.dumps(judge_one(a.gate, gate, payload, cfg, key, a.caller, do_log)))
+        return 0
+    except RuntimeError as e:
+        print(f"judge API error: {e}", file=sys.stderr)
+        return 4
+
+
+if __name__ == "__main__":
+    sys.exit(main())

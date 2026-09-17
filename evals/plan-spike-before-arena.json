@@ -1,0 +1,10 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "interview 2 marks an assumption of high importance as spike, and the run reaches step 5",
+  "expected_behavior": [
+    "the spike runs through product-builder-research before any architect is dispatched",
+    "the assumption carries a verdict or an accepted risk with a reason; pending does not reach the arena."
+  ]
+}

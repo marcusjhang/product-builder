@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "with a judge in gate mode, the run reaches \"chips or a date picker?\" and the question tool is denied by the question-gate hook",
+  "expected_behavior": [
+    "no question is re-asked verbatim",
+    "the fork is marked → prototype and settled by the prototype skill",
+    "the reply reports the result and does not say waiting on you."
+  ]
+}

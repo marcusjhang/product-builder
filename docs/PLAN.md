@@ -147,7 +147,7 @@ Two playbooks could apply → one question with the options. A repo may add rows
 
 ### 3.5 Sizing and budgets
 
-Sizing decides which steps run and how much each may cost. The mode states the size in its first reply; the user can override it. When in doubt take the heavier size, and upgrade mid-way when hidden complexity appears.
+Sizing decides which steps run and how much each may cost. The mode states the size in its first reply as provisional, from the intake probe's three lines (ships, closest feature, target tree) rather than the phrasing, and restates it after research, up or down; the user can override it. When in doubt take the heavier size; a downgrade from Program removes the parts skeleton.
 
 | Size | Signal | Interviews | Research | Docs | Prototype | Verification | Slices |
 |---|---|---|---|---|---|---|---|
@@ -216,7 +216,10 @@ Every skill starts by reading `${CLAUDE_PROJECT_DIR}/.product-builder/profile.md
 | Analytics and instrumentation | plan, qa, ship | how product events are emitted and where they are queried; naming convention (object plus past-tense verb, casing); who owns the tracking plan |
 | Required reviewers by path | review, implement, fix | path glob → reviewer agent (security, migrations, billing, sandbox) |
 | Tracker | plan, implement, qa, fix | how to create and link tickets, only on request |
+| Forge | setup, opening-a-pr, babysit, implement | the tool, the repo, the account that has access and its permission, verified by `gh repo view` at setup; `UNKNOWN` with the failing command stops any playbook that pushes |
+| Evidence | verify, implement, qa, opening-a-pr, prototype | where text evidence lives (the plan folder), where screenshots and recordings go (PR attachments or an artifact store), whether binaries may be committed, that the scratchpad is never a cited path |
 | Observability | why, fix, perf, verify, ship | where logs, traces, and error tracking live and how to query them |
+| Judge | the question-gate hook, how, research, pm, techlead, review, personas, babysit, reflect | a decision model (`typesafe/jev-latest` or `none`) and its mode (`shadow` logs verdicts beside the session's own, `gate` lets them route); the gates and thresholds live in the suite's `references/judge-questions.json`, the client in `scripts/judge`, the verdict log in `.product-builder/judge-log.jsonl` |
 
 `.product-builder/learnings.md` sits beside the profile: append-only entries written by `product-builder-reflect` after approval and read by the planning and review skills before they recommend.
 
@@ -240,7 +243,7 @@ Per-role model choices, written by `product-builder-setup` after a budget questi
 
 ### 4.7 What stays generic
 
-No skill may name a framework, a package manager, a file path outside the plan root, an MCP tool, or an agent. Those come from the profile. Before shipping, grep the suite for `bun`, `npm`, `svelte`, `react`, `app/`, `mcp__`, `gh ` and move every hit into the profile or behind a "per the profile" clause. `gh` is allowed in the Opening a PR playbook and the Babysit playbook with a profile override for other forges.
+No skill may name a framework, a package manager, a file path outside the plan root, an MCP tool, or an agent. Those come from the profile. Before shipping, grep the suite for `bun`, `npm`, `svelte`, `react`, `app/`, `mcp__`, `gh ` and move every hit into the profile or behind a "per the profile" clause. `gh` is allowed in the Opening a PR playbook and the Babysit playbook with a profile override for other forges. The judge is named only as "the profile's judge" and its gates; the endpoint lives in `scripts/judge` and the model in the profile, and every gate has a no-judge fallback (the session model judges, said once).
 
 ## 5. Playbooks and leaf skills: product track (plan, build, QA, ship)
 
@@ -281,7 +284,7 @@ Written for the product engineer who owns the feature. Playbooks are step lists 
 - [ ] 7 Definition of Ready → G7
 ```
 
-**Phase 0, intake.** If the argument names an existing plan folder, invoke the Revise playbook and stop. Read the profile. Apply the baseline rule; record the SHA and the behind-count. Choose a slug (kebab, at most four words). Create `docs/plans/<slug>/decisions.md` from the template with status `Draft`; other files are created when their phase runs. Size the work with the §3.5 table, write the size and its budgets in the ledger header, and say which phases will run. **Fast path for Bounded:** phases 1 and 3 merge into one interview of at most five questions, research is one explorer, phase 5 is skipped unless a UX fork appears, and phase 6 is the tech lead alone unless the user asks for personas. Program size also creates `README.md`; parts are decided after Interview 1 from the scope map, each part a shippable user-facing increment, never a layer.
+**Phase 0, intake.** If the argument names an existing plan folder, invoke the Revise playbook and stop. Read the profile. Apply the baseline rule; record the SHA and the behind-count; a behind-count above the profile's stale threshold means anchors are read from `origin/<default>` and "which tree?" is asked first. Run the intake probe against the default branch and the remotes (code, flags, branches, worktrees, log, ledgers, learnings) and open the ledger with its three lines; a `ships` verdict stops with one question. Choose a slug (kebab, at most four words). Create `docs/plans/<slug>/decisions.md` from the template with status `Draft`; other files are created when their phase runs. Size the work with the §3.5 table, write the size and its budgets in the ledger header, and say which phases will run. **Fast path for Bounded:** phases 1 and 3 merge into one interview of at most five questions, research is one explorer, phase 5 is skipped unless a UX fork appears, and phase 6 is the tech lead alone unless the user asks for personas. Program size also creates `README.md`; parts are decided after Interview 1 from the scope map, each part a shippable user-facing increment, never a layer.
 
 **Phase 1, Interview 1 (frame).** Invoke `grill-me` if installed; the rules are also in `references/interview.md`. Before each question, check whether the repo answers it (grep, read, git log, existing docs under the plan root, the persona roster). Use a multiple-choice question with the recommended option first when the answer space is enumerable; free text otherwise. Pick at most eight questions from the bank, in priority order. Exit when all are recorded: a problem statement of at most three sentences, today's workaround, one to three persona seeds, the appetite, at least one non-goal, a success signal and a kill criterion, constraints, prior attempts checked, stakeholders named. Write the answers into a draft `product.md` (Problem, Who, Appetite, Non-goals, Success signal) and the ledger; stakeholder questions the user cannot answer go to `questions.md` (the questionnaire fallback). Close the interview by stating the three to five premises the plan rests on, one sentence each; G1 presents them with the framing and asks once: agree with all, or name the one to change. A disagreed premise is rewritten before research. Status → `Framed`.
 

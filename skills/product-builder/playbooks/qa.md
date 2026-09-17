@@ -11,7 +11,7 @@
 7. Rollback rehearsal: flip the flag off, confirm the old behaviour and no orphaned data.
 8. Regression on the surfaces in the changes table through **product-builder-verify**.
 9. Write `docs/plans/<slug>/qa-report.md` from the template: verdict, per story pass or fail with evidence, bug table, coverage gaps, environment.
-10. Fix tier, when the user asked for fixes or the bug is trivially local: one fix per bug, the smallest change at the source, one commit per fix named `fix(qa): <bug id> <description>`, a regression test per verified fix that reproduces the exact precondition and asserts the correct behaviour (not merely "no crash"), a before and after screenshot pair, then re-test the affected surface. Stop fixing when a fix needs more than one file outside the slice's files, when a fix was reverted, or when the risk of a wrong fix exceeds one in five by your own estimate; the rest go to the bug table.
+10. Fix tier, when the user asked for fixes or the bug is trivially local: one fix per bug, the smallest change at the source, one commit per fix named `fix(qa): <bug id> <description>`, a regression test per verified fix that reproduces the exact precondition and asserts the correct behaviour (not merely "no crash"), a before and after screenshot pair attached per the profile's Evidence section, then re-test the affected surface. Stop fixing when a fix needs more than one file outside the slice's files, when a fix was reverted, or when the risk of a wrong fix exceeds one in five by your own estimate; the rest go to the bug table.
 11. Health score: the share of charter lines passing, before and after fixes, in the report.
 12. Feed back: remaining bugs to tickets on request or to Implement fix slices; status QA passed or QA failed.
 

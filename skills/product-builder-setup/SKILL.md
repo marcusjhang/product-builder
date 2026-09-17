@@ -16,7 +16,8 @@ Write `.product-builder/profile.md`, `personas.md`, `drive.md`, and `models.md` 
 - Drivers: MCP tools in this session that drive a browser or read logs; whether subagents can use them (assume no unless the profile says so).
 - Design tokens: a design-system file, Tailwind config, CSS variables.
 - Flags and analytics: grep for the flag helper and the analytics helper; the event naming convention in use.
-- Forge: `gh` or other.
+- Forge and access: the tool (`gh` or other), then access with that tool: `gh auth status`, `gh repo view --json nameWithOwner,viewerPermission`, `git ls-remote --heads origin | head -1`. A failure is not a detected forge: write the Forge section as `UNKNOWN` with the failing command and its output, list every authenticated account tried, and ask which account has access before any playbook that pushes. The account that passed, its permission, and the date go in the Forge section.
+- Judge: `TYPESAFE_API_KEY` in the environment. Present → the Judge section reads `Model: typesafe/jev-latest` and `Mode: shadow`; absent → `Model: none`. Never write `Mode: gate` on first setup; reflect recommends it from the log. When the suite was installed by copying `skills/*` rather than as the plugin, say that the question-gate hook must be added to `.claude/settings.json` by hand (the command is in the suite's `hooks/hooks.json`).
 - Domain law: ADR directory and numbering, glossary.
 
 ## 2. Ask (only what detection cannot answer)
@@ -25,7 +26,7 @@ Who the product is for (seed three to five personas, one a consumer of any API);
 
 ## 3. Write
 
-Use the schema in `${CLAUDE_SKILL_DIR}/../product-builder/references/templates.md` and the section list in the mode's plan (Baseline; Stack and commands; Where docs live; Domain language and law; Agents by phase; Skills by phase; Browser drivers; Design tokens and UX invariants; Architecture canon; Deploy reality; Feature flags; Analytics and instrumentation; Required reviewers by path; Tracker; Observability). Mark each detected fact with where it was read. `personas.md`: name, role, context, what they know, what they will not tolerate, typical goals. `drive.md`: launch command, readiness signal, login or seed, stable selectors, isolation, flag flip, teardown.
+Use the schema in `${CLAUDE_SKILL_DIR}/../product-builder/references/templates.md` and the section list in the mode's plan (Baseline; Stack and commands; Where docs live; Domain language and law; Agents by phase; Skills by phase; Browser drivers; Design tokens and UX invariants; Architecture canon; Deploy reality; Feature flags; Analytics and instrumentation; Required reviewers by path; Tracker; Observability; Forge; Evidence; Judge). Mark each detected fact with where it was read. `personas.md`: name, role, context, what they know, what they will not tolerate, typical goals. `drive.md`: launch command, readiness signal, login or seed, stable selectors, isolation, flag flip, teardown.
 
 ## 4. Validate drive.md
 

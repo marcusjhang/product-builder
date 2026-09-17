@@ -12,7 +12,7 @@ Interview 1 bank, in priority order, ask at most eight:
 6. Non-goals. "What are we explicitly not doing even though it is adjacent?" Recommend from adjacent features in the repo.
 7. Constraints. "Anything fixed: dates, must-use or must-not-use tech, compatibility, decisions already made?" Explore first: ADRs, glossary.
 8. Success signal and kill criterion. "A week after shipping, what tells us it worked, and what would tell us we were wrong?" Ask for the baseline number here when one exists. Write the hypothesis with the user's own numbers and windows, verbatim; the kill criterion is a separate number, never a restatement of the baseline.
-9. Prior attempts. "Has this been tried or drafted before?" Explore first: the plan root, design docs, closed PRs, branches.
+9. Prior attempts. "Has this been tried or drafted before?" The intake probe has already searched the plan root, design docs, branches, other worktrees, and the log; quote its answer and ask only what it left open.
 10. Stakeholders. "Who else must agree, and who will be surprised?"
 11. Observation. "What did you notice about this problem that the obvious solution misses?" Ask only when the answers so far are conventional; it is the question that changes the framing.
 

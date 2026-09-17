@@ -19,7 +19,7 @@ How a session with product-builder feels, with examples. The examples use an inv
 1. The user types `/product-builder <what they want>` in plain words.
 2. The mode reads the profile, matches a playbook, and opens the todo list with the playbook's steps copied verbatim. Its first reply says which playbook, why, the size and its budgets, and starts the first step in the same turn.
 3. Steps run. Reversible work proceeds and is presented. Product calls are asked one at a time with a default. Observable questions are settled by a prototype or a spike instead of a question.
-4. Each step that finishes is ticked. A step that is skipped stays in the list as `skip: <reason>`.
+4. Each step that finishes is ticked. A step that is skipped stays in the list as `skip: <reason>`. The list is rewritten at every gate close and playbook switch; it never goes stale while work moves.
 5. The playbook ends with its reply contract: impact for the consumer and the maintainer first, what was chosen and why, the evidence, the open decisions, the ASSUMED list when the user was away, and the next move.
 
 The mode stays on for the session. Follow-ups are matched to a playbook again. "Stop using product-builder" turns it off.
@@ -122,9 +122,9 @@ A run that will exceed its budget says so at the next gate and offers "skip ahea
 First reply of a plan:
 
 ```
-Plan playbook. A board surface, an existing column, a sweeper job, and at least one product call, so Feature size.
-Budgets: interview 1 at most 8 questions, interview 2 at most 8, 3 explorers, docs about 2 and 3 pages, personas 3 to 5.
-Baseline a1b2c3d (worktree was 118 behind, reset). Folder docs/plans/snooze-action/ created.
+Plan playbook. Probe: absent (`git grep -il snooze origin/main -- app/src`: no hits; no branch or worktree named snooze); closest feature is dismiss (app/src/lib/actions/dismiss.ts); anchors read from origin/main a1b2c3d (worktree was 118 behind, reset).
+A board surface, an existing column, a sweeper job, and at least one product call, so Feature size, provisional until research.
+Budgets: interview 1 at most 8 questions, interview 2 at most 8, 3 explorers, docs about 2 and 3 pages, personas 3 to 5. Folder docs/plans/snooze-action/ created.
 
 Q1 What happened that made this worth doing now? Tell it as one concrete situation.
 Recommended, from your actions doc: a reviewer gets review_pr on Friday and the board dot nags all weekend. Reply "ok" or correct me.

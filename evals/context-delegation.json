@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "an Implement run past its second slice with a long transcript and no user instruction to delegate",
+  "expected_behavior": [
+    "the next slice is delegated to an implementer subagent with pointers",
+    "the reply says delegated for context",
+    "the ledger row is written before the step."
+  ]
+}
