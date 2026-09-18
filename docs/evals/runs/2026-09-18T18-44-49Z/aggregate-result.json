@@ -1,0 +1,998 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.277",
+  "startedAt": "2026-09-18T18:44:50.742Z",
+  "durationSeconds": 977,
+  "costUsd": 15.843540000000003,
+  "partial": false,
+  "suite": {
+    "root": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo",
+    "ablation": "none",
+    "tagFilters": [
+      "tier1"
+    ],
+    "threshold": 1,
+    "concurrency": 4,
+    "plugins": [
+      {
+        "name": "product-builder",
+        "version": "0.1.0",
+        "path": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "gate-judge-no-key",
+      "dir": "evals/gate-judge-no-key",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder how does the flag helper decide a flag is on?",
+      "runsPerCase": 1,
+      "timeoutSeconds": 600,
+      "maxTurns": 30,
+      "graders": [
+        {
+          "name": "no-crash",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "Traceback",
+            "flags": "",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "says-no-key",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "no key|not set|judged by you|session model",
+            "flags": "i",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 13,
+            "costUsd": 0.94174875,
+            "judgeCostUsd": 0,
+            "durationSeconds": 134,
+            "startedAt": "2026-09-18T18:44:50.854Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-Ge7DwJ/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-crash",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "says-no-key",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched no key|not set|judged by you|session model",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "gate-judge-none",
+      "dir": "evals/gate-judge-none",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder how does the flag helper decide a flag is on?",
+      "runsPerCase": 1,
+      "timeoutSeconds": 600,
+      "maxTurns": 30,
+      "graders": [
+        {
+          "name": "judged-by-you",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "judge",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "no-judge-call",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "scripts/judge",
+            "min": 0,
+            "max": 0
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 13,
+            "costUsd": 0.9913782500000001,
+            "judgeCostUsd": 0,
+            "durationSeconds": 164,
+            "startedAt": "2026-09-18T18:44:50.854Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-a9yDym/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "judged-by-you",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched judge",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-judge-call",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "gate-one-question-default",
+      "dir": "evals/gate-one-question-default",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder plan: add a due date to every task, shown on the page and settable from the CLI",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1200,
+      "maxTurns": 60,
+      "graders": [
+        {
+          "name": "ends-with-one-question",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Recommended:[^\\n]*\\n[^\\n]*(ok|letter)",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "explored-first",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "grep|git log|cat",
+            "min": 1
+          }
+        },
+        {
+          "name": "not-two-questions",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Q2",
+            "flags": "",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "twelve-lines",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Count only the lines before the line that opens the question (the Q1 line); the options and the Recommended line belong to the question. PASS if those lines number at most twelve and carry at most three evidence bullets, and exactly one question is asked. FAIL if more than twelve lines precede Q1, or more than three evidence bullets, or a second question (Q2) is asked.",
+          "config": {
+            "criteria": "Count only the lines before the line that opens the question (the Q1 line); the options and the Recommended line belong to the question. PASS if those lines number at most twelve and carry at most three evidence bullets, and exactly one question is asked. FAIL if more than twelve lines precede Q1, or more than three evidence bullets, or a second question (Q2) is asked.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.5,
+            "passed": false,
+            "turns": 27,
+            "costUsd": 1.183814,
+            "judgeCostUsd": 0.003704,
+            "durationSeconds": 174,
+            "startedAt": "2026-09-18T18:44:50.854Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-LTQps2/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "ends-with-one-question",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "explored-first",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 5x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "not-two-questions",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "twelve-lines",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL PASS FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  true,
+                  false
+                ],
+                "evidence": "**Route: Plan.** The argument names it, and the state agrees: no folder under `docs/plans/`, tree clean on `main`, level with `origin/main` at `ee1aea7`.\n\n**Size: Bounded, provisional until research.** One subsystem (the task record and its three thin readers), one PR. Budgets: at most 5 questions total, 1 explorer, `product.md` two pages and `implementation.md` three, tech lead plus at most one seat, 5 to 7 turns to Ready. Two harness notes: the profile's Judge reads `Model: none`, so I judge every gate myself, and the question tool is unavailable, so questions come as written blocks.\n\n**Probe: absent.** `git grep -il -E 'due|deadline|dueDate|due_date' origin/main -- src public migrations scripts tests docs` returned nothing, and `origin/main` is the only remote branch. Closest existing feature is **task priority**: a field at `src/tasks.js:4,6`, backfilled by `migrations/002-add-priority.js:2`, rendered by `src/format.js:13`, filtered at `src/tasks.js:13-14`. That is the template a due date should follow.\n\n**The ask, restated.** A task gains a due date, the page at `GET /` shows it, and `src/cli.js` sets it. Ledger: `docs/plans/task-due-date/decisions.md`, with your three statements locked as D1 to D3 and the repo-answerable frame items (appetite, personas, constraints, stakeholder) recorded as D4 to D7 rather than asked.\n\n**Q1. Does \"every task\" mean the due date is required, or a field every task has that may be empty?**\n\n- **(a) Optional.** Absent means no due date. Buys: no migration, `cli.js add <title>` and `POST /tasks` keep working unchanged, no invented dates. Costs: the page and the CLI each need an \"no due date\" state, and \"every task has a due date\" holds for the field, not the value.\n- **(b) Required with a default,** say seven days out. Buys: one populated state to render everywhere. Costs: a backfill migration over existing tasks, and every task Mara adds carries a deadline she did not pick.\n- **(c) Required, no default.** `add` and `POST /tasks` fail without a date. Buys: no guessed dates. Costs: breaks the existing contract, which Priya's cron job calls with `{title}` only.\n\n**Recommended: (a).** It is the only option that neither breaks `POST /tasks` at `src/server.js:31` nor writes a date nobody chose; priority needed `migrations/002` only because priority is required, and this field does not have to be. This reads your \"every task\" as every task *can* carry one.\n\nReply \"ok\" for (a), or name the letter.\n\nPrinciples applied: 1 (the repo answered appetite, personas, constraints, and the stakeholder, so four frame questions were recorded instead of asked), 2 (one question, with a default), 3 (required-versus-optional is scope, so it is yours), 5 (option (a) adds no migration and no dependency)."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.5,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "leaf-plain",
+      "dir": "evals/leaf-plain",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-plain Restate my last reply, which was: \"The intake probe returned partial: the archive route ships at src/server.js:36 behind the archive flag, but the page has no control. Size is provisional Bounded pending research. Baseline 3f1c2a0, 0 behind. Budgets: one interview of at most five questions after research, one explorer, tech lead plus one seat.\"",
+      "runsPerCase": 1,
+      "timeoutSeconds": 300,
+      "maxTurns": 5,
+      "graders": [
+        {
+          "name": "plain",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS if the reply says the same things in plain words a non-engineer could follow, shorter than the original, with no jargon like intake probe, provisional, baseline, budgets. FAIL if it keeps the jargon or adds new content.",
+          "config": {
+            "criteria": "PASS if the reply says the same things in plain words a non-engineer could follow, shorter than the original, with no jargon like intake probe, provisional, baseline, budgets. FAIL if it keeps the jargon or adds new content.",
+            "focus": "last_message"
+          }
+        },
+        {
+          "name": "shorter",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^(?:(?!provisional|intake probe|Budgets).){0,500}$",
+            "flags": "s",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.5,
+            "passed": false,
+            "turns": 3,
+            "costUsd": 0.2513685,
+            "judgeCostUsd": 0.000726,
+            "durationSeconds": 47,
+            "startedAt": "2026-09-18T18:44:50.854Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-tmUstr/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "plain",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Part of this already exists. The archive route is at src/server.js:36, behind the archive flag. The page has no button. Size is \"Bounded\" for now, until research. Baseline commit 3f1c2a0, nothing newer. After research I ask up to five questions, once. One explorer. Two review the plan, the tech lead and one other."
+              },
+              {
+                "name": "shorter",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^(?:(?!provisional|intake probe|Budgets).){0,500}$",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.5,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "playbook-intake-ships",
+      "dir": "evals/playbook-intake-ships",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder plan: add a snooze endpoint, POST /tasks/:id/snooze with an until date, behind a flag",
+      "runsPerCase": 1,
+      "timeoutSeconds": 900,
+      "maxTurns": 40,
+      "graders": [
+        {
+          "name": "behind-count",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "\\b7\\b.*behind|behind.*\\b7\\b",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "no-plan-folder",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "docs/plans/**",
+            "exists": false
+          }
+        },
+        {
+          "name": "one-question",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "nothing to do",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "reads-origin",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "origin/main",
+            "min": 1
+          }
+        },
+        {
+          "name": "says-ships",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "already ships|ships on origin|shipped",
+            "flags": "i",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 7,
+            "costUsd": 0.5042260000000001,
+            "judgeCostUsd": 0,
+            "durationSeconds": 64,
+            "startedAt": "2026-09-18T18:45:38.046Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-IOndwP/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "behind-count",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched \\b7\\b.*behind|behind.*\\b7\\b",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-plan-folder",
+                "passed": true,
+                "weight": 1,
+                "explanation": "docs/plans/** absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "one-question",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched nothing to do",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "reads-origin",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 3x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "says-ships",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched already ships|ships on origin|shipped",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "route-by-state",
+      "dir": "evals/route-by-state",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder look at this",
+      "runsPerCase": 1,
+      "timeoutSeconds": 900,
+      "maxTurns": 40,
+      "graders": [
+        {
+          "name": "route-built-first",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/built-first\\.md"
+          }
+        },
+        {
+          "name": "route-named-with-facts",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "built first[\\s\\S]*(ahead|no plan)",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "state-read-first",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "git (status|branch|log|rev-list|diff)",
+            "min": 1
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 39,
+            "costUsd": 1.8838755000000003,
+            "judgeCostUsd": 0,
+            "durationSeconds": 329,
+            "startedAt": "2026-09-18T18:46:42.270Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-47U9EO/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "route-built-first",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-named-with-facts",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched built first[\\s\\S]*(ahead|no plan)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "state-read-first",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 5x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "route-continue-no-args",
+      "dir": "evals/route-continue-no-args",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder",
+      "runsPerCase": 1,
+      "timeoutSeconds": 900,
+      "maxTurns": 40,
+      "graders": [
+        {
+          "name": "resume-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-resume\""
+          }
+        },
+        {
+          "name": "route-pickup",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/pickup-and-pause\\.md"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 18,
+            "costUsd": 0.7231549999999999,
+            "judgeCostUsd": 0,
+            "durationSeconds": 96,
+            "startedAt": "2026-09-18T18:47:04.912Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-DhX4DJ/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "resume-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-pickup",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "route-explicit-prefix",
+      "dir": "evals/route-explicit-prefix",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder flaky-test: tests/counts.test.js fails about one time in two",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1800,
+      "maxTurns": 120,
+      "graders": [
+        {
+          "name": "no-other-playbook",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/bug-fix\\.md",
+            "min": 0,
+            "max": 0
+          }
+        },
+        {
+          "name": "route-flaky",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/flaky-test\\.md"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 51,
+            "costUsd": 6.244100500000003,
+            "judgeCostUsd": 0,
+            "durationSeconds": 813,
+            "startedAt": "2026-09-18T18:47:34.997Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-1xJPPU/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-other-playbook",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-flaky",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "route-no-profile",
+      "dir": "evals/route-no-profile",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder plan: add a due date to tasks",
+      "runsPerCase": 1,
+      "timeoutSeconds": 900,
+      "maxTurns": 40,
+      "graders": [
+        {
+          "name": "hook-line",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "has no \\.product-builder/profile\\.md",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "setup-first",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "product-builder-setup|setup",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "setup-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-setup\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 21,
+            "costUsd": 1.3428465,
+            "judgeCostUsd": 0,
+            "durationSeconds": 251,
+            "startedAt": "2026-09-18T18:47:44.668Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-no4Hio/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "hook-line",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched has no \\.product-builder/profile\\.md",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "setup-first",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched product-builder-setup|setup",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "setup-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "route-state-vs-words",
+      "dir": "evals/route-state-vs-words",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder fix this: TypeError: Cannot read properties of undefined (reading 'status') at complete (src/tasks.js:22)",
+      "runsPerCase": 1,
+      "timeoutSeconds": 900,
+      "maxTurns": 40,
+      "graders": [
+        {
+          "name": "both-routes",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "bug fix[\\s\\S]*babysit|babysit[\\s\\S]*bug fix",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "one-question",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Q1|Recommended:",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "state-recommended",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "recommended:.*(babysit|bug fix)",
+            "flags": "i",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.3333333333333333,
+            "passed": false,
+            "turns": 22,
+            "costUsd": 0.9513944999999999,
+            "judgeCostUsd": 0,
+            "durationSeconds": 150,
+            "startedAt": "2026-09-18T18:48:40.538Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-58f03a/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "both-routes",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "one-question",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Q1|Recommended:",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "state-recommended",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.3333333333333333,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "route-trivial",
+      "dir": "evals/route-trivial",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder change the page title from Taskbox to Taskbox Pro\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the change is made and verified. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 900,
+      "maxTurns": 30,
+      "graders": [
+        {
+          "name": "changed",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "public/index.html"
+            },
+            "pattern": "Taskbox Pro",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "no-plan-folder",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "docs/plans/**",
+            "exists": false
+          }
+        },
+        {
+          "name": "trivial-said",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "trivial",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "verified",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "grep|curl|node",
+            "min": 1
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 20,
+            "costUsd": 0.8256325,
+            "judgeCostUsd": 0,
+            "durationSeconds": 106,
+            "startedAt": "2026-09-18T18:51:10.674Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-U07Kro/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "changed",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Taskbox Pro",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-plan-folder",
+                "passed": true,
+                "weight": 1,
+                "explanation": "docs/plans/** absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "trivial-said",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched trivial",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "verified",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 12x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 11,
+    "casesPassed": 8,
+    "overallScore": 0.8484848484848485,
+    "overallPassRate": 0.7272727272727273
+  }
+}

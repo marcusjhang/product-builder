@@ -1,6 +1,5 @@
 ---
 type: 'regex'
-pattern: 'Recommended:[^\n]*\n[^\n]*(ok|letter)'
+pattern: 'Reply \"ok\" for \(\w\), or name the letter'
 target: 'last_message'
-flags: 'i'
 ---

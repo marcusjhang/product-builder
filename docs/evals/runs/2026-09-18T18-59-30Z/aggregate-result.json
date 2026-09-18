@@ -1,0 +1,190 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.277",
+  "startedAt": "2026-09-18T18:59:30.673Z",
+  "durationSeconds": 33,
+  "costUsd": 0.38709299999999996,
+  "partial": true,
+  "partialReason": "interrupted",
+  "suite": {
+    "root": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo",
+    "ablation": "none",
+    "caseFilter": "playbook-dependency-upgrade",
+    "threshold": 1,
+    "concurrency": 3,
+    "plugins": [
+      {
+        "name": "product-builder",
+        "version": "0.1.0",
+        "path": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "playbook-dependency-upgrade",
+      "dir": "evals/playbook-dependency-upgrade",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder upgrade tinydate to v2; the new version is vendored at vendor/tinydate-v2 with its changelog\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the PR is opened with bin/gh. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 2400,
+      "maxTurns": 120,
+      "graders": [
+        {
+          "name": "changelog-read",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "tinydate-v2/CHANGELOG"
+          }
+        },
+        {
+          "name": "compat-seat",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Bb][Aa][Cc][Kk][Ww][Aa][Rr][Dd][Ss].[Cc][Oo][Mm][Pp][Aa][Tt]",
+            "min": 1
+          }
+        },
+        {
+          "name": "consumer-fixed",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "src/dates.js"
+            },
+            "pattern": "add\\(|\\{ pattern",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "pr-created",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": ".forge/created.txt",
+            "exists": true
+          }
+        },
+        {
+          "name": "review-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-review\""
+          }
+        },
+        {
+          "name": "route-upgrade",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/dependency-upgrade\\.md"
+          }
+        },
+        {
+          "name": "tests-run",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "node --test",
+            "min": 1
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.14285714285714285,
+            "passed": false,
+            "turns": 6,
+            "costUsd": 0.38709299999999996,
+            "judgeCostUsd": 0,
+            "durationSeconds": 33,
+            "startedAt": "2026-09-18T18:59:30.801Z",
+            "error": "interrupted",
+            "tracePath": "/private/tmp/e-BuWcnT/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "changelog-read",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Read called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "compat-seat",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Agent called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "consumer-fixed",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: The operation was aborted.",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "pr-created",
+                "passed": false,
+                "weight": 1,
+                "explanation": ".forge/created.txt missing (expected present)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "review-invoked",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-upgrade",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "tests-run",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Bash called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.14285714285714285,
+        "passRate": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 0,
+    "overallScore": 0.14285714285714285,
+    "overallPassRate": 0
+  }
+}

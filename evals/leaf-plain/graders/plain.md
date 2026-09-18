@@ -2,4 +2,4 @@
 type: 'llm'
 ---
 
-PASS if the reply says the same things in plain words a non-engineer could follow, keeps each fact's meaning (in particular that part of the archive feature already exists on the server and the page has no control), is no longer than about one and a half times the original, and uses no jargon like intake probe, provisional, baseline, budgets. FAIL if it keeps the jargon, changes a meaning, or adds new content.
+PASS if the reply keeps each fact's meaning (part of the archive feature already exists on the server behind a flag, the page has no control, the size is a first guess, the commit is current, the question and reviewer limits) in everyday words a non-engineer could follow, and does not use the phrases 'intake probe', 'provisional', or 'budgets'. Words like commit, flag, route, baseline are fine. FAIL only if a meaning changed, a fact was dropped, or one of those three phrases appears.

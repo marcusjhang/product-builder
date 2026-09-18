@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# state: the routing state pass, one call. Prints the facts the mode reads before it reads the words:
+# profile, plan folders and their status lines, branch, ahead/behind the default branch after a fetch,
+# uncommitted changes with the signals in them, open PRs for the branch and their checks through the
+# profile's forge tool. Read-only. Usage: state [default-branch]
+set -u
+root="$(git rev-parse --show-toplevel 2>/dev/null)" || { echo "state: not a git repository"; exit 0; }
+cd "$root"
+default="${1:-}"
+if [ -z "$default" ]; then
+  default="$(git symbolic-ref -q --short refs/remotes/origin/HEAD 2>/dev/null | sed 's#^origin/##')"
+  [ -n "$default" ] || default="$(git remote show origin 2>/dev/null | sed -n 's/.*HEAD branch: //p')"
+  [ -n "$default" ] || default=main
+fi
+echo "profile: $([ -f .product-builder/profile.md ] && echo present || echo absent)"
+echo "learnings: $([ -f .product-builder/learnings.md ] && echo present || echo absent)"
+if ls docs/plans/*/product.md >/dev/null 2>&1; then
+  for f in docs/plans/*/product.md; do
+    printf 'plan: %s: %s\n' "$(basename "$(dirname "$f")")" "$(grep -m1 -oE '\*\*Status:\*\* [^·\n]+' "$f" | sed 's/\*\*Status:\*\* //' | sed 's/ *$//')"
+  done
+else echo "plans: none"; fi
+branch="$(git branch --show-current 2>/dev/null)"; echo "branch: ${branch:-detached}"
+if git remote get-url origin >/dev/null 2>&1; then
+  if git fetch origin --prune >/dev/null 2>&1; then fetched=yes; else fetched="no (fetch failed)"; fi
+  counts="$(git rev-list --left-right --count "HEAD...origin/$default" 2>/dev/null)"
+  echo "default: origin/$default · fetch: $fetched · ahead: ${counts%%	*} · behind: ${counts##*	}"
+else echo "default: $default · no origin remote"; fi
+n_unc="$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')"; echo "uncommitted: $n_unc file(s)"
+if [ "$n_unc" != "0" ]; then
+  git diff --stat 2>/dev/null | tail -1 | sed 's/^/  diff: /'
+  git status --porcelain | awk '{print $2}' | grep -iE 'package-lock|yarn\.lock|pnpm-lock|bun\.lock|Cargo\.lock|poetry\.lock|go\.sum' | sed 's/^/  lockfile: /'
+  git status --porcelain | awk '{print $2}' | grep -iE 'migrat' | sed 's/^/  migration: /'
+  git status --porcelain | awk '{print $2}' | grep -iE '(test|spec)s?[./]' | sed 's/^/  test: /'
+fi
+ahead="${counts%%	*}"
+if [ -n "$branch" ] && [ "${ahead:-0}" != "0" ]; then
+  git log --oneline "origin/$default..HEAD" 2>/dev/null | head -5 | sed 's/^/  ahead commit: /'
+  git diff --stat "origin/$default...HEAD" 2>/dev/null | tail -1 | sed 's/^/  branch diff: /'
+fi
+tool="$(sed -n '/^## Forge/,/^## /p' .product-builder/profile.md 2>/dev/null | grep -m1 -oE 'Tool: `[^`]+`' | sed 's/Tool: `//; s/`//')"
+tool="${tool:-gh}"
+if command -v "$tool" >/dev/null 2>&1 || [ -x "$tool" ]; then
+  if [ -n "$branch" ]; then
+    prs="$("$tool" pr list --head "$branch" --json number,title,state 2>/dev/null)"
+    if [ -n "$prs" ] && [ "$prs" != "[]" ]; then
+      echo "pr: $(echo "$prs" | tr -d '\n' | cut -c1-300)"
+      for n in $(echo "$prs" | grep -oE '"number": *[0-9]+' | grep -oE '[0-9]+' | head -3); do
+        echo "pr $n checks:"; "$tool" pr checks "$n" 2>/dev/null | head -10 | sed 's/^/  /'
+      done
+    else echo "pr: none for $branch (via $tool)"; fi
+  fi
+else echo "pr: forge tool $tool not available"; fi
+echo "state: done; the pasted text and the last tool output are read by the caller for a stack trace or a failing test."

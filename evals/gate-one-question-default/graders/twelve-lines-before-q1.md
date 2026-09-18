@@ -1,6 +1,5 @@
 ---
 type: 'regex'
-pattern: '\bQ2\b'
+pattern: '^(?:[^\n]*\n){0,13}[^\n]*Q1\b'
 target: 'last_message'
-match: 'not_contains'
 ---

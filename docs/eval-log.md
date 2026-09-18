@@ -80,3 +80,12 @@ Everything done to pressure-test the suite, in order, with what was found and wh
 
 **Grader defects (fixed).**
 - `leaf-plain`: the plain skill now produces a correct restatement (574 characters, no dashes, "part of the archiving work is already built"), and the graders still failed because they demanded a text shorter than a 450-character original. A faithful plain restatement of dense text is about the same length. The graders now allow up to about one and a half times the original and check meaning and jargon.
+
+## 2026-09-19 · Tier 1, run 2 (`docs/evals/runs/2026-09-18T18-44-49Z`)
+
+11 cases, 977 s, 8 of 11 clean (was 2 of 11). Both judge cases, intake-ships, route-by-state, route-no-profile, route-explicit-prefix, route-trivial, and route-continue now pass.
+
+- `route-state-vs-words` (still failing, F3 not closed): the state pass ran as one Bash call and followed the new list except its forge step, so the open PR with the red check stayed invisible and the words routed to Bug fix. The run then did the right thing inside Bug fix: it drove the route in process (`listen` is denied in the sandbox), showed `src/tasks.js:22` is `save(db)` and no `.status` read exists in `complete`, and stopped with one question and (a) recommended. The premise check is exemplary; the routing is not. A prose list was followed nine items out of ten, so the pass is now a script: `skills/product-builder/scripts/state` prints every fact including `pr list --head` and `pr checks` through the profile's forge tool, and the mode runs it in one call. Tested on the case's fixture: it prints the PR and its failing check.
+- Also seen in that trace: `git fetch` inside the sandbox failed with the xcrun cache error on `git-upload-pack`, because only `git` had a wrapper. `run.sh` now wraps `git-upload-pack`, `git-receive-pack`, and `git-upload-archive` too.
+- `gate-one-question-default`: the behaviour is right (one question, three options with buys and costs, a recommendation, "Reply ok for (a), or name the letter", eight lines before Q1). Two grader defects: the regex expected the ok line directly under the Recommended line, and the judge could not count lines. Both are regexes now.
+- `leaf-plain`: 315 characters, meaning kept, no dashes; the judge failed it for the word "baseline". The rubric now names the three phrases that count as jargon and allows ordinary words.

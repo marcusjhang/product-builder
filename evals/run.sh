@@ -10,9 +10,11 @@ EH="${PB_EVAL_HOME:-$HOME/.pb-eval-home}"
 mkdir -p "$EH/bin"
 for l in .claude .claude.json Library; do [ -e "$HOME/$l" ] && [ ! -e "$EH/$l" ] && ln -s "$HOME/$l" "$EH/$l" || true; done
 # /usr/bin/git is an xcrun shim that needs a cache the sandbox denies; put a real git first on PATH.
-if [ -x /Library/Developer/CommandLineTools/usr/bin/git ]; then
-  printf '#!/bin/sh\nexec /Library/Developer/CommandLineTools/usr/bin/git "$@"\n' > "$EH/bin/git"; chmod +x "$EH/bin/git"
-fi
+for g in git git-upload-pack git-receive-pack git-upload-archive; do
+  if [ -x "/Library/Developer/CommandLineTools/usr/bin/$g" ]; then
+    printf '#!/bin/sh\nexec /Library/Developer/CommandLineTools/usr/bin/%s "$@"\n' "$g" > "$EH/bin/$g"; chmod +x "$EH/bin/$g"
+  fi
+done
 STAMP="$(date -u +%Y-%m-%dT%H-%M-%SZ)"
 OUT="$ROOT/docs/evals/runs/$STAMP"; mkdir -p "$OUT"
 cd "$ROOT"
