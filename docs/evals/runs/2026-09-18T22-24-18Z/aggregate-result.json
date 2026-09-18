@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.277",
+  "startedAt": "2026-09-18T22:24:19.562Z",
+  "durationSeconds": 244,
+  "costUsd": 1.1064285,
+  "partial": false,
+  "suite": {
+    "root": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo",
+    "ablation": "none",
+    "caseFilter": "leaf-verify",
+    "threshold": 1,
+    "concurrency": 1,
+    "plugins": [
+      {
+        "name": "product-builder",
+        "version": "0.1.0",
+        "path": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "leaf-verify",
+      "dir": "evals/leaf-verify",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-verify \"POST /tasks with a title then GET /tasks returns it\" \"POST /tasks/1/archive is 404 with the archive flag off and 200 with it on\"",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1200,
+      "maxTurns": 60,
+      "graders": [
+        {
+          "name": "evidence-path",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "evidence/|exit code|\\{",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "flag-both-states",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "flag off[\\s\\S]*flag on|flag on[\\s\\S]*flag off",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "pass-per-scenario",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "pass|fail",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "real-request",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "curl|fetch",
+            "min": 1
+          }
+        },
+        {
+          "name": "server-launched",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "node src/server\\.js|PORT=",
+            "min": 1
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 20,
+            "costUsd": 1.1064285,
+            "judgeCostUsd": 0,
+            "durationSeconds": 244,
+            "startedAt": "2026-09-18T22:24:19.669Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-85qTxj/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "evidence-path",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched evidence/|exit code|\\{",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "flag-both-states",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched flag off[\\s\\S]*flag on|flag on[\\s\\S]*flag off",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "pass-per-scenario",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched pass|fail",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "real-request",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 3x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "server-launched",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 3x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1
+  }
+}

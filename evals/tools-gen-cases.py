@@ -335,6 +335,15 @@ CASES = [
         "dor-or-stop": rx(r"(?i)Definition of Ready|already ships|nothing to do")}),
 ]
 
+# Cases to rerun after the latest fixes: tagged retest1 (short) and retest2 (long flows). Edit per loop iteration.
+RETEST1 = {"route-state-vs-words","gate-one-question-default","leaf-plain","leaf-review-all-seats","leaf-techlead-all-seats","leaf-research",
+           "playbook-opening-a-pr","playbook-decision-record","playbook-dependency-upgrade","calcom-setup","calcom-review","playbook-babysit","playbook-built-first"}
+RETEST2 = {"playbook-bug-fix","playbook-data-migration","playbook-implement","playbook-implement-parallel","playbook-plan-bounded","playbook-plan-feature",
+           "playbook-plan-program","playbook-qa","playbook-ship","calcom-built-first","calcom-plan-bounded"}
+for c in CASES:
+    if c["name"] in RETEST1: c["tags"] = c["tags"] + ["retest1"]
+    if c["name"] in RETEST2: c["tags"] = c["tags"] + ["retest2"]
+
 def write_case(c):
     d = EVALS / c["name"]
     if d.exists(): shutil.rmtree(d)

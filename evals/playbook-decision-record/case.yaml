@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: playbook-decision-record
-tags: ["playbook", "tier2", "pbA"]
+tags: ["playbook", "tier2", "pbA", "retest1"]
 runs: 1
 context:
   scaffold_script: scaffold.sh

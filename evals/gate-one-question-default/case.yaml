@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: gate-one-question-default
-tags: ["gate", "tier1"]
+tags: ["gate", "tier1", "retest1"]
 runs: 1
 context:
   scaffold_script: scaffold.sh

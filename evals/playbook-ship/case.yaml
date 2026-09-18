@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: playbook-ship
-tags: ["playbook", "tier2", "flow", "pbB"]
+tags: ["playbook", "tier2", "flow", "pbB", "retest2"]
 runs: 1
 context:
   scaffold_script: scaffold.sh
