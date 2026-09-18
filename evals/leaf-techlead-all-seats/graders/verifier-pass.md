@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)verif'
+pattern: 'verif'
 target: 'trace'
+flags: 'i'
 ---

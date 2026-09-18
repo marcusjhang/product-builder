@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)Q1|Recommended:'
+pattern: 'Q1|Recommended:'
 target: 'last_message'
+flags: 'i'
 ---

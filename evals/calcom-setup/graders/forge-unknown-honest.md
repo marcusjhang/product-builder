@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)UNKNOWN|fixture|denied'
+pattern: 'UNKNOWN|fixture|denied'
 target: { source: 'file', path: '.product-builder/profile.md' }
+flags: 'i'
 ---

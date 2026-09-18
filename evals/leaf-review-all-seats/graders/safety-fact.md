@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)safe because|unproven'
+pattern: 'safe because|unproven'
 target: 'last_message'
+flags: 'i'
 ---

@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)implementing|drafted'
+pattern: 'implementing|drafted'
 target: 'last_message'
+flags: 'i'
 ---

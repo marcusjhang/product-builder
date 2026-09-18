@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)Definition of Ready|already ships|nothing to do'
+pattern: 'Definition of Ready|already ships|nothing to do'
 target: 'last_message'
+flags: 'i'
 ---

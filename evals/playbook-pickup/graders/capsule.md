@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)next move|capsule'
+pattern: 'next move|capsule'
 target: 'trace'
+flags: 'i'
 ---

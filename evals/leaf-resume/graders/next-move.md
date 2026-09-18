@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)next move'
+pattern: 'next move'
 target: 'last_message'
+flags: 'i'
 ---

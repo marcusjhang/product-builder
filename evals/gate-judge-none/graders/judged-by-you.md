@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)judge'
+pattern: 'judge'
 target: 'trace'
+flags: 'i'
 ---

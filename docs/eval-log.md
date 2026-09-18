@@ -50,3 +50,21 @@ Everything done to pressure-test the suite, in order, with what was found and wh
   - `finding-pair`: two seats' wordings of the same bypass returned same at 0.96.
   - `pr-comment`: a human accessibility comment returned act with real bug 0.84; a bot's trailing-whitespace comment returned act at 0.98 with real bug 0.19, so the bucket rule treats a trivial lint as actionable rather than noise. Noted for the babysit playbook's triage, where `dismissed` is the bucket the playbook expects for bot noise; the verdict carries the real-bug score, so the step can still route on it. Not changed.
 - The structure board exists (scene `Z07dYjHJBO`) and `CLAUDE.md` tells every session to keep it current.
+
+## 2026-09-19 · Tier 1, run 1 (`docs/evals/runs/2026-09-18T18-21-33Z`)
+
+11 cases, 751 s, about $11.56 at list price, 2 of 11 clean. Every failed grader was read against its trace before anything changed.
+
+**Grader defects (fixed in the generator, no suite change).**
+- Every pattern that used an inline `(?i)` threw "Invalid regular expression" (JavaScript regexes have no inline flag). 18 graders across 8 cases. `regex` graders now carry `flags: i`; `tool_used` patterns are expanded to per-letter character classes. All 250 patterns now compile under both engines.
+- `route-no-profile`: the run invoked `product-builder-setup` through the Skill tool (the trace shows `product-builder:product-builder-setup`), which the grader did not accept. It now grades the Skill call.
+- `gate-one-question-default`: the judge counted the options and the Recommended line as "lines before the question". The rubric now says which lines count.
+- `route-explicit-prefix`: the flaky-test playbook ran its quantification loop past the case's 600 s cap; all graders passed. The budget is now 1800 s.
+- `playbook-intake-ships`: the ask ("let people snooze") was broader than what shipped (the endpoint, no page control), so the probe returned `partial` and the plan continued, which is right. The prompt now asks for exactly the endpoint that ships.
+
+**Suite defects (fixed, with the trace line that showed them).**
+- F1 confirmed twice more (`gate-judge-no-key`, `gate-judge-none`): the Investigation route did the how skill's work inline, with `skip: explorers. One module` in the todo block, and in one run opened `product-builder-how/SKILL.md` with Read instead of invoking it. Reading the file bypasses the harness's `${CLAUDE_SKILL_DIR}` substitution and the skill's hooks. Fix: the mode's Playbooks section says a bold leaf-skill name is invoked with the Skill tool and never opened with Read; the investigation playbook says the how skill runs even for a one-module question.
+- F2 (`leaf-plain`): fixed in the plain skill, which now keeps every fact's meaning, keeps an uncertain term in quotes, is shorter than the original, and points at the writing rules.
+- F3 (`route-state-vs-words`): the state pass never ran the forge tool, so the open PR with a red check was invisible and the words alone routed to Bug fix, where the run then stopped correctly on a stack trace that does not match the code ("the premise doesn't hold"). Fix: the mode's routing paragraph is now a concrete command list that includes `pr list --head <branch>` and `pr checks`, and says an unread state fact is not "absent".
+
+**Behaviour that held.** `route-trivial` did the change on the Trivial track with no plan folder and verified it. `route-by-state` named Built first with its two facts ("2 commits ahead of origin/main with code, the tree is clean, and there was no plan folder"). `route-continue-no-args` routed to Pickup and pause, invoked resume, and stayed on the status-only branch because the ask carried no "continue". `gate-one-question-default` explored first, locked the user's three words as D1 to D3 so the interview would not re-ask them, and ended with one question and a recommended answer.

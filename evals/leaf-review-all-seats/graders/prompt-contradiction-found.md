@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)contradict'
+pattern: 'contradict'
 target: 'trace'
+flags: 'i'
 ---

@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)trivial'
+pattern: 'trivial'
 target: 'trace'
+flags: 'i'
 ---

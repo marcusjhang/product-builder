@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)skip: prose|skipped'
+pattern: 'skip: prose|skipped'
 target: 'trace'
+flags: 'i'
 ---

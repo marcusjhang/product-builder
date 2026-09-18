@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)round.trip|displays|removes'
+pattern: 'round.trip|displays|removes'
 target: 'trace'
+flags: 'i'
 ---

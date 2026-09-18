@@ -1,0 +1,840 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.277",
+  "startedAt": "2026-09-18T18:28:32.112Z",
+  "durationSeconds": 426,
+  "costUsd": 8.952333999999999,
+  "partial": true,
+  "partialReason": "interrupted",
+  "suite": {
+    "root": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo",
+    "ablation": "none",
+    "tagFilters": [
+      "leaf"
+    ],
+    "threshold": 1,
+    "concurrency": 3,
+    "plugins": [
+      {
+        "name": "product-builder",
+        "version": "0.1.0",
+        "path": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "leaf-how",
+      "dir": "evals/leaf-how",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-how how does a request become a stored task and an analytics event, across the server, the domain module, the store, and the tracker?",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1200,
+      "maxTurns": 60,
+      "graders": [
+        {
+          "name": "anchors",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "src/\\w+\\.js:\\d+",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "explorers",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "(?i)explorer|angle|baseline SHA",
+            "min": 2
+          }
+        },
+        {
+          "name": "no-change",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "src/**",
+            "exists": false
+          }
+        },
+        {
+          "name": "shape",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "(?i)overview[\\s\\S]*how it works[\\s\\S]*where things live",
+            "flags": "",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.5,
+            "passed": false,
+            "turns": 4,
+            "costUsd": 1.9447174999999997,
+            "judgeCostUsd": 0,
+            "durationSeconds": 165,
+            "startedAt": "2026-09-18T18:28:32.219Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-QfRY85/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "anchors",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched src/\\w+\\.js:\\d+",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "explorers",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-change",
+                "passed": true,
+                "weight": 1,
+                "explanation": "src/** absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "shape",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.5,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "leaf-personas",
+      "dir": "evals/leaf-personas",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-personas keyboard-archive --target public/index.html --paper",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1800,
+      "maxTurns": 80,
+      "graders": [
+        {
+          "name": "devin",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "Devin",
+            "min": 1
+          }
+        },
+        {
+          "name": "five-second",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "(?i)five.second",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "limitation",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "(?i)pilot|not a substitute|stereotype",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "mara",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "Mara",
+            "min": 1
+          }
+        },
+        {
+          "name": "paper-said",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "(?i)paper",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "priya-or-edge",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "Priya|(?i)edge|wrong role|mobile",
+            "min": 1
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.3333333333333333,
+            "passed": false,
+            "turns": 30,
+            "costUsd": 2.21052275,
+            "judgeCostUsd": 0,
+            "durationSeconds": 380,
+            "startedAt": "2026-09-18T18:28:32.219Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-ViThAi/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "devin",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 3x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "five-second",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "limitation",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "mara",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "paper-said",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "priya-or-edge",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.3333333333333333,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "leaf-plain",
+      "dir": "evals/leaf-plain",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-plain Restate my last reply, which was: \"The intake probe returned partial: the archive route ships at src/server.js:36 behind the archive flag, but the page has no control. Size is provisional Bounded pending research. Baseline 3f1c2a0, 0 behind. Budgets: one interview of at most five questions after research, one explorer, tech lead plus one seat.\"",
+      "runsPerCase": 1,
+      "timeoutSeconds": 300,
+      "maxTurns": 5,
+      "graders": [
+        {
+          "name": "plain",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS if the reply says the same things in plain words a non-engineer could follow, shorter than the original, with no jargon like intake probe, provisional, baseline, budgets. FAIL if it keeps the jargon or adds new content.",
+          "config": {
+            "criteria": "PASS if the reply says the same things in plain words a non-engineer could follow, shorter than the original, with no jargon like intake probe, provisional, baseline, budgets. FAIL if it keeps the jargon or adds new content.",
+            "focus": "last_message"
+          }
+        },
+        {
+          "name": "shorter",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^(?:(?!provisional|intake probe|Budgets).){0,600}$",
+            "flags": "s",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.1647865,
+            "judgeCostUsd": 0.001065,
+            "durationSeconds": 21,
+            "startedAt": "2026-09-18T18:28:32.219Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-V8Dg6S/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "plain",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Same thing, in plain words:\n\nI checked what's already in the code, and I only got part of the answer. The archiving feature already exists on the server side — it's at `src/server.js:36`. It only runs when the archive flag is switched on. But the page has no button or control for it, so nobody can actually trigger it today.\n\nFor now I'm calling this a contained piece of work rather than a big one. That sizing is a placeholder until I've done the research.\n\nI'm working from commit `3f1c2a0`. Nothing new has landed since then, so I'm not behind.\n\nHere's what I plan to spend on this. After the research, I'll come back to you with one round of questions, five at most. I'll use one helper to search the codebase. And I'll have the plan reviewed by a tech lead plus one other reviewer."
+              },
+              {
+                "name": "shorter",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "leaf-pm",
+      "dir": "evals/leaf-pm",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-pm keyboard-archive\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the findings block and the scope answer are given. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1800,
+      "maxTurns": 80,
+      "graders": [
+        {
+          "name": "buckets",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "(?i)act on[\\s\\S]*consider[\\s\\S]*noted[\\s\\S]*dismissed",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "scope-question",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "(?i)hold scope|wedge",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "seat-analyst",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "(?i)analyst",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-customer",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "(?i)customer|Mara|Devin|Priya",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-designer",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "(?i)designer",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-pm",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "(?i)product manager|\\bPM\\b",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-skeptic",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "(?i)skeptic",
+            "min": 1
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 9,
+            "costUsd": 3.1553302499999996,
+            "judgeCostUsd": 0,
+            "durationSeconds": 321,
+            "startedAt": "2026-09-18T18:28:53.124Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-gbAlXc/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "buckets",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "scope-question",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-analyst",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-customer",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-designer",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-pm",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-skeptic",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "leaf-prototype",
+      "dir": "evals/leaf-prototype",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-prototype keyboard-archive --decision \"where the Archive control sits: on each row, or one bulk bar above the list\" --mode html",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1800,
+      "maxTurns": 80,
+      "graders": [
+        {
+          "name": "decision-recorded",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/keyboard-archive/decisions.md"
+            },
+            "pattern": "(?i)prototype",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "html-written",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "docs/plans/keyboard-archive/prototype/index.html",
+            "exists": true
+          }
+        },
+        {
+          "name": "recommendation",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "(?i)recommend",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "switcher",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/keyboard-archive/prototype/index.html"
+            },
+            "pattern": "(?i)variant|switch",
+            "flags": "",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.25,
+            "passed": false,
+            "turns": 17,
+            "costUsd": 0.8755685,
+            "judgeCostUsd": 0,
+            "durationSeconds": 261,
+            "startedAt": "2026-09-18T18:31:17.609Z",
+            "error": "interrupted",
+            "tracePath": "/private/tmp/e-E0qQgf/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "decision-recorded",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: The operation was aborted.",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "html-written",
+                "passed": true,
+                "weight": 1,
+                "explanation": "docs/plans/keyboard-archive/prototype/index.html exists as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "recommendation",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "switcher",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: The operation was aborted.",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.25,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "leaf-reflect",
+      "dir": "evals/leaf-reflect",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-reflect keyboard-archive\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the table of proposed edits is presented. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1200,
+      "maxTurns": 60,
+      "graders": [
+        {
+          "name": "no-suite-edit",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Edit",
+            "input_match": "skills/",
+            "min": 0,
+            "max": 0
+          }
+        },
+        {
+          "name": "nothing-applied-without-approval",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "(?i)approv|apply",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "table",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "(?i)accepted[\\s\\S]*rejected[\\s\\S]*backlog",
+            "flags": "",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.3333333333333333,
+            "passed": false,
+            "turns": 5,
+            "costUsd": 0.3234595,
+            "judgeCostUsd": 0,
+            "durationSeconds": 84,
+            "startedAt": "2026-09-18T18:34:14.577Z",
+            "error": "interrupted",
+            "tracePath": "/private/tmp/e-pbefxQ/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-suite-edit",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Edit called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "nothing-applied-without-approval",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "table",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.3333333333333333,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "leaf-research",
+      "dir": "evals/leaf-research",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-research shared-boards --system",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1800,
+      "maxTurns": 80,
+      "graders": [
+        {
+          "name": "anchors-at-sha",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/shared-boards/research.md"
+            },
+            "pattern": "src/\\w+\\.js:\\d+",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "census",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/shared-boards/research.md"
+            },
+            "pattern": "(?i)entry point",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "explorers",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "(?i)explorer|entry points|data flow",
+            "min": 1
+          }
+        },
+        {
+          "name": "research-written",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/shared-boards/research.md"
+            },
+            "pattern": "(?i)current system",
+            "flags": "",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 4,
+            "costUsd": 0.277949,
+            "judgeCostUsd": 0,
+            "durationSeconds": 46,
+            "startedAt": "2026-09-18T18:34:52.536Z",
+            "error": "interrupted",
+            "tracePath": "/private/tmp/e-VxT9ts/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "anchors-at-sha",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: The operation was aborted.",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "census",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: The operation was aborted.",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "explorers",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Agent called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "research-written",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: The operation was aborted.",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 7,
+    "casesPassed": 0,
+    "overallScore": 0.20238095238095236,
+    "overallPassRate": 0
+  }
+}

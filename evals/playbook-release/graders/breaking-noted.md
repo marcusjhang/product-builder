@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)breaking|archived'
+pattern: 'breaking|archived'
 target: { source: 'file', path: 'CHANGELOG.md' }
+flags: 'i'
 ---

@@ -1,6 +1,6 @@
 ---
 type: 'tool_used'
 tool: 'Agent'
-input_match: '(?i)\bQA\b'
+input_match: '\b[Qq][Aa]\b'
 min: 1
 ---

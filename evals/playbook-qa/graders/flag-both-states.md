@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)flag off'
+pattern: 'flag off'
 target: 'trace'
+flags: 'i'
 ---

@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)since|affected'
+pattern: 'since|affected'
 target: 'trace'
+flags: 'i'
 ---

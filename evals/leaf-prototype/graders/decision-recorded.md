@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)prototype'
+pattern: 'prototype'
 target: { source: 'file', path: 'docs/plans/keyboard-archive/decisions.md' }
+flags: 'i'
 ---

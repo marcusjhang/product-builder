@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)characteris'
+pattern: 'characteris'
 target: 'trace'
+flags: 'i'
 ---

@@ -1,6 +1,6 @@
 ---
 type: 'tool_used'
 tool: 'Agent'
-input_match: '(?i)skeptic'
+input_match: '[Ss][Kk][Ee][Pp][Tt][Ii][Cc]'
 min: 1
 ---

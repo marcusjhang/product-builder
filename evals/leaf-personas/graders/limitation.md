@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)pilot|not a substitute|stereotype'
+pattern: 'pilot|not a substitute|stereotype'
 target: 'last_message'
+flags: 'i'
 ---

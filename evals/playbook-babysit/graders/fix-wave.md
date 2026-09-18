@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)fix wave'
+pattern: 'fix wave'
 target: 'trace'
+flags: 'i'
 ---

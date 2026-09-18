@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)act|push back|clarify'
+pattern: 'act|push back|clarify'
 target: 'last_message'
+flags: 'i'
 ---

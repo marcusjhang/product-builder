@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)approv|apply'
+pattern: 'approv|apply'
 target: 'trace'
+flags: 'i'
 ---

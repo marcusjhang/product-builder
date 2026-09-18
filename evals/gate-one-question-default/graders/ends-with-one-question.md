@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)Recommended:[^\n]*\n[^\n]*(ok|letter)'
+pattern: 'Recommended:[^\n]*\n[^\n]*(ok|letter)'
 target: 'last_message'
+flags: 'i'
 ---

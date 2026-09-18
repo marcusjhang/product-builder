@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)current system'
+pattern: 'current system'
 target: { source: 'file', path: 'docs/plans/shared-boards/research.md' }
+flags: 'i'
 ---

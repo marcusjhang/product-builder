@@ -2,4 +2,4 @@
 type: 'llm'
 ---
 
-PASS if the reply before the question is at most twelve lines and carries at most three evidence bullets. FAIL if it is longer or asks more than one question.
+Count only the lines before the line that opens the question (the Q1 line); the options and the Recommended line belong to the question. PASS if those lines number at most twelve and carry at most three evidence bullets, and exactly one question is asked. FAIL if more than twelve lines precede Q1, or more than three evidence bullets, or a second question (Q2) is asked.

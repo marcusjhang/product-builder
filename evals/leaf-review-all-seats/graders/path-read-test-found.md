@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)routes-contract|README lacks'
+pattern: 'routes-contract|README lacks'
 target: 'trace'
+flags: 'i'
 ---

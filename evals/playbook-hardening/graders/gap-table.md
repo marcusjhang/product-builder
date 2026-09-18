@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)gap'
+pattern: 'gap'
 target: 'trace'
+flags: 'i'
 ---

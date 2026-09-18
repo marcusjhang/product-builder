@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)paper'
+pattern: 'paper'
 target: 'last_message'
+flags: 'i'
 ---

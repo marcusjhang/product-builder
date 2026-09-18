@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)pass|fail'
+pattern: 'pass|fail'
 target: 'last_message'
+flags: 'i'
 ---

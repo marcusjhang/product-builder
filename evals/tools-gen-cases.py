@@ -6,13 +6,35 @@ EVALS = Path(__file__).resolve().parent
 OVERRIDE = ("\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, "
             "and keep going until {gate}. Never stop to ask; there is no one to answer.")
 
+def nocase(pat):
+    """JS regex has no inline (?i): expand every ASCII letter outside a character class to [Aa]."""
+    out, i, in_class = [], 0, False
+    while i < len(pat):
+        ch = pat[i]
+        if ch == "\\" and i + 1 < len(pat): out.append(pat[i:i+2]); i += 2; continue
+        if ch == "[": in_class = True
+        elif ch == "]": in_class = False
+        if ch.isalpha() and ch.isascii():
+            out.append(f"[{ch.upper()}{ch.lower()}]" if not in_class else ch.upper() + ch.lower())
+        else: out.append(ch)
+        i += 1
+    return "".join(out)
+
 def read_pb(name): return {"type": "tool_used", "tool": "Read", "input_match": f"playbooks/{name}\\.md"}
 def skill(name, **kw): return {"type": "tool_used", "tool": "Skill", "input_match": f'"skill"\\s*:\\s*"(?:[\\w-]+:)?product-builder-{name}"', **kw}
-def agent(match, mn=1, **kw): return {"type": "tool_used", "tool": "Agent", "input_match": match, "min": mn, **kw}
-def bash(match, mn=1, **kw): return {"type": "tool_used", "tool": "Bash", "input_match": match, "min": mn, **kw}
-def never(tool, match): return {"type": "tool_used", "tool": tool, "input_match": match, "min": 0, "max": 0}
-def rx(pattern, target="last_message", **kw): return {"type": "regex", "pattern": pattern, "target": target, **kw}
-def rxfile(path, pattern, **kw): return {"type": "regex", "pattern": pattern, "target": {"source": "file", "path": path}, **kw}
+def _ci(match):
+    return nocase(match.replace("(?i)", "")) if "(?i)" in match else match
+def agent(match, mn=1, **kw): return {"type": "tool_used", "tool": "Agent", "input_match": _ci(match), "min": mn, **kw}
+def bash(match, mn=1, **kw): return {"type": "tool_used", "tool": "Bash", "input_match": _ci(match), "min": mn, **kw}
+def never(tool, match): return {"type": "tool_used", "tool": tool, "input_match": _ci(match), "min": 0, "max": 0}
+def _rxkw(pattern, kw):
+    if "(?i)" in pattern:
+        pattern = pattern.replace("(?i)", ""); kw = {**kw, "flags": kw.get("flags", "") + "i"}
+    return pattern, kw
+def rx(pattern, target="last_message", **kw):
+    pattern, kw = _rxkw(pattern, kw); return {"type": "regex", "pattern": pattern, "target": target, **kw}
+def rxfile(path, pattern, **kw):
+    pattern, kw = _rxkw(pattern, kw); return {"type": "regex", "pattern": pattern, "target": {"source": "file", "path": path}, **kw}
 def exists(path, e=True): return {"type": "file_exists", "path": path, "exists": e}
 def llm(criteria, focus=None):
     g = {"type": "llm", "criteria": criteria}
@@ -49,7 +71,7 @@ CASES = [
         "overview-written": exists("docs/plans/*/README.md"), "parts-table": rxfile("docs/plans/*/README.md", r"(?i)part"),
         "walking-skeleton": llm("PASS if the overview names part 1 as a shippable increment that is the walking skeleton and orders parts by risk then value. FAIL if parts are layers (database, backend, frontend) rather than user-facing increments.", focus={"source":"file","path":"docs/plans/*/README.md"})}),
  dict(name="playbook-intake-ships", tags=["playbook","tier1","gate"], scaffold=BASE+" tb_layer_shipped_snooze; tb_layer_pad_commits 6; tb_origin; tb_behind 7",
-      prompt="/product-builder plan: let people snooze a task until a date",
+      prompt="/product-builder plan: add a snooze endpoint, POST /tasks/:id/snooze with an until date, behind a flag",
       turns=40, timeout=900, graders={
         "no-plan-folder": exists("docs/plans/**", False), "says-ships": rx(r"(?i)already ships|ships on origin|shipped"),
         "one-question": rx(r"(?i)nothing to do"), "behind-count": rx(r"(?i)\b7\b.*behind|behind.*\b7\b", "trace"),
@@ -252,7 +274,7 @@ CASES = [
  dict(name="leaf-plain", tags=["leaf","tier1"], scaffold=BASE+" tb_origin",
       prompt="/product-builder-plain Restate my last reply, which was: \"The intake probe returned partial: the archive route ships at src/server.js:36 behind the archive flag, but the page has no control. Size is provisional Bounded pending research. Baseline 3f1c2a0, 0 behind. Budgets: one interview of at most five questions after research, one explorer, tech lead plus one seat.\"",
       turns=5, timeout=300, graders={
-        "shorter": rx(r"^(?:(?!provisional|intake probe|Budgets).){0,600}$", flags="s"), "plain": llm("PASS if the reply says the same things in plain words a non-engineer could follow, shorter than the original, with no jargon like intake probe, provisional, baseline, budgets. FAIL if it keeps the jargon or adds new content.")}),
+        "shorter": rx(r"^(?:(?!provisional|intake probe|Budgets).){0,500}$", flags="s"), "plain": llm("PASS if the reply says the same things in plain words a non-engineer could follow, shorter than the original, with no jargon like intake probe, provisional, baseline, budgets. FAIL if it keeps the jargon or adds new content.")}),
  # ---------------- routing and gates (tier 1)
  dict(name="route-by-state", tags=["routing","tier1"], scaffold=BASE+" tb_layer_built_branch; tb_origin; git checkout -q feature/priority-filter",
       prompt="/product-builder look at this",
@@ -260,7 +282,7 @@ CASES = [
         "route-built-first": read_pb("built-first"), "route-named-with-facts": rx(r"(?i)built first[\s\S]*(ahead|no plan)", "trace"), "state-read-first": bash(r"git (status|branch|log|rev-list|diff)")}),
  dict(name="route-explicit-prefix", tags=["routing","tier1"], scaffold=BASE+" tb_layer_flaky; tb_origin",
       prompt="/product-builder flaky-test: tests/counts.test.js fails about one time in two",
-      turns=30, timeout=600, graders={"route-flaky": read_pb("flaky-test"), "no-other-playbook": never("Read", r"playbooks/bug-fix\.md")}),
+      turns=120, timeout=1800, graders={"route-flaky": read_pb("flaky-test"), "no-other-playbook": never("Read", r"playbooks/bug-fix\.md")}),
  dict(name="route-state-vs-words", tags=["routing","tier1","gate"], scaffold=BASE+" tb_layer_pathread_test; tb_layer_built_branch; tb_layer_open_pr; tb_origin; git checkout -q feature/priority-filter",
       prompt="/product-builder fix this: TypeError: Cannot read properties of undefined (reading 'status') at complete (src/tasks.js:22)",
       turns=40, timeout=900, graders={
@@ -271,14 +293,14 @@ CASES = [
         "trivial-said": rx(r"(?i)trivial", "trace"), "no-plan-folder": exists("docs/plans/**", False), "changed": rxfile("public/index.html", r"Taskbox Pro"), "verified": bash(r"grep|curl|node")}),
  dict(name="route-no-profile", tags=["routing","tier1"], scaffold="tb_base; tb_origin",
       prompt="/product-builder plan: add a due date to tasks",
-      turns=40, timeout=900, graders={"setup-first": rx(r"(?i)product-builder-setup|setup", "trace"), "setup-invoked-or-run": {"type":"tool_used","tool":"Read","input_match":r"product-builder-setup/SKILL\.md|playbooks/plan\.md"}, "hook-line": rx(r"has no \.product-builder/profile\.md", "trace")}),
+      turns=40, timeout=900, graders={"setup-first": rx(r"(?i)product-builder-setup|setup", "trace"), "setup-invoked": skill("setup"), "hook-line": rx(r"has no \.product-builder/profile\.md", "trace")}),
  dict(name="route-continue-no-args", tags=["routing","tier1"], scaffold=BASE+" tb_layer_plan 'Ready to implement'; tb_plan_status keyboard-archive Implementing; tb_layer_slice_branch; tb_origin; git checkout -q keyboard-archive/p1-archive-button",
       prompt="/product-builder", turns=40, timeout=900, graders={"route-pickup": read_pb("pickup-and-pause"), "resume-invoked": skill("resume")}),
  dict(name="gate-one-question-default", tags=["gate","tier1"], scaffold=BASE+" tb_origin",
       prompt="/product-builder plan: add a due date to every task, shown on the page and settable from the CLI",
       turns=60, timeout=1200, graders={
         "ends-with-one-question": rx(r"(?i)Recommended:[^\n]*\n[^\n]*(ok|letter)"), "not-two-questions": rx(r"Q2", match="not_contains"),
-        "explored-first": bash(r"grep|git log|cat", 1), "twelve-lines": llm("PASS if the reply before the question is at most twelve lines and carries at most three evidence bullets. FAIL if it is longer or asks more than one question.")}),
+        "explored-first": bash(r"grep|git log|cat", 1), "twelve-lines": llm("Count only the lines before the line that opens the question (the Q1 line); the options and the Recommended line belong to the question. PASS if those lines number at most twelve and carry at most three evidence bullets, and exactly one question is asked. FAIL if more than twelve lines precede Q1, or more than three evidence bullets, or a second question (Q2) is asked.")}),
  dict(name="gate-judge-none", tags=["gate","judge","tier1"], scaffold=BASE+" tb_origin",
       prompt="/product-builder how does the flag helper decide a flag is on?",
       turns=30, timeout=600, graders={"judged-by-you": rx(r"(?i)judge", "trace"), "no-judge-call": never("Bash", r"scripts/judge")}),

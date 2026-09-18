@@ -1,0 +1,998 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.277",
+  "startedAt": "2026-09-18T18:21:35.557Z",
+  "durationSeconds": 751,
+  "costUsd": 11.561012999999997,
+  "partial": false,
+  "suite": {
+    "root": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo",
+    "ablation": "none",
+    "tagFilters": [
+      "tier1"
+    ],
+    "threshold": 1,
+    "concurrency": 4,
+    "plugins": [
+      {
+        "name": "product-builder",
+        "version": "0.1.0",
+        "path": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "gate-judge-no-key",
+      "dir": "evals/gate-judge-no-key",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder how does the flag helper decide a flag is on?",
+      "runsPerCase": 1,
+      "timeoutSeconds": 600,
+      "maxTurns": 30,
+      "graders": [
+        {
+          "name": "no-crash",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "Traceback",
+            "flags": "",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "says-no-key",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "(?i)no key|not set|judged by you|session model",
+            "flags": "",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.5,
+            "passed": false,
+            "turns": 20,
+            "costUsd": 0.7729235,
+            "judgeCostUsd": 0,
+            "durationSeconds": 116,
+            "startedAt": "2026-09-18T18:21:35.710Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-fltwEx/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-crash",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "says-no-key",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.5,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "gate-judge-none",
+      "dir": "evals/gate-judge-none",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder how does the flag helper decide a flag is on?",
+      "runsPerCase": 1,
+      "timeoutSeconds": 600,
+      "maxTurns": 30,
+      "graders": [
+        {
+          "name": "judged-by-you",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "(?i)judge",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "no-judge-call",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "scripts/judge",
+            "min": 0,
+            "max": 0
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.5,
+            "passed": false,
+            "turns": 13,
+            "costUsd": 0.5806655000000001,
+            "judgeCostUsd": 0,
+            "durationSeconds": 70,
+            "startedAt": "2026-09-18T18:21:35.710Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-u9gOG9/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "judged-by-you",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-judge-call",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.5,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "gate-one-question-default",
+      "dir": "evals/gate-one-question-default",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder plan: add a due date to every task, shown on the page and settable from the CLI",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1200,
+      "maxTurns": 60,
+      "graders": [
+        {
+          "name": "ends-with-one-question",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "(?i)Recommended:[^\\n]*\\n[^\\n]*(ok|letter)",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "explored-first",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "grep|git log|cat",
+            "min": 1
+          }
+        },
+        {
+          "name": "not-two-questions",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Q2",
+            "flags": "",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "twelve-lines",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS if the reply before the question is at most twelve lines and carries at most three evidence bullets. FAIL if it is longer or asks more than one question.",
+          "config": {
+            "criteria": "PASS if the reply before the question is at most twelve lines and carries at most three evidence bullets. FAIL if it is longer or asks more than one question.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.5,
+            "passed": false,
+            "turns": 31,
+            "costUsd": 1.017442,
+            "judgeCostUsd": 0.003392,
+            "durationSeconds": 150,
+            "startedAt": "2026-09-18T18:21:35.710Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-SIX2Iv/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "ends-with-one-question",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "explored-first",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 2x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "not-two-questions",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "twelve-lines",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "**Route: Plan.** No folder under `docs/plans/`, and nothing named `due` exists on `origin/main`.\n**Size: Bounded**, provisional until research. Budgets: at most 3 frame questions now, at most 5 after research, 1 explorer, `product.md` 2 pages and `implementation.md` 3, tech lead plus at most one seat, 5 to 7 turns to Ready.\n**Judge:** the profile reads `Model: none`, so I judge every gate myself.\n\nProbe, read at `6523048`, 0 behind `origin/main`:\n- `absent`. `git grep -il -E 'due|deadline' origin/main -- src bin tests migrations public` returned nothing.\n- Closest feature: **priority**. It is one migration (`migrations/002-add-priority.js:2`), a default in the constructor (`src/tasks.js:4`), and one segment of the CLI line (`src/format.js:13`).\n- Prior art: none. `docs/plans/` did not exist and `origin/main` is the only branch.\n\nLedger at `docs/plans/task-due-date/decisions.md`. Your three words are locked as D1 to D3 (every task, shown on the page, settable from the CLI), so the interview will not re-ask them.\n\n**Q1. Whose week gets better, and what happened that made this worth doing?**\n`.product-builder/personas.md` has three candidates, and none of them currently does both halves of your ask.\n\n- **(a) Mara, solo maker, CLI-first.** Buys: `list` becomes the one place she checks before picking work, and the page display can be cut if the appetite runs out. Costs: personas.md says Mara never opens the page, so this demotes D2 to \"later\".\n- **(b) Devin, team lead, page-first.** Buys: the page is the deliverable, which makes overdue emphasis and ordering worth real thought. Costs: he does not use the CLI, so D3 serves nobody in the story.\n- **(c) One person who sets from the CLI and glances at the page.** Buys: matches your ask exactly, and ADR 0001 says taskbox is single-user and local, so the setter and the viewer are the same laptop. Costs: adds a fourth persona to the roster; no existing persona covers it.\n\nRecommended: **(c)**, because ADR 0001 (`docs/adr/0001-json-file-store.md:6`) makes the single-operator reading the literal one, and it is the only option that leaves D2 and D3 both standing.\n\nReply \"ok\" for (c), or name the letter. A concrete situation (\"I missed X last Tuesday\") sharpens the problem statement more than the letter does.\n\nPrinciples applied: 1 (read personas, the ADR, and the priority precedent before asking), 5 (the plan will model on priority rather than invent a field pattern), 6 (every claim above carries `file:line` at `6523048`)."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.5,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "leaf-plain",
+      "dir": "evals/leaf-plain",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-plain Restate my last reply, which was: \"The intake probe returned partial: the archive route ships at src/server.js:36 behind the archive flag, but the page has no control. Size is provisional Bounded pending research. Baseline 3f1c2a0, 0 behind. Budgets: one interview of at most five questions after research, one explorer, tech lead plus one seat.\"",
+      "runsPerCase": 1,
+      "timeoutSeconds": 300,
+      "maxTurns": 5,
+      "graders": [
+        {
+          "name": "plain",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS if the reply says the same things in plain words a non-engineer could follow, shorter than the original, with no jargon like intake probe, provisional, baseline, budgets. FAIL if it keeps the jargon or adds new content.",
+          "config": {
+            "criteria": "PASS if the reply says the same things in plain words a non-engineer could follow, shorter than the original, with no jargon like intake probe, provisional, baseline, budgets. FAIL if it keeps the jargon or adds new content.",
+            "focus": "last_message"
+          }
+        },
+        {
+          "name": "shorter",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^(?:(?!provisional|intake probe|Budgets).){0,600}$",
+            "flags": "s",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 2,
+            "costUsd": 0.1706065,
+            "judgeCostUsd": 0.0014520000000000002,
+            "durationSeconds": 21,
+            "startedAt": "2026-09-18T18:21:35.710Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-kTXZJu/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "plain",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Here's the same thing in plain words:\n\nI looked at the code and only got part of the answer.\n\nThe archiving already works on the server side — it's in `src/server.js` at line 36. It's switched off behind a setting called \"archive\". But there's nothing on the page that lets anyone actually archive something, so no one can reach it.\n\nI'd guess this is a medium-sized job, not a small one and not a big one. That's still a guess until I dig in properly.\n\nI'm starting from commit `3f1c2a0`, which is the current tip of main — nothing new has landed since.\n\nHere's what I plan to spend on it. After I finish digging, I'll come back with one set of questions for you, five at most. I'll use one helper to search the code. And I'll have the plan reviewed by two people: a tech lead plus one other reviewer."
+              },
+              {
+                "name": "shorter",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "playbook-intake-ships",
+      "dir": "evals/playbook-intake-ships",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder plan: let people snooze a task until a date",
+      "runsPerCase": 1,
+      "timeoutSeconds": 900,
+      "maxTurns": 40,
+      "graders": [
+        {
+          "name": "behind-count",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "(?i)\\b7\\b.*behind|behind.*\\b7\\b",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "no-plan-folder",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "docs/plans/**",
+            "exists": false
+          }
+        },
+        {
+          "name": "one-question",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "(?i)nothing to do",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "reads-origin",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "origin/main",
+            "min": 1
+          }
+        },
+        {
+          "name": "says-ships",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "(?i)already ships|ships on origin|shipped",
+            "flags": "",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.2,
+            "passed": false,
+            "turns": 29,
+            "costUsd": 1.1120075,
+            "judgeCostUsd": 0,
+            "durationSeconds": 147,
+            "startedAt": "2026-09-18T18:21:56.458Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-6QscFh/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "behind-count",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-plan-folder",
+                "passed": false,
+                "weight": 1,
+                "explanation": "docs/plans/** exists (expected absent)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "one-question",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "reads-origin",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 3x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "says-ships",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.2,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "route-by-state",
+      "dir": "evals/route-by-state",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder look at this",
+      "runsPerCase": 1,
+      "timeoutSeconds": 900,
+      "maxTurns": 40,
+      "graders": [
+        {
+          "name": "route-built-first",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/built-first\\.md"
+          }
+        },
+        {
+          "name": "route-named-with-facts",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "(?i)built first[\\s\\S]*(ahead|no plan)",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "state-read-first",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "git (status|branch|log|rev-list|diff)",
+            "min": 1
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.6666666666666666,
+            "passed": false,
+            "turns": 33,
+            "costUsd": 1.535128,
+            "judgeCostUsd": 0,
+            "durationSeconds": 277,
+            "startedAt": "2026-09-18T18:22:45.996Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-MsAgRM/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "route-built-first",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-named-with-facts",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "state-read-first",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 4x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.6666666666666666,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "route-continue-no-args",
+      "dir": "evals/route-continue-no-args",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder",
+      "runsPerCase": 1,
+      "timeoutSeconds": 900,
+      "maxTurns": 40,
+      "graders": [
+        {
+          "name": "resume-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-resume\""
+          }
+        },
+        {
+          "name": "route-pickup",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/pickup-and-pause\\.md"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 16,
+            "costUsd": 0.6682725,
+            "judgeCostUsd": 0,
+            "durationSeconds": 84,
+            "startedAt": "2026-09-18T18:23:31.323Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-AkJNh4/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "resume-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-pickup",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "route-explicit-prefix",
+      "dir": "evals/route-explicit-prefix",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder flaky-test: tests/counts.test.js fails about one time in two",
+      "runsPerCase": 1,
+      "timeoutSeconds": 600,
+      "maxTurns": 30,
+      "graders": [
+        {
+          "name": "no-other-playbook",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/bug-fix\\.md",
+            "min": 0,
+            "max": 0
+          }
+        },
+        {
+          "name": "route-flaky",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/flaky-test\\.md"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 82,
+            "costUsd": 2.9881444999999993,
+            "judgeCostUsd": 0,
+            "durationSeconds": 600,
+            "startedAt": "2026-09-18T18:24:05.817Z",
+            "error": "timed out after 600s",
+            "tracePath": "/private/tmp/e-nLSiGU/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-other-playbook",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-flaky",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "route-no-profile",
+      "dir": "evals/route-no-profile",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder plan: add a due date to tasks",
+      "runsPerCase": 1,
+      "timeoutSeconds": 900,
+      "maxTurns": 40,
+      "graders": [
+        {
+          "name": "hook-line",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "has no \\.product-builder/profile\\.md",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "setup-first",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "(?i)product-builder-setup|setup",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "setup-invoked-or-run",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "product-builder-setup/SKILL\\.md|playbooks/plan\\.md"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.3333333333333333,
+            "passed": false,
+            "turns": 22,
+            "costUsd": 1.1548635,
+            "judgeCostUsd": 0,
+            "durationSeconds": 216,
+            "startedAt": "2026-09-18T18:24:23.111Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-6zYNPV/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "hook-line",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched has no \\.product-builder/profile\\.md",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "setup-first",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "setup-invoked-or-run",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Read called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.3333333333333333,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "route-state-vs-words",
+      "dir": "evals/route-state-vs-words",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder fix this: TypeError: Cannot read properties of undefined (reading 'status') at complete (src/tasks.js:22)",
+      "runsPerCase": 1,
+      "timeoutSeconds": 900,
+      "maxTurns": 40,
+      "graders": [
+        {
+          "name": "both-routes",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "(?i)bug fix[\\s\\S]*babysit|babysit[\\s\\S]*bug fix",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "one-question",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "(?i)Q1|Recommended:",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "state-recommended",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "(?i)recommended:.*(babysit|bug fix)",
+            "flags": "",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 21,
+            "costUsd": 0.838961,
+            "judgeCostUsd": 0,
+            "durationSeconds": 129,
+            "startedAt": "2026-09-18T18:24:55.087Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-L9JgcD/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "both-routes",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "one-question",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "state-recommended",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "route-trivial",
+      "dir": "evals/route-trivial",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder change the page title from Taskbox to Taskbox Pro\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the change is made and verified. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 900,
+      "maxTurns": 30,
+      "graders": [
+        {
+          "name": "changed",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "public/index.html"
+            },
+            "pattern": "Taskbox Pro",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "no-plan-folder",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "docs/plans/**",
+            "exists": false
+          }
+        },
+        {
+          "name": "trivial-said",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "(?i)trivial",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "verified",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "grep|curl|node",
+            "min": 1
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.75,
+            "passed": false,
+            "turns": 21,
+            "costUsd": 0.7219984999999999,
+            "judgeCostUsd": 0,
+            "durationSeconds": 79,
+            "startedAt": "2026-09-18T18:27:03.799Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-qPUgQ2/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "changed",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Taskbox Pro",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-plan-folder",
+                "passed": true,
+                "weight": 1,
+                "explanation": "docs/plans/** absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "trivial-said",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "verified",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 11x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.75,
+        "passRate": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 11,
+    "casesPassed": 2,
+    "overallScore": 0.4954545454545455,
+    "overallPassRate": 0.18181818181818182
+  }
+}

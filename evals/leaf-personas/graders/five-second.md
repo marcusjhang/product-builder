@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)five.second'
+pattern: 'five.second'
 target: 'trace'
+flags: 'i'
 ---

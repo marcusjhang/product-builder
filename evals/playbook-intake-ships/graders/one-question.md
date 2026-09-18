@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)nothing to do'
+pattern: 'nothing to do'
 target: 'last_message'
+flags: 'i'
 ---

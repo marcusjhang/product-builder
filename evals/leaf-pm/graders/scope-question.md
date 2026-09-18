@@ -1,5 +1,6 @@
 ---
 type: 'regex'
-pattern: '(?i)hold scope|wedge'
+pattern: 'hold scope|wedge'
 target: 'trace'
+flags: 'i'
 ---

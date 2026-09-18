@@ -1,1 +1,1 @@
-/product-builder plan: let people snooze a task until a date
+/product-builder plan: add a snooze endpoint, POST /tasks/:id/snooze with an until date, behind a flag
