@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "\"look at this\" on a branch three commits ahead of main with fourteen uncommitted files and no folder under docs/plans/",
+  "expected_behavior": [
+    "the state is read before the words: profile, plan folders, branch and commits ahead, uncommitted diff, open PR, last output",
+    "the route is Built first, and the first reply names it with the two facts that chose it",
+    "no question is asked, because the words are generic and the state is unambiguous"
+  ]
+}

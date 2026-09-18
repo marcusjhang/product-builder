@@ -1,0 +1,10 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "`/product-builder flaky-test: the upload spec fails one time in ten`",
+  "expected_behavior": [
+    "the Flaky test playbook is matched without judgment because the argument opens with its name and a colon",
+    "the state is still read and kept for the first reply, but does not change the route"
+  ]
+}

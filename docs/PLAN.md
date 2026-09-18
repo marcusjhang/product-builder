@@ -153,7 +153,7 @@ slow ─────────────▶ perf-issue playbook          bas
 | First run in a repo, or no `.product-builder/profile.md` | `product-builder-setup` first, then the route above |
 | "What should we change about the workflow", after a hard run | `product-builder-reflect` |
 
-Two playbooks could apply → one question with the options. A repo may add rows in `.product-builder/routes.md`; the mode merges them. The matched playbook's steps are copied verbatim into the todo list before any task-specific todos; a step the mode decides not to run stays in the list as `skip: <reason>`.
+The state is read before the words (the profile, every plan folder's status, the branch and its commits ahead of the default, the uncommitted diff and what it holds, an open PR and its checks, a stack trace or failing test in the last output), and routes the generic asks ("look at this", "done", "continue"); the words route when they name a playbook or a trigger; a `name:` prefix on the argument routes without judgment; the first reply names the route and the two facts that chose it. Two playbooks could apply → one question with the options, the state's route recommended. A repo may add rows in `.product-builder/routes.md`; the mode merges them. The matched playbook's steps are copied verbatim into the todo list before any task-specific todos; a step the mode decides not to run stays in the list as `skip: <reason>`.
 
 ### 3.5 Sizing and budgets
 

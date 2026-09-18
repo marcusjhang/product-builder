@@ -1,0 +1,10 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "\"fix this\" pasted with a stack trace, while the current branch has an open PR whose checks are red",
+  "expected_behavior": [
+    "the words say Bug fix and the state says Babysit; one question offers both, with the state's route recommended",
+    "the reply names the facts on each side before the question"
+  ]
+}
