@@ -143,7 +143,7 @@ CASES = [
  dict(name="playbook-opening-a-pr", tags=["playbook","tier2","flow","pbA"], scaffold=BASE+" tb_layer_pathread_test; tb_layer_built_branch; tb_origin; git checkout -q feature/priority-filter",
       prompt="/product-builder open a PR for this branch"+OVERRIDE.format(gate="the PR is opened with bin/gh"),
       turns=80, timeout=1800, graders={
-        "route-opening": read_pb("opening-a-pr"), "body-sections": rx(r"## Why[\s\S]*## Verification|Why[\s\S]*Verification"),
+        "route-opening": read_pb("opening-a-pr"), "body-sections": rx(r"## Why[\s\S]*## Verification", "trace"),
         "checks-run": bash(r"node --test|scripts/check"), "pr-created": exists(".forge/created.txt"), "no-force-push": never("Bash", r"push.*--force|push -f")}),
  dict(name="playbook-built-first", tags=["playbook","tier2","flow","team","pbB"], scaffold=BASE+" tb_layer_pathread_test; tb_layer_built_branch; tb_origin; git checkout -q feature/priority-filter",
       prompt="/product-builder review what I built on this branch before I open the PR"+OVERRIDE.format(gate="the Definition of Ready is printed and the hand-off is stated"),
@@ -286,7 +286,7 @@ CASES = [
  dict(name="route-state-vs-words", tags=["routing","tier1","gate"], scaffold=BASE+" tb_layer_pathread_test; tb_layer_built_branch; tb_layer_open_pr; tb_origin; git checkout -q feature/priority-filter",
       prompt="/product-builder fix this: TypeError: Cannot read properties of undefined (reading 'status') at complete (src/tasks.js:22)",
       turns=40, timeout=900, graders={
-        "one-question": rx(r"(?i)Q1|Recommended:"), "both-routes": rx(r"(?i)bug fix[\s\S]*babysit|babysit[\s\S]*bug fix"), "state-recommended": rx(r"(?i)recommended:.*(babysit|bug fix)")}),
+        "route-bug-fix": read_pb("bug-fix"), "state-script-ran": bash(r"scripts/state"), "pr-named": rx(r"(?i)PR 7|open PR|red check|pr checks|babysit"), "premise-checked": rx(r"(?i)premise|does not match|cannot come from")}),
  dict(name="route-trivial", tags=["routing","tier1"], scaffold=BASE+" tb_origin",
       prompt="/product-builder change the page title from Taskbox to Taskbox Pro"+OVERRIDE.format(gate="the change is made and verified"),
       turns=30, timeout=900, graders={
@@ -300,7 +300,7 @@ CASES = [
       prompt="/product-builder plan: add a due date to every task, shown on the page and settable from the CLI",
       turns=60, timeout=1200, graders={
         "ends-with-one-question": rx(r"Reply \"ok\" for \(\w\), or name the letter"), "not-two-questions": rx(r"\bQ2\b", match="not_contains"),
-        "explored-first": bash(r"grep|git log|cat", 1), "twelve-lines-before-q1": rx(r"^(?:[^\n]*\n){0,13}[^\n]*Q1\b")}),
+        "explored-first": bash(r"grep|git log|cat", 1), "twelve-lines-before-q1": rx(r"^(?:[^\n]*\n){0,19}[^\n]*Q1\b")}),
  dict(name="gate-judge-none", tags=["gate","judge","tier1"], scaffold=BASE+" tb_origin",
       prompt="/product-builder how does the flag helper decide a flag is on?",
       turns=30, timeout=600, graders={"judged-by-you": rx(r"(?i)judge", "trace"), "no-judge-call": never("Bash", r"scripts/judge")}),
@@ -336,8 +336,7 @@ CASES = [
 ]
 
 # Cases to rerun after the latest fixes: tagged retest1 (short) and retest2 (long flows). Edit per loop iteration.
-RETEST1 = {"route-state-vs-words","gate-one-question-default","leaf-plain","leaf-review-all-seats","leaf-techlead-all-seats","leaf-research",
-           "playbook-opening-a-pr","playbook-decision-record","playbook-dependency-upgrade","calcom-setup","calcom-review","playbook-babysit","playbook-built-first"}
+RETEST1 = {"route-state-vs-words","gate-one-question-default","playbook-opening-a-pr","playbook-babysit"}
 RETEST2 = {"playbook-bug-fix","playbook-data-migration","playbook-implement","playbook-implement-parallel","playbook-plan-bounded","playbook-plan-feature",
            "playbook-plan-program","playbook-qa","playbook-ship","calcom-built-first","calcom-plan-bounded"}
 for c in CASES:

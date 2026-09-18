@@ -1,0 +1,2003 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.277",
+  "startedAt": "2026-09-18T22:28:52.729Z",
+  "durationSeconds": 2902,
+  "costUsd": 76.128543,
+  "partial": false,
+  "suite": {
+    "root": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo",
+    "ablation": "none",
+    "tagFilters": [
+      "retest1"
+    ],
+    "threshold": 1,
+    "concurrency": 4,
+    "plugins": [
+      {
+        "name": "product-builder",
+        "version": "0.1.0",
+        "path": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "calcom-review",
+      "dir": "evals/calcom-review",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-review --diff main..pr-embed-guard",
+      "runsPerCase": 1,
+      "timeoutSeconds": 2400,
+      "maxTurns": 100,
+      "graders": [
+        {
+          "name": "by-signal-seat",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ff][Rr][Oo][Nn][Tt][Ee][Nn][Dd]|[Ss][Ee][Cc][Uu][Rr][Ii][Tt][Yy]|[Ii][Nn][Tt][Ee][Gg][Rr][Aa][Tt][Ii][Oo][Nn]|[Ss][Ii][Ll][Ee][Nn][Tt].[Ff][Aa][Ii][Ll][Uu][Rr][Ee]|[Bb][Aa][Cc][Kk][Ww][Aa][Rr][Dd][Ss]",
+            "min": 1
+          }
+        },
+        {
+          "name": "findings-block",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "act on|consider|noted|dismissed",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "no-edit",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Edit",
+            "input_match": ".",
+            "min": 0,
+            "max": 0
+          }
+        },
+        {
+          "name": "seats-cast",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ss][Tt][Aa][Ff][Ff]|[Ss][Ii][Mm][Pp][Ll][Ii][Cc][Ii][Tt][Yy]|[Qq][Aa]|[Pp][Rr][Oo][Dd][Uu][Cc][Tt] [Oo][Ww][Nn][Ee][Rr]",
+            "min": 3
+          }
+        },
+        {
+          "name": "verifier",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "verif",
+            "flags": "i",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 52,
+            "costUsd": 10.783629499999996,
+            "judgeCostUsd": 0,
+            "durationSeconds": 711,
+            "startedAt": "2026-09-18T22:28:52.918Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-Bs27eP/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "by-signal-seat",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 3x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "findings-block",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched act on|consider|noted|dismissed",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-edit",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Edit called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seats-cast",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 3x (expected 3..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "verifier",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched verif",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "calcom-setup",
+      "dir": "evals/calcom-setup",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-setup\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the four files are written. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 2400,
+      "maxTurns": 100,
+      "graders": [
+        {
+          "name": "drive",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": ".product-builder/drive.md",
+            "exists": true
+          }
+        },
+        {
+          "name": "forge-unknown-honest",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": ".product-builder/profile.md"
+            },
+            "pattern": "UNKNOWN|fixture|denied",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "profile",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": ".product-builder/profile.md",
+            "exists": true
+          }
+        },
+        {
+          "name": "stack-detected",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": ".product-builder/profile.md"
+            },
+            "pattern": "yarn|turbo|prisma|next",
+            "flags": "i",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 38,
+            "costUsd": 2.3459695000000007,
+            "judgeCostUsd": 0,
+            "durationSeconds": 501,
+            "startedAt": "2026-09-18T22:28:52.918Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-CKFC7e/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "drive",
+                "passed": true,
+                "weight": 1,
+                "explanation": ".product-builder/drive.md exists as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "forge-unknown-honest",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched UNKNOWN|fixture|denied",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "profile",
+                "passed": true,
+                "weight": 1,
+                "explanation": ".product-builder/profile.md exists as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "stack-detected",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched yarn|turbo|prisma|next",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "gate-one-question-default",
+      "dir": "evals/gate-one-question-default",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder plan: add a due date to every task, shown on the page and settable from the CLI",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1200,
+      "maxTurns": 60,
+      "graders": [
+        {
+          "name": "ends-with-one-question",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Reply \\\"ok\\\" for \\(\\w\\), or name the letter",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "explored-first",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "grep|git log|cat",
+            "min": 1
+          }
+        },
+        {
+          "name": "not-two-questions",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "\\bQ2\\b",
+            "flags": "",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "twelve-lines-before-q1",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^(?:[^\\n]*\\n){0,13}[^\\n]*Q1\\b",
+            "flags": "",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.75,
+            "passed": false,
+            "turns": 26,
+            "costUsd": 0.9907035,
+            "judgeCostUsd": 0,
+            "durationSeconds": 109,
+            "startedAt": "2026-09-18T22:28:52.918Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-mGDXKS/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "ends-with-one-question",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Reply \\\"ok\\\" for \\(\\w\\), or name the letter",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "explored-first",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 5x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "not-two-questions",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "twelve-lines-before-q1",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.75,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "leaf-plain",
+      "dir": "evals/leaf-plain",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-plain Restate my last reply, which was: \"The intake probe returned partial: the archive route ships at src/server.js:36 behind the archive flag, but the page has no control. Size is provisional Bounded pending research. Baseline 3f1c2a0, 0 behind. Budgets: one interview of at most five questions after research, one explorer, tech lead plus one seat.\"",
+      "runsPerCase": 1,
+      "timeoutSeconds": 300,
+      "maxTurns": 5,
+      "graders": [
+        {
+          "name": "no-jargon",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^(?:(?!provisional|intake probe|Budgets|G1|DoR).){0,800}$",
+            "flags": "s",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "plain",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS if the reply keeps each fact's meaning (part of the archive feature already exists on the server behind a flag, the page has no control, the size is a first guess, the commit is current, the question and reviewer limits) in everyday words a non-engineer could follow, and does not use the phrases 'intake probe', 'provisional', or 'budgets'. Words like commit, flag, route, baseline are fine. FAIL only if a meaning changed, a fact was dropped, or one of those three phrases appears.",
+          "config": {
+            "criteria": "PASS if the reply keeps each fact's meaning (part of the archive feature already exists on the server behind a flag, the page has no control, the size is a first guess, the commit is current, the question and reviewer limits) in everyday words a non-engineer could follow, and does not use the phrases 'intake probe', 'provisional', or 'budgets'. Words like commit, flag, route, baseline are fine. FAIL only if a meaning changed, a fact was dropped, or one of those three phrases appears.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.22901349999999998,
+            "judgeCostUsd": 0.0009029999999999999,
+            "durationSeconds": 35,
+            "startedAt": "2026-09-18T22:28:52.918Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-rKzxLw/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-jargon",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^(?:(?!provisional|intake probe|Budgets|G1|DoR).){0,800}$",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "plain",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Part of it already exists. The archive route sits at src/server.js:36, behind the archive flag. The page has no control. Size looks \"Bounded\", pending research. Baseline is commit 3f1c2a0, and nothing has landed since. After research I ask one round of questions, five at most. One explorer runs. The tech lead plus one seat reviews."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "leaf-research",
+      "dir": "evals/leaf-research",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-research shared-boards --system",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1800,
+      "maxTurns": 80,
+      "graders": [
+        {
+          "name": "anchors-at-sha",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/shared-boards/research.md"
+            },
+            "pattern": "src/\\w+\\.js:\\d+",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "census",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/shared-boards/research.md"
+            },
+            "pattern": "entry point",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "explorers",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ee][Xx][Pp][Ll][Oo][Rr][Ee][Rr]|[Ee][Nn][Tt][Rr][Yy] [Pp][Oo][Ii][Nn][Tt][Ss]|[Dd][Aa][Tt][Aa] [Ff][Ll][Oo][Ww]",
+            "min": 1
+          }
+        },
+        {
+          "name": "research-written",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/shared-boards/research.md"
+            },
+            "pattern": "current system",
+            "flags": "i",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 25,
+            "costUsd": 2.6480054999999996,
+            "judgeCostUsd": 0,
+            "durationSeconds": 392,
+            "startedAt": "2026-09-18T22:29:27.672Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-OUo0w7/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "anchors-at-sha",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched src/\\w+\\.js:\\d+",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "census",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched entry point",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "explorers",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "research-written",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched current system",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "leaf-review-all-seats",
+      "dir": "evals/leaf-review-all-seats",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-review --diff main..feature/smart-suggest",
+      "runsPerCase": 1,
+      "timeoutSeconds": 2400,
+      "maxTurns": 100,
+      "graders": [
+        {
+          "name": "no-edit",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Edit",
+            "input_match": ".",
+            "min": 0,
+            "max": 0
+          }
+        },
+        {
+          "name": "path-read-test-found",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "routes-contract|README lacks",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "prompt-contradiction-found",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "contradict",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "safety-fact",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "safe because|unproven",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "seat-accessibility",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Aa][Cc][Cc][Ee][Ss][Ss][Ii][Bb]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-adversarial",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Aa][Dd][Vv][Ee][Rr][Ss][Aa][Rr][Ii][Aa][Ll]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-backwards-compat",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Bb][Aa][Cc][Kk][Ww][Aa][Rr][Dd][Ss].[Cc][Oo][Mm][Pp][Aa][Tt]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-cost",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "\\b[Cc][Oo][Ss][Tt]\\b",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-database",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Dd][Aa][Tt][Aa][Bb][Aa][Ss][Ee]|[Mm][Ii][Gg][Rr][Aa][Tt][Ii][Oo][Nn]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-frontend",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ff][Rr][Oo][Nn][Tt][Ee][Nn][Dd]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-integration",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ii][Nn][Tt][Ee][Gg][Rr][Aa][Tt][Ii][Oo][Nn]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-product-owner",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Pp][Rr][Oo][Dd][Uu][Cc][Tt] [Oo][Ww][Nn][Ee][Rr]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-prompt-quality",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Pp][Rr][Oo][Mm][Pp][Tt].[Qq][Uu][Aa][Ll][Ii][Tt][Yy]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-qa",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "\\b[Qq][Aa]\\b",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-security",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ss][Ee][Cc][Uu][Rr][Ii][Tt][Yy]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-silent-failure",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ss][Ii][Ll][Ee][Nn][Tt].[Ff][Aa][Ii][Ll][Uu][Rr][Ee]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-sre",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "\\b[Ss][Rr][Ee]\\b|[Rr][Ee][Ss][Ii][Ll][Ii][Ee][Nn][Cc][Ee]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-staff",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ss][Tt][Aa][Ff][Ff]|[Ss][Ii][Mm][Pp][Ll][Ii][Cc][Ii][Tt][Yy]",
+            "min": 1
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 33,
+            "costUsd": 8.234290999999999,
+            "judgeCostUsd": 0,
+            "durationSeconds": 872,
+            "startedAt": "2026-09-18T22:30:41.908Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-dASnrO/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-edit",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Edit called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "path-read-test-found",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched routes-contract|README lacks",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "prompt-contradiction-found",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched contradict",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "safety-fact",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched safe because|unproven",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-accessibility",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-adversarial",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-backwards-compat",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-cost",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 2x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-database",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 15x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-frontend",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-integration",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-product-owner",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-prompt-quality",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-qa",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-security",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-silent-failure",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-sre",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-staff",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "leaf-techlead-all-seats",
+      "dir": "evals/leaf-techlead-all-seats",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-techlead shared-boards\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the findings block is given and reversible edits are applied. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 2400,
+      "maxTurns": 100,
+      "graders": [
+        {
+          "name": "rulings-ledger",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/shared-boards/decisions.md"
+            },
+            "pattern": "## Review rulings[\\s\\S]*\\| (techlead|tech lead|hawk|security|frontend|database|SRE|integration|cost)",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "seat-cost",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "\\b[Cc][Oo][Ss][Tt]\\b",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-database",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Dd][Aa][Tt][Aa][Bb][Aa][Ss][Ee]|[Rr][Ee][Ll][Ee][Aa][Ss][Ee] [Ee][Nn][Gg][Ii][Nn][Ee][Ee][Rr]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-frontend",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ff][Rr][Oo][Nn][Tt][Ee][Nn][Dd]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-hawk",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ss][Ii][Mm][Pp][Ll][Ii][Cc][Ii][Tt][Yy] [Hh][Aa][Ww][Kk]|[Ss][Tt][Aa][Ff][Ff] [Ss][Ii][Mm][Pp][Ll][Ii][Cc][Ii][Tt][Yy]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-integration",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ii][Nn][Tt][Ee][Gg][Rr][Aa][Tt][Ii][Oo][Nn]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-security",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ss][Ee][Cc][Uu][Rr][Ii][Tt][Yy]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-sre",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "\\b[Ss][Rr][Ee]\\b",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-techlead",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Tt][Ee][Cc][Hh] [Ll][Ee][Aa][Dd]",
+            "min": 1
+          }
+        },
+        {
+          "name": "verifier-pass",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "verif",
+            "flags": "i",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 30,
+            "costUsd": 6.762076999999999,
+            "judgeCostUsd": 0,
+            "durationSeconds": 758,
+            "startedAt": "2026-09-18T22:35:59.323Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-ZbNjNA/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "rulings-ledger",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ## Review rulings[\\s\\S]*\\| (techlead|tech lead|hawk|security|frontend|database|SRE|integration|cost)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-cost",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 3x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-database",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-frontend",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-hawk",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-integration",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-security",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 2x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-sre",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-techlead",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "verifier-pass",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched verif",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "playbook-babysit",
+      "dir": "evals/playbook-babysit",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder get PR 7 merge-ready: the check is red and there are review comments\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the PR is merge-ready or the blocker is named. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 2400,
+      "maxTurns": 120,
+      "graders": [
+        {
+          "name": "fix-wave",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "fix wave",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "never-merges",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "pr merge",
+            "min": 0,
+            "max": 0
+          }
+        },
+        {
+          "name": "readme-fixed",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "README.md"
+            },
+            "pattern": "priority",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "reads-pr",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "gh pr (view|checks|list)",
+            "min": 1
+          }
+        },
+        {
+          "name": "route-babysit",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/babysit\\.md"
+          }
+        },
+        {
+          "name": "triage-table",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "act|push back|clarify",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "verify-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-verify\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.8571428571428571,
+            "passed": false,
+            "turns": 232,
+            "costUsd": 12.658124500000003,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2401,
+            "startedAt": "2026-09-18T22:37:14.116Z",
+            "error": "timed out after 2400s",
+            "tracePath": "/private/tmp/e-g4r7BH/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "fix-wave",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fix wave",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "never-merges",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "readme-fixed",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched priority",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "reads-pr",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 2x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-babysit",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "triage-table",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "verify-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.8571428571428571,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "playbook-built-first",
+      "dir": "evals/playbook-built-first",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder review what I built on this branch before I open the PR\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the Definition of Ready is printed and the hand-off is stated. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 3600,
+      "maxTurns": 200,
+      "graders": [
+        {
+          "name": "assumed-derived",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "ASSUMED: derived from the diff",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "derived-plan",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "docs/plans/*/decisions.md",
+            "exists": true
+          }
+        },
+        {
+          "name": "dor-printed",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Definition of Ready",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "pm-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-pm\""
+          }
+        },
+        {
+          "name": "review-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-review\""
+          }
+        },
+        {
+          "name": "round-trip",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "round.trip|displays|removes",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "route-built-first",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/built-first\\.md"
+          }
+        },
+        {
+          "name": "status-derived",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "Status:\\*?\\*? *Derived",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "techlead-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-techlead\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 100,
+            "costUsd": 12.082655000000006,
+            "judgeCostUsd": 0,
+            "durationSeconds": 925,
+            "startedAt": "2026-09-18T22:40:43.550Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-SuxtCP/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "assumed-derived",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ASSUMED: derived from the diff",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "derived-plan",
+                "passed": true,
+                "weight": 1,
+                "explanation": "docs/plans/*/decisions.md exists as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "dor-printed",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Definition of Ready",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "pm-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "review-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "round-trip",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched round.trip|displays|removes",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-built-first",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "status-derived",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Status:\\*?\\*? *Derived",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "techlead-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "playbook-decision-record",
+      "dir": "evals/playbook-decision-record",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder write up the decision to keep feature flags in a JSON file rather than environment variables as an ADR\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the record is written and linked. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1200,
+      "maxTurns": 60,
+      "graders": [
+        {
+          "name": "adr-written",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "docs/adr/0002-*.md",
+            "exists": true
+          }
+        },
+        {
+          "name": "consequences",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "consequences",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "review-skipped",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "skip: prose|skipped",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "route-adr",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/decision-record\\.md"
+          }
+        },
+        {
+          "name": "why-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-why\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 46,
+            "costUsd": 2.1044504999999996,
+            "judgeCostUsd": 0,
+            "durationSeconds": 319,
+            "startedAt": "2026-09-18T22:45:13.636Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-65tNji/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "adr-written",
+                "passed": true,
+                "weight": 1,
+                "explanation": "docs/adr/0002-*.md exists as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "consequences",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched consequences",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "review-skipped",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched skip: prose|skipped",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-adr",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "why-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "playbook-dependency-upgrade",
+      "dir": "evals/playbook-dependency-upgrade",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder upgrade tinydate to v2; the new version is vendored at vendor/tinydate-v2 with its changelog\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the PR is opened with bin/gh. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 2400,
+      "maxTurns": 120,
+      "graders": [
+        {
+          "name": "changelog-read",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "tinydate-v2/CHANGELOG",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "compat-seat",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Bb][Aa][Cc][Kk][Ww][Aa][Rr][Dd][Ss].[Cc][Oo][Mm][Pp][Aa][Tt]",
+            "min": 1
+          }
+        },
+        {
+          "name": "consumer-fixed",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "src/dates.js"
+            },
+            "pattern": "add\\(|\\{ pattern",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "pr-created",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": ".forge/created.txt",
+            "exists": true
+          }
+        },
+        {
+          "name": "review-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-review\""
+          }
+        },
+        {
+          "name": "route-upgrade",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/dependency-upgrade\\.md"
+          }
+        },
+        {
+          "name": "tests-run",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "node --test",
+            "min": 1
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 158,
+            "costUsd": 14.199926499999993,
+            "judgeCostUsd": 0,
+            "durationSeconds": 1209,
+            "startedAt": "2026-09-18T22:48:37.356Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-nUUpnU/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "changelog-read",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched tinydate-v2/CHANGELOG",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "compat-seat",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "consumer-fixed",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched add\\(|\\{ pattern",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "pr-created",
+                "passed": true,
+                "weight": 1,
+                "explanation": ".forge/created.txt exists as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "review-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-upgrade",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "tests-run",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 39x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "playbook-opening-a-pr",
+      "dir": "evals/playbook-opening-a-pr",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder open a PR for this branch\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the PR is opened with bin/gh. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1800,
+      "maxTurns": 80,
+      "graders": [
+        {
+          "name": "body-sections",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "## Why[\\s\\S]*## Verification|Why[\\s\\S]*Verification",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "checks-run",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "node --test|scripts/check",
+            "min": 1
+          }
+        },
+        {
+          "name": "no-force-push",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "push.*--force|push -f",
+            "min": 0,
+            "max": 0
+          }
+        },
+        {
+          "name": "pr-created",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": ".forge/created.txt",
+            "exists": true
+          }
+        },
+        {
+          "name": "route-opening",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/opening-a-pr\\.md"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.8,
+            "passed": false,
+            "turns": 47,
+            "costUsd": 2.2642219999999997,
+            "judgeCostUsd": 0,
+            "durationSeconds": 317,
+            "startedAt": "2026-09-18T22:50:32.798Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-5Zt2wf/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "body-sections",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "checks-run",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 8x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-force-push",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "pr-created",
+                "passed": true,
+                "weight": 1,
+                "explanation": ".forge/created.txt exists as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-opening",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.8,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "route-state-vs-words",
+      "dir": "evals/route-state-vs-words",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder fix this: TypeError: Cannot read properties of undefined (reading 'status') at complete (src/tasks.js:22)",
+      "runsPerCase": 1,
+      "timeoutSeconds": 900,
+      "maxTurns": 40,
+      "graders": [
+        {
+          "name": "both-routes",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "bug fix[\\s\\S]*babysit|babysit[\\s\\S]*bug fix",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "one-question",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Q1|Recommended:",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "state-recommended",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "recommended:.*(babysit|bug fix)",
+            "flags": "i",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.6666666666666666,
+            "passed": false,
+            "turns": 17,
+            "costUsd": 0.825475,
+            "judgeCostUsd": 0,
+            "durationSeconds": 143,
+            "startedAt": "2026-09-18T22:55:50.242Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-tyNsfL/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "both-routes",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched bug fix[\\s\\S]*babysit|babysit[\\s\\S]*bug fix",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "one-question",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Q1|Recommended:",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "state-recommended",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.6666666666666666,
+        "passRate": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 13,
+    "casesPassed": 9,
+    "overallScore": 0.9287545787545788,
+    "overallPassRate": 0.6923076923076923
+  }
+}
