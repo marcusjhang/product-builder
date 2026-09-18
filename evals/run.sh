@@ -8,7 +8,7 @@ EH="${PB_EVAL_HOME:-$HOME/.pb-eval-home}"
 # A clean HOME that links only what Claude Code needs: the runner's sandbox refuses to start when the real home
 # holds a credential store it cannot exclude (a Docker cli-plugins directory with symlinks, an unparseable key file).
 mkdir -p "$EH/bin"
-for l in .claude .claude.json Library; do [ -e "$HOME/$l" ] && ln -sfn "$HOME/$l" "$EH/$l"; done
+for l in .claude .claude.json Library; do [ -e "$HOME/$l" ] && [ ! -e "$EH/$l" ] && ln -s "$HOME/$l" "$EH/$l" || true; done
 # /usr/bin/git is an xcrun shim that needs a cache the sandbox denies; put a real git first on PATH.
 if [ -x /Library/Developer/CommandLineTools/usr/bin/git ]; then
   printf '#!/bin/sh\nexec /Library/Developer/CommandLineTools/usr/bin/git "$@"\n' > "$EH/bin/git"; chmod +x "$EH/bin/git"

@@ -1,0 +1,1944 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.277",
+  "startedAt": "2026-09-18T18:36:09.753Z",
+  "durationSeconds": 1309,
+  "costUsd": 24.776493750000004,
+  "partial": false,
+  "suite": {
+    "root": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo",
+    "ablation": "none",
+    "tagFilters": [
+      "leaf"
+    ],
+    "threshold": 1,
+    "concurrency": 3,
+    "plugins": [
+      {
+        "name": "product-builder",
+        "version": "0.1.0",
+        "path": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "leaf-how",
+      "dir": "evals/leaf-how",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-how how does a request become a stored task and an analytics event, across the server, the domain module, the store, and the tracker?",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1200,
+      "maxTurns": 60,
+      "graders": [
+        {
+          "name": "anchors",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "src/\\w+\\.js:\\d+",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "explorers",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ee][Xx][Pp][Ll][Oo][Rr][Ee][Rr]|[Aa][Nn][Gg][Ll][Ee]|[Bb][Aa][Ss][Ee][Ll][Ii][Nn][Ee] [Ss][Hh][Aa]",
+            "min": 2
+          }
+        },
+        {
+          "name": "no-change",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "src/**",
+            "exists": false
+          }
+        },
+        {
+          "name": "shape",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "overview[\\s\\S]*how it works[\\s\\S]*where things live",
+            "flags": "i",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 19,
+            "costUsd": 1.2797925,
+            "judgeCostUsd": 0,
+            "durationSeconds": 221,
+            "startedAt": "2026-09-18T18:36:09.867Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-RXjr3n/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "anchors",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched src/\\w+\\.js:\\d+",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "explorers",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 3x (expected 2..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-change",
+                "passed": true,
+                "weight": 1,
+                "explanation": "src/** absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "shape",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched overview[\\s\\S]*how it works[\\s\\S]*where things live",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "leaf-personas",
+      "dir": "evals/leaf-personas",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-personas keyboard-archive --target public/index.html --paper",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1800,
+      "maxTurns": 80,
+      "graders": [
+        {
+          "name": "devin",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "Devin",
+            "min": 1
+          }
+        },
+        {
+          "name": "five-second",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "five.second",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "limitation",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "pilot|not a substitute|stereotype",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "mara",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "Mara",
+            "min": 1
+          }
+        },
+        {
+          "name": "paper-said",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "paper",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "priya-or-edge",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Pp][Rr][Ii][Yy][Aa]|[Ee][Dd][Gg][Ee]|[Ww][Rr][Oo][Nn][Gg] [Rr][Oo][Ll][Ee]|[Mm][Oo][Bb][Ii][Ll][Ee]",
+            "min": 1
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 38,
+            "costUsd": 2.4682285,
+            "judgeCostUsd": 0,
+            "durationSeconds": 388,
+            "startedAt": "2026-09-18T18:36:09.867Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-PH72eJ/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "devin",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "five-second",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched five.second",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "limitation",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched pilot|not a substitute|stereotype",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "mara",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "paper-said",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched paper",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "priya-or-edge",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 2x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "leaf-plain",
+      "dir": "evals/leaf-plain",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-plain Restate my last reply, which was: \"The intake probe returned partial: the archive route ships at src/server.js:36 behind the archive flag, but the page has no control. Size is provisional Bounded pending research. Baseline 3f1c2a0, 0 behind. Budgets: one interview of at most five questions after research, one explorer, tech lead plus one seat.\"",
+      "runsPerCase": 1,
+      "timeoutSeconds": 300,
+      "maxTurns": 5,
+      "graders": [
+        {
+          "name": "plain",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS if the reply says the same things in plain words a non-engineer could follow, shorter than the original, with no jargon like intake probe, provisional, baseline, budgets. FAIL if it keeps the jargon or adds new content.",
+          "config": {
+            "criteria": "PASS if the reply says the same things in plain words a non-engineer could follow, shorter than the original, with no jargon like intake probe, provisional, baseline, budgets. FAIL if it keeps the jargon or adds new content.",
+            "focus": "last_message"
+          }
+        },
+        {
+          "name": "shorter",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^(?:(?!provisional|intake probe|Budgets).){0,500}$",
+            "flags": "s",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 3,
+            "costUsd": 0.1835155,
+            "judgeCostUsd": 0.001503,
+            "durationSeconds": 18,
+            "startedAt": "2026-09-18T18:36:09.867Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-GfkwZV/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "plain",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Part of the archiving work is already built. The route exists in `src/server.js:36`, and it only runs when the archive flag is on. The page has no button or control for it, so nobody can reach it yet.\n\nI sized the work as \"Bounded\" for now, and that size may change once I look into the code properly.\n\nI am working from commit `3f1c2a0`, and nothing new has landed on top of it.\n\nFor the limits I set: after the research I get one round of questions for you, five at most. One agent goes off to search the code. The plan gets reviewed by a tech lead and one other reviewer."
+              },
+              {
+                "name": "shorter",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "leaf-pm",
+      "dir": "evals/leaf-pm",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-pm keyboard-archive\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the findings block and the scope answer are given. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1800,
+      "maxTurns": 80,
+      "graders": [
+        {
+          "name": "buckets",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "act on[\\s\\S]*consider[\\s\\S]*noted[\\s\\S]*dismissed",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "scope-question",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "hold scope|wedge",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "seat-analyst",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Aa][Nn][Aa][Ll][Yy][Ss][Tt]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-customer",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Cc][Uu][Ss][Tt][Oo][Mm][Ee][Rr]|[Mm][Aa][Rr][Aa]|[Dd][Ee][Vv][Ii][Nn]|[Pp][Rr][Ii][Yy][Aa]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-designer",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Dd][Ee][Ss][Ii][Gg][Nn][Ee][Rr]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-pm",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Pp][Rr][Oo][Dd][Uu][Cc][Tt] [Mm][Aa][Nn][Aa][Gg][Ee][Rr]|\\b[Pp][Mm]\\b",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-skeptic",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ss][Kk][Ee][Pp][Tt][Ii][Cc]",
+            "min": 1
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 21,
+            "costUsd": 2.9412617500000007,
+            "judgeCostUsd": 0,
+            "durationSeconds": 333,
+            "startedAt": "2026-09-18T18:36:28.134Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-zgkFlM/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "buckets",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched act on[\\s\\S]*consider[\\s\\S]*noted[\\s\\S]*dismissed",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "scope-question",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched hold scope|wedge",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-analyst",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-customer",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-designer",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-pm",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-skeptic",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 2x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "leaf-prototype",
+      "dir": "evals/leaf-prototype",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-prototype keyboard-archive --decision \"where the Archive control sits: on each row, or one bulk bar above the list\" --mode html",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1800,
+      "maxTurns": 80,
+      "graders": [
+        {
+          "name": "decision-recorded",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/keyboard-archive/decisions.md"
+            },
+            "pattern": "prototype",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "html-written",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "docs/plans/keyboard-archive/prototype/index.html",
+            "exists": true
+          }
+        },
+        {
+          "name": "recommendation",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "recommend",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "switcher",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/keyboard-archive/prototype/index.html"
+            },
+            "pattern": "variant|switch",
+            "flags": "i",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 21,
+            "costUsd": 1.2514485,
+            "judgeCostUsd": 0,
+            "durationSeconds": 250,
+            "startedAt": "2026-09-18T18:39:51.194Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-G7ZX9J/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "decision-recorded",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched prototype",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "html-written",
+                "passed": true,
+                "weight": 1,
+                "explanation": "docs/plans/keyboard-archive/prototype/index.html exists as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "recommendation",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched recommend",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "switcher",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched variant|switch",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "leaf-reflect",
+      "dir": "evals/leaf-reflect",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-reflect keyboard-archive\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the table of proposed edits is presented. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1200,
+      "maxTurns": 60,
+      "graders": [
+        {
+          "name": "no-suite-edit",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Edit",
+            "input_match": "skills/",
+            "min": 0,
+            "max": 0
+          }
+        },
+        {
+          "name": "nothing-applied-without-approval",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "approv|apply",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "table",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "accepted[\\s\\S]*rejected[\\s\\S]*backlog",
+            "flags": "i",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 36,
+            "costUsd": 1.4803779999999997,
+            "judgeCostUsd": 0,
+            "durationSeconds": 278,
+            "startedAt": "2026-09-18T18:42:00.913Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-eFolkI/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-suite-edit",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Edit called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "nothing-applied-without-approval",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched approv|apply",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "table",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched accepted[\\s\\S]*rejected[\\s\\S]*backlog",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "leaf-research",
+      "dir": "evals/leaf-research",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-research shared-boards --system",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1800,
+      "maxTurns": 80,
+      "graders": [
+        {
+          "name": "anchors-at-sha",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/shared-boards/research.md"
+            },
+            "pattern": "src/\\w+\\.js:\\d+",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "census",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/shared-boards/research.md"
+            },
+            "pattern": "entry point",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "explorers",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ee][Xx][Pp][Ll][Oo][Rr][Ee][Rr]|[Ee][Nn][Tt][Rr][Yy] [Pp][Oo][Ii][Nn][Tt][Ss]|[Dd][Aa][Tt][Aa] [Ff][Ll][Oo][Ww]",
+            "min": 1
+          }
+        },
+        {
+          "name": "research-written",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/shared-boards/research.md"
+            },
+            "pattern": "current system",
+            "flags": "i",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.75,
+            "passed": false,
+            "turns": 56,
+            "costUsd": 2.0295775000000003,
+            "judgeCostUsd": 0,
+            "durationSeconds": 368,
+            "startedAt": "2026-09-18T18:42:38.334Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-bIp41l/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "anchors-at-sha",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched src/\\w+\\.js:\\d+",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "census",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched entry point",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "explorers",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Agent called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "research-written",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched current system",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.75,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "leaf-resume",
+      "dir": "evals/leaf-resume",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-resume --all",
+      "runsPerCase": 1,
+      "timeoutSeconds": 900,
+      "maxTurns": 40,
+      "graders": [
+        {
+          "name": "both-plans",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "keyboard-archive[\\s\\S]*shared-boards|shared-boards[\\s\\S]*keyboard-archive",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "next-move",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "next move",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "nothing-written",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "docs/**",
+            "exists": false
+          }
+        },
+        {
+          "name": "status-tags",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "implementing|drafted",
+            "flags": "i",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 15,
+            "costUsd": 0.481266,
+            "judgeCostUsd": 0,
+            "durationSeconds": 80,
+            "startedAt": "2026-09-18T18:44:00.805Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-mGmTDS/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "both-plans",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched keyboard-archive[\\s\\S]*shared-boards|shared-boards[\\s\\S]*keyboard-archive",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "next-move",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched next move",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "nothing-written",
+                "passed": true,
+                "weight": 1,
+                "explanation": "docs/** absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "status-tags",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched implementing|drafted",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "leaf-review-all-seats",
+      "dir": "evals/leaf-review-all-seats",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-review --diff main..feature/smart-suggest",
+      "runsPerCase": 1,
+      "timeoutSeconds": 2400,
+      "maxTurns": 100,
+      "graders": [
+        {
+          "name": "no-edit",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Edit",
+            "input_match": ".",
+            "min": 0,
+            "max": 0
+          }
+        },
+        {
+          "name": "path-read-test-found",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "routes-contract|README lacks",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "prompt-contradiction-found",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "contradict",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "safety-fact",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "safe because|unproven",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "seat-accessibility",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Aa][Cc][Cc][Ee][Ss][Ss][Ii][Bb]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-adversarial",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Aa][Dd][Vv][Ee][Rr][Ss][Aa][Rr][Ii][Aa][Ll]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-backwards-compat",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Bb][Aa][Cc][Kk][Ww][Aa][Rr][Dd][Ss].[Cc][Oo][Mm][Pp][Aa][Tt]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-cost",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "\\b[Cc][Oo][Ss][Tt]\\b",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-database",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Dd][Aa][Tt][Aa][Bb][Aa][Ss][Ee]|[Mm][Ii][Gg][Rr][Aa][Tt][Ii][Oo][Nn]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-frontend",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ff][Rr][Oo][Nn][Tt][Ee][Nn][Dd]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-integration",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ii][Nn][Tt][Ee][Gg][Rr][Aa][Tt][Ii][Oo][Nn]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-product-owner",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Pp][Rr][Oo][Dd][Uu][Cc][Tt] [Oo][Ww][Nn][Ee][Rr]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-prompt-quality",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Pp][Rr][Oo][Mm][Pp][Tt].[Qq][Uu][Aa][Ll][Ii][Tt][Yy]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-qa",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "\\b[Qq][Aa]\\b",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-security",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ss][Ee][Cc][Uu][Rr][Ii][Tt][Yy]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-silent-failure",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ss][Ii][Ll][Ee][Nn][Tt].[Ff][Aa][Ii][Ll][Uu][Rr][Ee]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-sre",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "\\b[Ss][Rr][Ee]\\b|[Rr][Ee][Ss][Ii][Ll][Ii][Ee][Nn][Cc][Ee]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-staff",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ss][Tt][Aa][Ff][Ff]|[Ss][Ii][Mm][Pp][Ll][Ii][Cc][Ii][Tt][Yy]",
+            "min": 1
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.7222222222222222,
+            "passed": false,
+            "turns": 31,
+            "costUsd": 5.69466825,
+            "judgeCostUsd": 0,
+            "durationSeconds": 429,
+            "startedAt": "2026-09-18T18:45:20.317Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-bNQods/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-edit",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Edit called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "path-read-test-found",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched routes-contract|README lacks",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "prompt-contradiction-found",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched contradict",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "safety-fact",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched safe because|unproven",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-accessibility",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Agent called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-adversarial",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Agent called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-backwards-compat",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-cost",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 2x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-database",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 9x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-frontend",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Agent called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-integration",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Agent called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-product-owner",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-prompt-quality",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-qa",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-security",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-silent-failure",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-sre",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Agent called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-staff",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.7222222222222222,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "leaf-setup",
+      "dir": "evals/leaf-setup",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-setup\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the four files are written. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1800,
+      "maxTurns": 80,
+      "graders": [
+        {
+          "name": "ci-lane",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": ".product-builder/profile.md"
+            },
+            "pattern": "test-concurrency=1",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "drive",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": ".product-builder/drive.md",
+            "exists": true
+          }
+        },
+        {
+          "name": "first-run-hook",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "has no \\.product-builder/profile\\.md",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "forge-probed",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "gh (auth status|repo view)",
+            "min": 1
+          }
+        },
+        {
+          "name": "models",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": ".product-builder/models.md",
+            "exists": true
+          }
+        },
+        {
+          "name": "no-unknown-where-answerable",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": ".product-builder/profile.md"
+            },
+            "pattern": "dev: UNKNOWN|check: UNKNOWN",
+            "flags": "i",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "personas",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": ".product-builder/personas.md",
+            "exists": true
+          }
+        },
+        {
+          "name": "profile",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": ".product-builder/profile.md",
+            "exists": true
+          }
+        },
+        {
+          "name": "test-command-detected",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": ".product-builder/profile.md"
+            },
+            "pattern": "node --test",
+            "flags": "",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 26,
+            "costUsd": 1.6142180000000004,
+            "judgeCostUsd": 0,
+            "durationSeconds": 356,
+            "startedAt": "2026-09-18T18:46:39.127Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-Xok8B8/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "ci-lane",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched test-concurrency=1",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "drive",
+                "passed": true,
+                "weight": 1,
+                "explanation": ".product-builder/drive.md exists as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "first-run-hook",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched has no \\.product-builder/profile\\.md",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "forge-probed",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "models",
+                "passed": true,
+                "weight": 1,
+                "explanation": ".product-builder/models.md exists as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-unknown-where-answerable",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "personas",
+                "passed": true,
+                "weight": 1,
+                "explanation": ".product-builder/personas.md exists as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "profile",
+                "passed": true,
+                "weight": 1,
+                "explanation": ".product-builder/profile.md exists as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "test-command-detected",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched node --test",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "leaf-techlead-all-seats",
+      "dir": "evals/leaf-techlead-all-seats",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-techlead shared-boards\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the findings block is given and reversible edits are applied. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 2400,
+      "maxTurns": 100,
+      "graders": [
+        {
+          "name": "rulings-ledger",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/shared-boards/decisions.md"
+            },
+            "pattern": "## Review rulings[\\s\\S]*\\| (techlead|tech lead|hawk|security|frontend|database|SRE|integration|cost)",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "seat-cost",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "\\b[Cc][Oo][Ss][Tt]\\b",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-database",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Dd][Aa][Tt][Aa][Bb][Aa][Ss][Ee]|[Rr][Ee][Ll][Ee][Aa][Ss][Ee] [Ee][Nn][Gg][Ii][Nn][Ee][Ee][Rr]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-frontend",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ff][Rr][Oo][Nn][Tt][Ee][Nn][Dd]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-hawk",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ss][Ii][Mm][Pp][Ll][Ii][Cc][Ii][Tt][Yy] [Hh][Aa][Ww][Kk]|[Ss][Tt][Aa][Ff][Ff] [Ss][Ii][Mm][Pp][Ll][Ii][Cc][Ii][Tt][Yy]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-integration",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ii][Nn][Tt][Ee][Gg][Rr][Aa][Tt][Ii][Oo][Nn]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-security",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ss][Ee][Cc][Uu][Rr][Ii][Tt][Yy]",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-sre",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "\\b[Ss][Rr][Ee]\\b",
+            "min": 1
+          }
+        },
+        {
+          "name": "seat-techlead",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Tt][Ee][Cc][Hh] [Ll][Ee][Aa][Dd]",
+            "min": 1
+          }
+        },
+        {
+          "name": "verifier-pass",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "verif",
+            "flags": "i",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.6,
+            "passed": false,
+            "turns": 8,
+            "costUsd": 4.132050749999999,
+            "judgeCostUsd": 0,
+            "durationSeconds": 552,
+            "startedAt": "2026-09-18T18:48:46.632Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-MpvYE6/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "rulings-ledger",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ## Review rulings[\\s\\S]*\\| (techlead|tech lead|hawk|security|frontend|database|SRE|integration|cost)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-cost",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 2x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-database",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Agent called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-frontend",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Agent called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-hawk",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-integration",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Agent called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-security",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 2x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-sre",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Agent called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seat-techlead",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "verifier-pass",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched verif",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.6,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "leaf-verify",
+      "dir": "evals/leaf-verify",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-verify \"POST /tasks with a title then GET /tasks returns it\" \"POST /tasks/1/archive is 404 with the archive flag off and 200 with it on\"",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1200,
+      "maxTurns": 60,
+      "graders": [
+        {
+          "name": "evidence-path",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "evidence/|exit code|\\{",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "flag-both-states",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "flag off[\\s\\S]*flag on|flag on[\\s\\S]*flag off",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "pass-per-scenario",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "pass|fail",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "real-request",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "curl|fetch",
+            "min": 1
+          }
+        },
+        {
+          "name": "server-launched",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "node src/server\\.js|PORT=",
+            "min": 1
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 21,
+            "costUsd": 0.8188095000000001,
+            "judgeCostUsd": 0,
+            "durationSeconds": 143,
+            "startedAt": "2026-09-18T18:52:29.051Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-s0xbLf/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "evidence-path",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched evidence/|exit code|\\{",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "flag-both-states",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched flag off[\\s\\S]*flag on|flag on[\\s\\S]*flag off",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "pass-per-scenario",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched pass|fail",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "real-request",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "server-launched",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "leaf-why",
+      "dir": "evals/leaf-why",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-why why is the store a single JSON file instead of a database?",
+      "runsPerCase": 1,
+      "timeoutSeconds": 900,
+      "maxTurns": 40,
+      "graders": [
+        {
+          "name": "adr-found",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "ADR 0001|0001-json",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "dated",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "2026-08-20",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "git-history",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "git log|git blame",
+            "min": 1
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 12,
+            "costUsd": 0.401279,
+            "judgeCostUsd": 0,
+            "durationSeconds": 52,
+            "startedAt": "2026-09-18T18:52:34.987Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-gNbEic/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "adr-found",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ADR 0001|0001-json",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "dated",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched 2026-08-20",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "git-history",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 3x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 13,
+    "casesPassed": 9,
+    "overallScore": 0.8517094017094016,
+    "overallPassRate": 0.6923076923076923
+  }
+}

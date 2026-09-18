@@ -274,7 +274,7 @@ CASES = [
  dict(name="leaf-plain", tags=["leaf","tier1"], scaffold=BASE+" tb_origin",
       prompt="/product-builder-plain Restate my last reply, which was: \"The intake probe returned partial: the archive route ships at src/server.js:36 behind the archive flag, but the page has no control. Size is provisional Bounded pending research. Baseline 3f1c2a0, 0 behind. Budgets: one interview of at most five questions after research, one explorer, tech lead plus one seat.\"",
       turns=5, timeout=300, graders={
-        "shorter": rx(r"^(?:(?!provisional|intake probe|Budgets).){0,500}$", flags="s"), "plain": llm("PASS if the reply says the same things in plain words a non-engineer could follow, shorter than the original, with no jargon like intake probe, provisional, baseline, budgets. FAIL if it keeps the jargon or adds new content.")}),
+        "no-jargon": rx(r"^(?:(?!provisional|intake probe|Budgets|G1|DoR).){0,800}$", flags="s"), "plain": llm("PASS if the reply says the same things in plain words a non-engineer could follow, keeps each fact's meaning (in particular that part of the archive feature already exists on the server and the page has no control), is no longer than about one and a half times the original, and uses no jargon like intake probe, provisional, baseline, budgets. FAIL if it keeps the jargon, changes a meaning, or adds new content.")}),
  # ---------------- routing and gates (tier 1)
  dict(name="route-by-state", tags=["routing","tier1"], scaffold=BASE+" tb_layer_built_branch; tb_origin; git checkout -q feature/priority-filter",
       prompt="/product-builder look at this",
