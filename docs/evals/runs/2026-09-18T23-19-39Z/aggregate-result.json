@@ -1,0 +1,533 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.277",
+  "startedAt": "2026-09-18T23:19:40.512Z",
+  "durationSeconds": 684,
+  "costUsd": 8.6728173,
+  "partial": false,
+  "suite": {
+    "root": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo",
+    "ablation": "none",
+    "tagFilters": [
+      "retest1"
+    ],
+    "threshold": 1,
+    "concurrency": 2,
+    "plugins": [
+      {
+        "name": "product-builder",
+        "version": "0.1.0",
+        "path": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "gate-one-question-default",
+      "dir": "evals/gate-one-question-default",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder plan: add a due date to every task, shown on the page and settable from the CLI",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1200,
+      "maxTurns": 60,
+      "graders": [
+        {
+          "name": "ends-with-one-question",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Reply \\\"ok\\\" for \\(\\w\\), or name the letter",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "explored-first",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "grep|git log|cat",
+            "min": 1
+          }
+        },
+        {
+          "name": "not-two-questions",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "\\bQ2\\b",
+            "flags": "",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "twelve-lines-before-q1",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^(?:[^\\n]*\\n){0,19}[^\\n]*Q1\\b",
+            "flags": "",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 28,
+            "costUsd": 1.0832245,
+            "judgeCostUsd": 0,
+            "durationSeconds": 124,
+            "startedAt": "2026-09-18T23:19:40.640Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-Seb8ZJ/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "ends-with-one-question",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Reply \\\"ok\\\" for \\(\\w\\), or name the letter",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "explored-first",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 3x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "not-two-questions",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "twelve-lines-before-q1",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^(?:[^\\n]*\\n){0,19}[^\\n]*Q1\\b",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "playbook-babysit",
+      "dir": "evals/playbook-babysit",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder get PR 7 merge-ready: the check is red and there are review comments\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the PR is merge-ready or the blocker is named. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 2400,
+      "maxTurns": 120,
+      "graders": [
+        {
+          "name": "fix-wave",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "fix wave",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "never-merges",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "pr merge",
+            "min": 0,
+            "max": 0
+          }
+        },
+        {
+          "name": "readme-fixed",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "README.md"
+            },
+            "pattern": "priority",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "reads-pr",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "gh pr (view|checks|list)",
+            "min": 1
+          }
+        },
+        {
+          "name": "route-babysit",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/babysit\\.md"
+          }
+        },
+        {
+          "name": "triage-table",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "act|push back|clarify",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "verify-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-verify\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 75,
+            "costUsd": 4.5900018,
+            "judgeCostUsd": 0,
+            "durationSeconds": 684,
+            "startedAt": "2026-09-18T23:19:40.641Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-K89ph3/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "fix-wave",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fix wave",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "never-merges",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "readme-fixed",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched priority",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "reads-pr",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 2x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-babysit",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "triage-table",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched act|push back|clarify",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "verify-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "playbook-opening-a-pr",
+      "dir": "evals/playbook-opening-a-pr",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder open a PR for this branch\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the PR is opened with bin/gh. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1800,
+      "maxTurns": 80,
+      "graders": [
+        {
+          "name": "body-sections",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "## Why[\\s\\S]*## Verification",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "checks-run",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "node --test|scripts/check",
+            "min": 1
+          }
+        },
+        {
+          "name": "no-force-push",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "push.*--force|push -f",
+            "min": 0,
+            "max": 0
+          }
+        },
+        {
+          "name": "pr-created",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": ".forge/created.txt",
+            "exists": true
+          }
+        },
+        {
+          "name": "route-opening",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/opening-a-pr\\.md"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 61,
+            "costUsd": 2.224745,
+            "judgeCostUsd": 0,
+            "durationSeconds": 314,
+            "startedAt": "2026-09-18T23:21:45.132Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-xIloKw/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "body-sections",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ## Why[\\s\\S]*## Verification",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "checks-run",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 6x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-force-push",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "pr-created",
+                "passed": true,
+                "weight": 1,
+                "explanation": ".forge/created.txt exists as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-opening",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "route-state-vs-words",
+      "dir": "evals/route-state-vs-words",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder fix this: TypeError: Cannot read properties of undefined (reading 'status') at complete (src/tasks.js:22)",
+      "runsPerCase": 1,
+      "timeoutSeconds": 900,
+      "maxTurns": 40,
+      "graders": [
+        {
+          "name": "pr-named",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "PR 7|open PR|red check|pr checks|babysit",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "premise-checked",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "premise|does not match|cannot come from",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "route-bug-fix",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/bug-fix\\.md"
+          }
+        },
+        {
+          "name": "state-script-ran",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "scripts/state",
+            "min": 1
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 18,
+            "costUsd": 0.7748459999999999,
+            "judgeCostUsd": 0,
+            "durationSeconds": 121,
+            "startedAt": "2026-09-18T23:26:58.699Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-6VzWKM/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "pr-named",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched PR 7|open PR|red check|pr checks|babysit",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "premise-checked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched premise|does not match|cannot come from",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-bug-fix",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "state-script-ran",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 4,
+    "casesPassed": 4,
+    "overallScore": 1,
+    "overallPassRate": 1
+  }
+}
