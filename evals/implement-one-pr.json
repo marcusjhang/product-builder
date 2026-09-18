@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "implement a plan with three slices where the user said \"one PR\"",
+  "expected_behavior": [
+    "the slices are ordered commits on one branch, one implementation-log row and one restated contract per commit",
+    "steps 7 to 9 run once at the end for the branch",
+    "the first line of the reply says one PR, three commits, and the shape is not described as an exception"
+  ]
+}

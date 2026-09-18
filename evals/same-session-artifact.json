@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "a plan request in a session that earlier wrote a design doc and started a draft build in the working tree",
+  "expected_behavior": [
+    "both are cited as prior attempts at intake",
+    "before Ready, each is folded into the plan folder or deleted, and the ledger records which",
+    "the design doc is not left beside the plan folder with overlapping content"
+  ]
+}

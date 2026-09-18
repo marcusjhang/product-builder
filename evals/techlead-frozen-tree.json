@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder-techlead"
+  ],
+  "query": "a panel over a plan whose draft implementation sits in the working tree, where the first seat returns while three are still running",
+  "expected_behavior": [
+    "no edit and no applied ruling touches the tree until every seat has returned",
+    "each seat's prompt says a draft exists, to read it as evidence of intent, and to verify current state against the baseline with git show <sha>:<path>",
+    "no seat reports the tree moving under it"
+  ]
+}

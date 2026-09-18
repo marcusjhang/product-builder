@@ -1,0 +1,12 @@
+{
+  "skills": [
+    "product-builder-setup"
+  ],
+  "query": "setup in a repo whose provisioning script rewrites the OAuth host and whose database credential has been rotated",
+  "expected_behavior": [
+    "one select 1 against the database and one PING against the cache are run and recorded as pass or fail with the date and error text",
+    "the provisioning script is read and every env value it rewrites is recorded, the login proxy host first",
+    "the schema used is profiles/default.md and the profile has every section",
+    "one question asks whether to commit .product-builder/, recommending commit"
+  ]
+}

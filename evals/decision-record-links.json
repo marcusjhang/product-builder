@@ -1,0 +1,12 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "\"write up the decision to keep the queue in Postgres as an ADR\"",
+  "expected_behavior": [
+    "the decision is located in the ledger, a thread, or a commit, and a reason that cannot be found is recorded as reason not recorded with who to ask",
+    "the record follows the repo's ADR convention and supersedes a contradicting record by number rather than editing it",
+    "the record and its source are linked both ways",
+    "the review skill is skipped with skip: prose and a commit on the default branch waits for the user"
+  ]
+}

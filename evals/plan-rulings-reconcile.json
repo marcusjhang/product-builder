@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "the tech-lead panel overrules a sentinel value at step 7 and product.md still describes it",
+  "expected_behavior": [
+    "the verify step reconciles product.md and implementation.md against the rulings table and every superseded row",
+    "the stale section is edited and the edit is listed",
+    "the Definition of Ready's reconciliation box cites that list as its evidence"
+  ]
+}

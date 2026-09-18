@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder-research"
+  ],
+  "query": "research for an area this session already read an hour ago at the baseline",
+  "expected_behavior": [
+    "Explorers: 0 is written in the header with the reason",
+    "every anchor is re-run with grep -n at the baseline rather than reused from the earlier read",
+    "no subagent re-reads files the session already read"
+  ]
+}

@@ -6,7 +6,7 @@ argument-hint: [slug] [--seats pm,skeptic,designer,analyst,customer]
 
 # product-builder-pm
 
-1. Read `product.md`, `decisions.md`, `research.md`, `.product-builder/personas.md`, `.product-builder/learnings.md`, and the profile's analytics convention.
+1. Read `product.md`, `decisions.md`, `research.md`, `.product-builder/personas.md`, `.product-builder/learnings.md`, and the profile's analytics convention. A plan at status `Derived` (the Built first playbook wrote it from an existing diff) is read the same way; a row marked `ASSUMED: derived from the diff` is a question for the author, not a gap the panel fills.
 2. Cast three to five seats. The PM and the skeptic always sit; the designer when a UI story exists; the analyst when a success signal or instrumentation is claimed; the customer voice from the roster. Say the cast in one line.
 3. Dispatch in parallel, read-only, each with `${CLAUDE_SKILL_DIR}/references/panel-prompt.md` filled for its seat.
 4. Verifier pass: drop findings the plan already answers; keep confidence; below 60 lands in noted. When the profile names a judge, run its `finding` gate over every returned finding first through `${CLAUDE_SKILL_DIR}/../product-builder/scripts/judge` (`--batch`; state: the finding and the `product.md` section it names, verbatim); in `gate` mode its `already_answered` verdict does the dropping and its bucket and confidence replace the seat's, in `shadow` mode they are logged beside yours.

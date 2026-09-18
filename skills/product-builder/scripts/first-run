@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# first-run: SessionStart hook. Prints one line when the current repo has no product-builder profile,
+# so a session that starts in a fresh checkout or worktree hears about setup before the first feature.
+# Silent when there is no git repo, when the profile exists, or when PRODUCT_BUILDER_NUDGE=0.
+set -u
+[ "${PRODUCT_BUILDER_NUDGE:-1}" = "0" ] && exit 0
+root="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+[ -f "$root/.product-builder/profile.md" ] && exit 0
+printf 'product-builder: %s has no .product-builder/profile.md. Run /product-builder-setup once before planning, building, or reviewing here; every skill reads the profile instead of guessing. Set PRODUCT_BUILDER_NUDGE=0 to silence this line.\n' "$(basename "$root")"

@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "a session that starts in a repo with no .product-builder/profile.md",
+  "expected_behavior": [
+    "the first-run hook prints one line naming the repo and the setup command, once",
+    "with a profile present, or with PRODUCT_BUILDER_NUDGE=0, nothing is printed",
+    "outside a git repository nothing is printed and the hook exits 0"
+  ]
+}

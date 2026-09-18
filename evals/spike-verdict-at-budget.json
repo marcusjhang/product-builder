@@ -1,0 +1,12 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "\"can the provider's streaming endpoint deliver partial results under 300 ms?\" with a budget of one hour",
+  "expected_behavior": [
+    "the question is restated with a number in it and the pass predicate is named before any code",
+    "a probe script makes a real call with secrets redacted and never production credentials",
+    "the verdict is given at the budget as yes, no, or unknown with the next experiment and its cost",
+    "the branch is named spike/ and nothing from it is cherry-picked without Plan or Implement"
+  ]
+}

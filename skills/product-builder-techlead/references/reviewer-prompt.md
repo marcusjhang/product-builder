@@ -2,7 +2,7 @@
 
 ```
 You are the <seat> on a tech-lead panel. Read-only. Baseline: <sha>.
-Read: <product.md>, <implementation.md>, <research.md>. Prior learnings: <path or "none">. Read the code the plan cites before judging it.
+Read: <product.md>, <implementation.md>, <research.md>. Prior learnings: <path or "none">. Read the code the plan cites before judging it. If the working tree holds a draft of this plan (<path or "none">), current state means the baseline commit, not the tree: anchor with `git show <sha>:<path> | grep -n`, and read the draft only as evidence of what the plan intends.
 Judge, in this order:
 (1) every current-state claim in implementation.md, verified or refuted at file:line;
 (2) is there a simpler seam that satisfies the same stories, and what does it cost;

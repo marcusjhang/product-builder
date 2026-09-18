@@ -1,0 +1,10 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "the Definition of Ready for a plan with a slice that calls a model",
+  "expected_behavior": [
+    "the printed list has the AI-lane box: the key that pays, metered or rate-limited and by what, the measured worst-case request, a size assertion in the tests",
+    "the box is red with no measured number, and the reply says which step owns it"
+  ]
+}

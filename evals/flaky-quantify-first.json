@@ -1,0 +1,12 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "\"this test fails about one time in ten on CI\"",
+  "expected_behavior": [
+    "the test is run alone N times and in its suite N times with CI's exact lane configuration before any change, with both rates shown",
+    "the isolation follows the pattern of the rates, one hypothesis at a time",
+    "no retry, sleep, or loosened assertion is added without a named mechanism",
+    "a quarantine carries the reason, the rate, the issue link, and an owner, or it is not made"
+  ]
+}

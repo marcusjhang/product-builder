@@ -18,11 +18,15 @@
 
 A plan whose substrate does not exist yet carries `On hold: <what it waits for>` after its status (for example `Verified, on hold: Actions shipping`). Claims about a design doc rather than code are anchored `spec:<path>:<line>`; the Definition of Ready item for anchors reads "spec-anchored, re-anchor on revise" and stays red until the code exists, which is honest, not a failure.
 
+A plan the Built first playbook wrote from an existing diff opens at `Derived` with `Source: <branch or PR>` in the header; every row the diff did not settle is `ASSUMED: derived from the diff`; it moves to `Built` once the author confirms the rows, then follows the lifecycle from QA.
+
 The status line sits in the header of `product.md` and is mirrored in `decisions.md`. Move it forward only when the gate for that step is closed.
 
 ## Length caps
 
 Rough means short. `product.md` about two pages, `implementation.md` about three. When a section wants more, the extra goes to `research.md` (facts) or `decisions.md` (why), and the plan links to it. A program's `README.md` stays under one page.
+
+Bounded variant, at most two pages and three: `product.md` drops the Solution table and keeps one paragraph naming the surface and its five states, caps stories at three and assumptions at three rows, and writes Instrumentation as one line naming the event, its properties, and the success-signal query; `implementation.md` keeps the diagram, the approach, the changes table, and the slices, and writes the rest as one line each. A Bounded plan that fills the full templates has blown its cap, and the cap is the rule.
 
 ## product.md
 
@@ -78,7 +82,7 @@ Convention: <from the profile, e.g. object plus past-tense verb, snake_case>. Ev
 Success-signal query: <where and how it is read>.
 
 ## Rollout and launch
-Flag: `<name>` default off · Stages: internal → <cohort> → <percentage> → all, each gated by <check> · Kill switch: <how> · Flag off: <what the user sees> · Flag removed: <when, by which follow-up> · Docs / changelog / support note: <needed or not, and where>.
+Flag: `<name>` default off · Stages: internal → <cohort> → <percentage> → all, each gated by <check> · Kill switch: <how> · Flag off: <what the user sees> · Live gate: <when the feature can change what a user sees without their action, what must be visible and overridable to them before the flag goes live; "none, the user acts first" otherwise> · Flag removed: <when, by which follow-up> · Docs / changelog / support note: <needed or not, and where>.
 
 ## Success signal
 Hypothesis: if <persona> can <capability>, then <metric> moves from <baseline> to <target> within <window>.
@@ -115,8 +119,13 @@ Guardrails: <metrics that must not get worse>. Kill criterion: <what would tell 
 |---|---|---|
 | <route / service / dao / schema / component / job / flag / event> | `<real path>` | <one line> |
 
+Census: every entry point that produces or mutates the affected object is a row (every create path, every writer, every caller of the seam), found by grep at the baseline for the constructor, the writer, and the route. A plan that says "the create path" where the grep finds two has a defect here.
+
 ## Data and contracts
 <Schema changes with expand/contract steps if destructive, API or event contracts, realtime payloads. "None" is a valid answer.>
+
+## External calls
+<For every call to a service outside the process on a request or launch path: sync or async, timeout, latency budget, failure mode as the user sees it, retry, the key that pays, metered or rate-limited and by what. A synchronous call on a hot path is a design decision with a ledger row, not a review finding. "None" is a valid answer.>
 
 ## Test strategy
 <Existing test seams to extend (paths). Unit vs integration vs end-to-end. What runs only in CI. Each acceptance line's test is named in its slice.>
@@ -187,6 +196,8 @@ Sources: <URLs, retrieval date>
 | # | Decision | Options considered | Why | Who | Date | Status |
 |---|---|---|---|---|---|---|
 | D1 | <the call> | (a) … (b) … | <one line> | user \| agent \| ASSUMED | <date> | locked \| superseded by D<n> |
+
+A row whose Who is `agent` may be edited in place with a dated note in its Why when the change does not alter what the user was told (a renamed helper, a narrowed type). A row whose Who is `user` or `ASSUMED`, or any change that alters what the user was told, is superseded by a new row; the old row is never rewritten.
 
 ## Assumed (awaiting the user)
 <Rows above marked ASSUMED, each with the question the user should answer to confirm or overturn.>
@@ -292,12 +303,15 @@ A plan may be built when all hold. The Plan playbook prints this list in the rep
 - [ ] Problem statement, audience, today's workaround, appetite, success signal, and kill criterion are written and confirmed at G1.
 - [ ] Every must-story has WHEN/THEN acceptance including at least one failure or edge line, a surface with five states (UI) or a consumer and contract sample (non-UI), and a permissions line where roles exist.
 - [ ] Non-goals and rabbit holes are written with reasons.
-- [ ] Every current-state claim in `implementation.md` has a file:line anchor at the baseline SHA (or a `spec:` anchor when the plan is on hold against a design doc, which keeps this item red until code exists), and the closest existing feature is named.
+- [ ] Every current-state claim in `implementation.md` has a file:line anchor at the baseline SHA (or a `spec:` anchor when the plan is on hold against a design doc, which keeps this item red until code exists), the closest existing feature is named, and the change-site census lists every entry point that produces or mutates the affected object, by grep at the baseline.
 - [ ] Simpler alternatives are listed with the story or constraint each fails; at Feature and Program size the approach was chosen from at least two candidates.
 - [ ] The riskiest assumptions each have a test verdict or an accepted risk with a reason; `pending` is red.
 - [ ] Slices are vertical, ordered riskiest-first, sized S/M/L, each with stories, files, data, flag, named tests per acceptance line, live check, regression, rollback; a schema expand is its own first slice; P1 is the walking skeleton when a flag exists. Each slice, and each commit contract stacked inside a PR, compiles and its tests are green with only what lands before it; a change that widens an exhaustive type or registry (a union, an enum, a `Record` over one) lists every consumer in the same slice.
 - [ ] The appetite check passed, or the cuts were made and recorded.
-- [ ] Instrumentation events and the success-signal query are named; rollout (flag, cohorts, kill switch, flag-off behaviour) is written.
+- [ ] Instrumentation events and the success-signal query are named, with the numerator, the denominator, and the grain of each (per keystroke pause, per run, per session, per user); rollout (flag, cohorts, kill switch, flag-off behaviour) is written, and the live gate names what must be visible and overridable to the user before the flag goes live when the feature can change what they see without their action.
+- [ ] Every external call on a request or launch path has an External calls row (sync or async, timeout, latency budget, failure mode); a slice that calls a model or a metered API also names the key that pays, whether the lane is metered or rate-limited and by what, and the measured worst-case request (tokens, share of the window, price per call) with a size assertion in its tests.
+- [ ] No section of `product.md` or `implementation.md` describes a decision the ledger marks superseded or dismissed; the reconciliation in the plan playbook's verify step ran and its edits are listed.
+- [ ] Every behavioural clause in a locked decision ("re-run when X changes") names how the system detects X and what that costs; a clause with no mechanism is `pending research` or cut, never locked.
 - [ ] Tech-lead findings have no open "act on"; product-panel and persona findings, when those were cast, have no open "act on" (Bounded: "not cast, Bounded" is green); the rulings table has one row per finding the panels returned and its counts match the findings blocks; a high-importance assumption has a spike verdict or an accepted risk with a reason, and only a low-importance one may pass with an owner.
 - [ ] Open questions each have a recommendation and an owner; ASSUMED decisions are listed.
 

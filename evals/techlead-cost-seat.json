@@ -1,0 +1,12 @@
+{
+  "skills": [
+    "product-builder-techlead"
+  ],
+  "query": "an implementation plan whose slice P2 sends a request to a decision model with user-provided names of up to 255 characters",
+  "expected_behavior": [
+    "a cost seat is cast by signal because the slice calls a model",
+    "the worst-case request is measured with maximum-length inputs: characters, tokens, share of the model's window, price per call, with the numbers shown",
+    "the number is written to decisions.md",
+    "the slice's tests are required to carry a size assertion, and its absence is an act-on finding"
+  ]
+}

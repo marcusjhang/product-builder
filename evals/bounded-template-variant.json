@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "a Bounded plan reaches step 5 and writes product.md and implementation.md",
+  "expected_behavior": [
+    "product.md is at most two pages and implementation.md at most three, in the Bounded variant: no Solution table, at most three stories and three assumption rows, instrumentation as one line",
+    "the reply names the variant and the page counts",
+    "a full-template Bounded doc past the cap is reported as a cap blown, not as thoroughness"
+  ]
+}

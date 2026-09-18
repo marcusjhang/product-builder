@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "a plan request after a conversation in which the user already said \"one PR\", \"a per-user toggle\", and \"leave the composer alone\"",
+  "expected_behavior": [
+    "the three statements are D-rows with Who user at intake, quoted",
+    "interview 1 does not ask appetite, scope, or non-goals again where those rows answer them",
+    "the question budget counts only exit items still missing, and the reply says which were answered from the conversation"
+  ]
+}

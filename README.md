@@ -1,6 +1,6 @@
 # product-builder
 
-A working mode for product engineers in Claude Code. One command takes a feature from the first conversation to the post-ship check, and the same mode covers the rest of the week: understanding a subsystem, fixing a bug, refactoring, chasing a slow path, reviewing a diff, opening a PR, getting it merged.
+A working mode for product engineers in Claude Code. One command takes a feature from the first conversation to the post-ship check, and the same mode covers the rest of the week: understanding a subsystem, fixing a bug, refactoring, chasing a slow path, reviewing a diff, opening a PR, getting it merged, and the asks that arrive without a plan: code you already built, an incident, a spike, an upgrade, a migration, a removal, a flaky test, a release, a decision to write down, thin code to harden.
 
 ```
 /product-builder <what you want, in plain words>
@@ -15,7 +15,7 @@ The mode reads your repo's profile, probes the default branch for what already s
 /plugin install product-builder@product-builder
 ```
 
-Or copy `skills/*` into `~/.claude/skills/`.
+Or copy `skills/*` into `~/.claude/skills/`. Install it one of these two ways rather than reading the files from a checkout: run from files, the hooks never fire, `/product-builder` does not route, and every step is reconstructed from prose by hand. The mode says so in its first reply when that is the situation.
 
 First run in a repo:
 
@@ -23,11 +23,11 @@ First run in a repo:
 /product-builder-setup
 ```
 
-It reads the repo before it asks you anything, then writes `.product-builder/profile.md`, `personas.md`, `drive.md`, and `models.md`. Every skill reads those instead of guessing. `profiles/default.md` is the shape; `profiles/example-calcom.md` is a worked example filled in from the public [calcom/cal.com](https://github.com/calcom/cal.com) repository, every fact with the file it was read from.
+It reads the repo before it asks you anything, then writes `.product-builder/profile.md`, `personas.md`, `drive.md`, and `models.md`. Every skill reads those instead of guessing. Commit the folder (setup asks once, and recommends it) so every worktree and session shares the profile and the learnings it accumulates. `profiles/default.md` is the shape; `profiles/example-calcom.md` is a worked example filled in from the public [calcom/cal.com](https://github.com/calcom/cal.com) repository, every fact with the file it was read from.
 
 Prerequisite: the `grill-me` skill (Matt Pocock, MIT) at `~/.claude/skills/grill-me` for the interview discipline; the rules are also inlined in `skills/product-builder/playbooks/plan-interview.md`. A browser driver that subagents can reach (Playwright MCP, Claude in Chrome) makes persona click-throughs and live verification real; without one they run in paper mode and say so.
 
-Optional: a judge. With `TYPESAFE_API_KEY` in the environment, setup writes a `Judge` section to the profile and six gates get a second opinion from a decision model (TypeSafe's Jev): every question to you is classified before it opens (observable by running, answerable from the repo, or a product call), file:line claims are checked against their excerpts, acceptance lines against the tests that claim them, panel and review findings are bucketed with a calibrated confidence, and PR comments are triaged. It starts in `shadow` mode, which logs verdicts beside the session's own and changes nothing; `product-builder-reflect` reports the agreement rate and proposes `gate`. The questions and thresholds are one file, `skills/product-builder/references/judge-questions.json`, meant to be read and edited. Without a key every gate is judged by the session model and the first reply says so. The question gate is a `PreToolUse` hook on the question tool; the plugin registers it from `hooks/hooks.json`, and a copy-install adds that entry to `.claude/settings.json` by hand.
+Optional: a judge. With `TYPESAFE_API_KEY` in the environment, setup writes a `Judge` section to the profile and six gates get a second opinion from a decision model (TypeSafe's Jev): every question to you is classified before it opens (observable by running, answerable from the repo, or a product call), file:line claims are checked against their excerpts, acceptance lines against the tests that claim them, panel and review findings are bucketed with a calibrated confidence, and PR comments are triaged. It starts in `shadow` mode, which logs verdicts beside the session's own and changes nothing; `product-builder-reflect` reports the agreement rate and proposes `gate`. The questions and thresholds are one file, `skills/product-builder/references/judge-questions.json`, meant to be read and edited. Without a key every gate is judged by the session model and the first reply says so. The question gate is a `PreToolUse` hook on the question tool; the plugin registers it from `hooks/hooks.json`, and a copy-install adds that entry to `.claude/settings.json` by hand. The same file registers a `SessionStart` hook, `scripts/first-run`, which prints one line when the repo has no `.product-builder/profile.md` and is silent otherwise (or with `PRODUCT_BUILDER_NUDGE=0`).
 
 ## Playbooks
 
@@ -41,6 +41,7 @@ Product track:
 | qa | acceptance per story on the real app, both flag states, every role, exploratory pass, report with a verdict |
 | ship | Definition of Done pre-flight, rollout stages prepared for you to flip, canary, post-ship watch of the success signal |
 | program | overview plus parts, each a shippable increment, plan per part |
+| built-first | code that exists before a plan (a finished branch, an open PR, a teammate's PR): derive the plan from the diff, confirm the ASSUMED rows with the author, round-trip check on every value written, pm + tech lead + review over it, verify, Definition of Ready read backwards, hand off to babysit, QA, or ship |
 
 Engineering track:
 
@@ -50,6 +51,15 @@ Engineering track:
 | bug-fix | reproduce → root cause → failing test → smallest fix → verify → review → PR |
 | refactoring | characterise → expand → migrate callers in verified batches → contract → PR |
 | perf-issue | baseline → trace → one change → interleaved re-measure → PR |
+| incident | declare → mitigate (flag off, revert, roll back) → preserve evidence → root cause → fix → blameless postmortem with owned follow-ups |
+| spike | one question with a predicate → the cheapest experiment on a throwaway branch → verdict at the budget, never merged |
+| dependency-upgrade | read the changelog → characterise → bump → fix per breaking change → verify the same surfaces → PR |
+| data-migration | inventory with counts → expand, backfill, verify, cut over, contract as slices → replay on a scratch database → PR per slice with rollback |
+| removal | consumer inventory with named searches → dark removal measured → delete in dependency order → data decision → PR |
+| flaky-test | quantify alone, in suite, in CI → isolate by pattern → fix at the cause or quarantine with an owner → PR |
+| release | classify commits → changelog for the upgrader → pre-flight with the real install path → commands prepared, the user publishes |
+| decision-record | locate the decision → the repo's ADR convention → context, decision, options, consequences, reopen trigger → linked both ways |
+| hardening | map → gap table ranked by blast radius → characterise the happy path → one commit per gap, test first → silent-failure sweep → PR |
 | babysit | CI and review comments to merge-ready; never merges |
 | pickup-and-pause | resume another session's work, or suspend cleanly |
 | opening-a-pr | sized, stacked, briefing body with evidence; runs at the end of every code playbook |
@@ -87,7 +97,7 @@ Seventeen, in `skills/product-builder/references/principles.md`. The ones that s
 
 ## Docs
 
-`docs/PLAN.md` is the design plan with every playbook and skill specified. `docs/landscape.md` records what was studied to shape it (pstack, Matt Pocock's skills, superpowers, Spec Kit, OpenSpec, BMAD, Kiro, Shape Up, UXAgent, gstack, Anthropic's guidance) and what was taken from each. `docs/stress-test.md` is the record of six scenario runs against a real repo with simulated users, the scores, and the fixes they produced.
+`docs/PLAN.md` is the design plan with every playbook and skill specified. `docs/landscape.md` records what was studied to shape it (pstack, Matt Pocock's skills, superpowers, Spec Kit, OpenSpec, BMAD, Kiro, Shape Up, UXAgent, gstack, Anthropic's guidance) and what was taken from each. `docs/stress-test.md` is the record of six scenario runs against a real repo with simulated users, the scores, and the fixes they produced. `docs/journal.md` is the run journal: one entry per field run, what the suite did or would have done, and the changes it produced, with no repository named.
 
 ## License
 

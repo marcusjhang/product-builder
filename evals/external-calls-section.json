@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "an implementation plan that adds a synchronous call to a classifier on the launch path",
+  "expected_behavior": [
+    "implementation.md has an External calls row: sync or async, timeout, latency budget, failure mode as the user sees it, retry, the key that pays",
+    "the timeout is a ledger decision, not left for review to find",
+    "the Definition of Ready box for external calls is red until the row exists"
+  ]
+}

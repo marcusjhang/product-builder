@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder-review"
+  ],
+  "query": "a diff whose test asserts focus after a synthetic click that fires no mousedown",
+  "expected_behavior": [
+    "the QA seat reports the test as a finding, not coverage, because it cannot fail on the behaviour it names",
+    "the finding is bucketed with confidence and goes through the verifier",
+    "the quality verdict does not count the test toward the acceptance line"
+  ]
+}

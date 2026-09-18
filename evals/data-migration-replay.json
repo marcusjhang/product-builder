@@ -1,0 +1,12 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "\"move the settings column into its own table\" on a store with two million rows",
+  "expected_behavior": [
+    "the inventory has a real count and every reader and writer at file:line",
+    "the five steps are slices with a rollback each, and a step that cannot be rolled back names why and waits for the user's go",
+    "every migration is replayed on a scratch database with timing before its PR",
+    "the comparison query and its expected zero are named before the backfill runs"
+  ]
+}

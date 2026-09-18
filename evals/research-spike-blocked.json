@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder-research"
+  ],
+  "query": "a spike whose probe answers 401 because the only key in the worktree is dead",
+  "expected_behavior": [
+    "the spike is recorded with verdict: blocked, the failing command and its output, and an owner",
+    "its assumption reaches the Definition of Ready as an accepted risk with that owner",
+    "it is neither dropped nor marked pending"
+  ]
+}

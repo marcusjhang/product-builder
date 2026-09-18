@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "\"review this PR from a teammate\" where the author is not in the session",
+  "expected_behavior": [
+    "the reply says the work is a teammate's and that rulings become comments, never edits",
+    "the ASSUMED rows stay ASSUMED and the reply says so instead of confirming them with the user as if they were the author",
+    "the findings block is offered as review comments and nothing is posted without a request"
+  ]
+}

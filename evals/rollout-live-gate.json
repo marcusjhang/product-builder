@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "ship pre-flight for a feature in shadow mode that will change which option a user gets without their action",
+  "expected_behavior": [
+    "the Rollout line names a live gate: what must be visible and overridable to the user before the flag goes live",
+    "pre-flight verifies that gate on the deployed head before any stage past internal users",
+    "shadow stays shadow while the box is red"
+  ]
+}

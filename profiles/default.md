@@ -12,6 +12,9 @@ Language and package manager: UNKNOWN. Run from `<dir>`:
 - dev: UNKNOWN (port UNKNOWN)
 - db: UNKNOWN
 - what runs only in CI: UNKNOWN
+- CI's exact test lane, as one command (runner flags, pool, isolation, order, shards): UNKNOWN
+- local services at setup: `DATABASE_URL` select 1: UNKNOWN · `REDIS_URL` PING: UNKNOWN (checked <date>)
+- provisioning script and the env values it rewrites (login or OAuth proxy host above all): UNKNOWN
 
 ## Where docs live
 - plan root: `docs/plans/<slug>/`
@@ -52,10 +55,10 @@ None. Add `path glob → agent` rows as reviewer agents are added.
 None. Tickets only when the user asks.
 
 ## Forge
-Tool: `gh`. Repo: UNKNOWN. Account with access: UNKNOWN (permission UNKNOWN), verified by `gh repo view --json nameWithOwner,viewerPermission` on <date>. Accounts tried and denied: none yet. A playbook that pushes reads this section first and stops on UNKNOWN.
+Tool: `gh`. Repo: UNKNOWN. Account with access: UNKNOWN (permission UNKNOWN), verified by `gh repo view --json nameWithOwner,viewerPermission` on <date>. Accounts tried and denied: none yet. Login this remote uses when the tool has more than one, or the remote's credential user differs from the active login: UNKNOWN (used through `gh auth token --user <login>`; never written to a file). A playbook that pushes reads this section first and stops on UNKNOWN.
 
 ## Evidence
-Text evidence (command transcripts, response bodies, log lines, exit codes): `docs/plans/<slug>/evidence/<slice>-<scenario>.txt`, committed with the plan. Screenshots and recordings: attached to the PR (uploaded, not committed) unless an artifact store is named here: UNKNOWN. Binaries are committed to the repo only when this line says so: no. Prototype screenshots: `docs/plans/<slug>/prototype/shots/`, gitignored. The scratchpad is staging and is never the path a ledger row or a reply cites.
+Text evidence (command transcripts, response bodies, log lines, exit codes): `docs/plans/<slug>/evidence/<slice>-<scenario>.txt`, committed with the plan. Screenshots: committed under `docs/plans/<slug>/evidence/` as PNG or JPEG, each under 300 KB and at most eight per slice, embedded in the PR body by blob URL with `?raw=true`, because `gh` cannot attach an asset to a PR body; an artifact store named here replaces that: UNKNOWN. Recordings: never committed; uploaded to the artifact store or linked from where the driver saved them. Prototype screenshots: `docs/plans/<slug>/prototype/shots/`, gitignored. The scratchpad is staging and is never the path a ledger row or a reply cites.
 
 ## Observability
 UNKNOWN. Where logs, traces, and error tracking live and how to query them.

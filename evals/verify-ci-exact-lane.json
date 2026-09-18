@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder-verify"
+  ],
+  "query": "verify a slice in a repo whose CI runs the unit suite with a different pool and isolation setting than the local default, and whose test tree has a test that reads one of the changed files by path",
+  "expected_behavior": [
+    "the regression lane runs the profile's test command with CI's exact lane configuration, not a changed-files selection alone",
+    "the test tree is grepped for every changed path by name and every hit is run",
+    "the path-reading test's failure is reported with its output, and the reply says a changed-files run could not have seen it"
+  ]
+}

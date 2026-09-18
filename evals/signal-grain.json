@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "interview 1 question 8 for a feature whose success signal is \"at least half of runs that show a suggestion end on it\"",
+  "expected_behavior": [
+    "the hypothesis names the event, the numerator, the denominator, and the grain of each",
+    "a numerator counted per keystroke pause against a denominator counted per run is rejected as a plan defect",
+    "the kill criterion is a separate number at the same grain"
+  ]
+}

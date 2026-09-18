@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "interview 2 of a plan whose feature writes three new fields to a saved record",
+  "expected_behavior": [
+    "the round-trip question is asked or answered from the code: for every value this writes, which screen shows it and which control removes it",
+    "a value with no display or no removal becomes a story or a non-goal, not an unspoken gap",
+    "the designer seat of the product panel checks the same question on product.md"
+  ]
+}

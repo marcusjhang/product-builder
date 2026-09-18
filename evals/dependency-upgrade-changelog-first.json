@@ -1,0 +1,12 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "\"upgrade the web framework to the next major\"",
+  "expected_behavior": [
+    "the upstream changelog and migration guide are read before the lockfile moves, and every breaking change that touches a consumer is listed with file:line",
+    "the surfaces the package serves are verified before the bump and compared after",
+    "breakages are fixed in commits grouped by breaking change, and a behaviour change gets its own commit with a pinning test",
+    "the backwards-compatibility seat sits in the review"
+  ]
+}

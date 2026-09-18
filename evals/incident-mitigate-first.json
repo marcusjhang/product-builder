@@ -1,0 +1,12 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "\"errors on the checkout page jumped 40x ten minutes ago\"",
+  "expected_behavior": [
+    "the Incident playbook is matched and the first line declares what is wrong, since when, who is affected, and how it is known",
+    "mitigation is proposed before any root-cause work, in the order flag off, revert, roll back, disable, scale, and a production flag flip waits for the user",
+    "evidence is preserved as text before it rotates",
+    "the postmortem has a timeline with times, the mechanism at file:line, and follow-ups each with an owner"
+  ]
+}

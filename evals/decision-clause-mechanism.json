@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "interview 2 proposes to lock \"re-resolve the assignment when the record changes materially\"",
+  "expected_behavior": [
+    "before the decision locks, the reply names how the system detects a material change and what that costs, read from the code or the changes table",
+    "with no mechanism in reach, the clause is marked pending research or cut, and the decision is not locked",
+    "a locked decision the implementation later drops is called a plan defect"
+  ]
+}

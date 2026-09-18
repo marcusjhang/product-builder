@@ -1,0 +1,12 @@
+{
+  "skills": [
+    "product-builder-review"
+  ],
+  "query": "a diff that edits the instruction text and the true/false criterion of a question a decision model answers",
+  "expected_behavior": [
+    "a prompt-quality seat is cast by signal and says why",
+    "the seat predicts the model's answer for eight to twelve canonical inputs including the edge each criterion names",
+    "an instruction that contradicts its own criterion is a finding with the two sentences quoted",
+    "the finding is bucketed and given a confidence like any other, and goes through the verifier"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "\"review what I built\" on a branch with twelve changed files and no folder under docs/plans/",
+  "expected_behavior": [
+    "the Built first playbook is matched, not the review skill alone",
+    "a plan folder is written at status Derived with Source naming the branch, and every line the diff does not settle is a row marked ASSUMED: derived from the diff, with no invented number, name, or reason",
+    "the ASSUMED rows are confirmed with the author as one multi-select of at most four before any panel runs",
+    "a round-trip table names, for every value the diff writes, the screen that shows it and the control that removes it, and a value with neither is an act-on finding",
+    "pm, techlead, and review all run over the derived plan and their findings land in one block with one rulings table",
+    "the Definition of Ready is printed with evidence per box and a red box is named as a gap the code shipped with, not a reason to stop"
+  ]
+}

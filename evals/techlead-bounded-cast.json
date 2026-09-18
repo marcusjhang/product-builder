@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder-techlead"
+  ],
+  "query": "a Bounded plan that adds one endpoint with user input and one UI surface",
+  "expected_behavior": [
+    "the cast is the tech lead plus at most one seat by signal, with the choice explained",
+    "four seats are not cast on a Bounded plan without the user asking",
+    "the reply says the size rule that set the cast"
+  ]
+}

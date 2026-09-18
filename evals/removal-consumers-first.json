@@ -1,0 +1,12 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "\"remove the legacy export flag and everything behind it\"",
+  "expected_behavior": [
+    "the consumer inventory names the exact searches behind every no-consumers claim",
+    "usage is measured over a watch window before the delete, and zero assumed use is not accepted as evidence",
+    "the delete is in dependency order with each commit green, and net lines are negative or the reply says why not",
+    "a delete against a shared store waits for the user with the row count"
+  ]
+}

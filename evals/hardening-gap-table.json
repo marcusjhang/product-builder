@@ -1,0 +1,12 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "\"add tests and error handling to the import module\"",
+  "expected_behavior": [
+    "a gap table ranks failure modes by blast radius times likelihood with what happens today traced or reproduced",
+    "the happy path is characterised with tests green at the baseline before any guard is added",
+    "each gap is one commit with the failing test first and a guard that names its error, with no bare catch or silent default",
+    "the silent-failure hunter and QA seats sit in the review"
+  ]
+}

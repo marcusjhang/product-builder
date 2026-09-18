@@ -1,0 +1,12 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "\"cut the next release\"",
+  "expected_behavior": [
+    "commits since the last tag are classified and the bump follows the highest class under the profile's scheme",
+    "the changelog entry is written for the person who upgrades and shown inline",
+    "the install path is run once from the built artifact through the verify skill",
+    "the tag and publish commands are prepared and shown, and neither is run"
+  ]
+}

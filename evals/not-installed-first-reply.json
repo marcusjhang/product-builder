@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "the suite is read from a checkout rather than installed as a skill",
+  "expected_behavior": [
+    "the first reply says so",
+    "only the mode, the principles, the writing rules, and the matched playbook are read up front; a leaf skill is opened when its step is reached",
+    "the first-run line and the question gate are done by hand and the reply says the hooks did not fire"
+  ]
+}

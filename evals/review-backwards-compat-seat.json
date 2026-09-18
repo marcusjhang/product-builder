@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder-review"
+  ],
+  "query": "a diff that edits a source file which an existing contract test reads by path with readFileSync and asserts against",
+  "expected_behavior": [
+    "a backwards-compatibility seat is cast by signal because a test reads a changed file by path",
+    "the seat runs the tests that name the changed paths, not only the tests that import them",
+    "the failing contract test is a finding before the PR opens, with its output"
+  ]
+}

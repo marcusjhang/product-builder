@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder-research"
+  ],
+  "query": "map an area where records are created on two routes and the plan draft says \"the create path\"",
+  "expected_behavior": [
+    "the system map lists every entry point that produces or mutates the affected object, found by grep at the baseline",
+    "the second create path is named and the draft's singular is called a defect",
+    "the changes-table census is built from that list"
+  ]
+}

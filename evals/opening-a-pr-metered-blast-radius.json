@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "opening a PR for a slice that calls a metered API with a shared organisation key and was tested only against a stub",
+  "expected_behavior": [
+    "Blast radius names the shared key and what bounds the spend",
+    "Verification lists the stubbed dependency as unproven by name",
+    "neither line is dropped for brevity"
+  ]
+}

@@ -126,12 +126,22 @@ slow ─────────────▶ perf-issue playbook          bas
 | A slug or path under the plan root plus a change, new fact, review feedback, "main moved" | Revise playbook |
 | A plan at `Ready to implement`, "build it", "continue the build" | Implement playbook |
 | A built branch, PR, or preview URL plus "test", "QA", "does the feature work" | QA playbook |
+| Code that exists before a plan: a finished branch, an open PR, a teammate's PR, "review what I built" | Built first playbook |
 | A plan at `QA passed`, "ship it", "roll it out", "flip the flag", "did it work after launch" | Ship playbook |
 | "How does X work", "walk me through", "map this area" | Investigation playbook, via the how skill |
 | "Why is it like this", "who decided", "what was the reason" | Investigation playbook, via the why skill |
 | A bug, a failing test, a stack trace, "it's broken" | Bug fix playbook |
 | "Refactor", "clean up", "rename across", "extract"; behaviour must not change | Refactoring playbook |
 | "Slow", "latency", "memory", a number to improve | Perf issue playbook |
+| An alert, an error spike, data loss, a security report, "production is down" | Incident playbook |
+| "Can we", "how hard is", "does the API do X" | Spike playbook |
+| A major bump of a library, framework, runtime, or toolchain | Dependency upgrade playbook |
+| A backfill, a move between stores, a split or merge of tables | Data migration playbook |
+| "Remove", "delete", "retire", a flag to clean up, dead code | Removal playbook |
+| A test that passes and fails on the same code | Flaky test playbook |
+| "Cut a release", "bump the version", "tag it" | Release playbook |
+| "Write this down as an ADR", "record the decision" | Decision record playbook |
+| "Add tests for", "harden", "make this fail loudly" | Hardening playbook |
 | "Review this", "tear this apart", "find blind spots" | `product-builder-review` |
 | "Does this work", "prove it", "run it like a user would" | `product-builder-verify` |
 | "Open a PR", "split this into PRs" | Opening a PR playbook |
@@ -217,7 +227,7 @@ Every skill starts by reading `${CLAUDE_PROJECT_DIR}/.product-builder/profile.md
 | Required reviewers by path | review, implement, fix | path glob → reviewer agent (security, migrations, billing, sandbox) |
 | Tracker | plan, implement, qa, fix | how to create and link tickets, only on request |
 | Forge | setup, opening-a-pr, babysit, implement | the tool, the repo, the account that has access and its permission, verified by `gh repo view` at setup; `UNKNOWN` with the failing command stops any playbook that pushes |
-| Evidence | verify, implement, qa, opening-a-pr, prototype | where text evidence lives (the plan folder), where screenshots and recordings go (PR attachments or an artifact store), whether binaries may be committed, that the scratchpad is never a cited path |
+| Evidence | verify, implement, qa, opening-a-pr, prototype | where text evidence lives (the plan folder), where screenshots go (committed under the plan folder within a size cap and embedded by blob URL, since `gh` cannot attach assets to a PR body, or an artifact store) and recordings (linked, never committed), that the scratchpad is never a cited path |
 | Observability | why, fix, perf, verify, ship | where logs, traces, and error tracking live and how to query them |
 | Judge | the question-gate hook, how, research, pm, techlead, review, personas, babysit, reflect | a decision model (`typesafe/jev-latest` or `none`) and its mode (`shadow` logs verdicts beside the session's own, `gate` lets them route); the gates and thresholds live in the suite's `references/judge-questions.json`, the client in `scripts/judge`, the verdict log in `.product-builder/judge-log.jsonl` |
 
@@ -743,7 +753,24 @@ Next move    the single most useful next action, concrete, with the skill to inv
 
 **Reply.** The capsule; what was claimed or released; the next move.
 
-### 6.14 `product-builder-plain`
+### 6.14 Playbooks added from the run journal
+
+Ten playbooks added after the field run recorded in `docs/journal.md` (2026-09-19), each in `skills/product-builder/playbooks/`, in the shape of the ones above: an owner line, numbered steps that call leaf skills, a reply contract.
+
+| Playbook | Owns | Hands off to |
+|---|---|---|
+| built-first | the plan the code implies: derived from the diff into a `Derived` folder, ASSUMED rows confirmed with the author, a round-trip check on every value written, pm + techlead + review over it, verify, the Definition of Ready read backwards | babysit, qa, ship |
+| incident | mitigation first (flag off, revert, roll back), evidence preserved, then bug-fix steps, then a blameless postmortem with owned follow-ups | bug-fix, reflect |
+| spike | a verdict at the budget from the cheapest experiment on a branch that is never merged | plan, implement |
+| dependency-upgrade | the breaking changes, read from the changelog before the lockfile moves, each landed in its own commit and verified on the same surfaces | opening-a-pr |
+| data-migration | the data on both sides: expand, backfill, verify, cut over, contract as slices with a rollback each, replayed on a scratch database | techlead, review, opening-a-pr |
+| removal | the consumers: inventory with named searches, dark removal measured, delete in dependency order, the data decision | why, review, opening-a-pr |
+| flaky-test | the mechanism: rates alone, in suite, and in CI, then the cause fixed or a quarantine with an owner | bug-fix, review, opening-a-pr |
+| release | the notes and the checklist: classified commits, a changelog for the upgrader, the real install path verified, commands prepared for the user to run | verify |
+| decision-record | the record of a decision already made, in the repo's ADR convention, linked both ways | why, opening-a-pr |
+| hardening | the gaps in thin code: a ranked gap table, the happy path characterised, one commit per gap test first, a silent-failure sweep | how, review, opening-a-pr |
+
+### 6.15 `product-builder-plain`
 
 **Frontmatter.** `name: product-builder-plain` · description: "Restates the last reply in plain language, no jargon, shorter, as one person talking to another. Use for 'plain', 'say that simply', 'what does that mean'." · `disable-model-invocation: true`
 
@@ -759,7 +786,10 @@ product-builder/                         the new repo
     product-builder/                     SKILL.md (the mode)
       playbooks/                         plan.md, plan-interview.md, revise.md, implement.md, qa.md, ship.md, program.md,
                                          investigation.md, bug-fix.md, refactoring.md, perf-issue.md, babysit.md,
-                                         pickup-and-pause.md, opening-a-pr.md
+                                         pickup-and-pause.md, opening-a-pr.md, built-first.md, incident.md, spike.md,
+                                         dependency-upgrade.md, data-migration.md, removal.md, flaky-test.md,
+                                         release.md, decision-record.md, hardening.md
+      scripts/                           judge, question-gate (PreToolUse hook), first-run (SessionStart hook)
       references/                        principles.md, templates.md, interaction.md, writing.md, landscape.md
     product-builder-setup/  -how/  -why/  -research/  -prototype/  -personas/  -pm/  -techlead/
     product-builder-review/  -verify/  -resume/  -reflect/  -plain/

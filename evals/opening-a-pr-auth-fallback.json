@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "opening a PR when the first push fails on authentication and the profile's Forge section names a login for this remote",
+  "expected_behavior": [
+    "the push is retried once with the named login's token and the reply says which login was used",
+    "a second failure stops with the command and its output, and no workaround the profile does not record is attempted",
+    "no token appears in any file, commit message, or PR body"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "skills": [
+    "product-builder"
+  ],
+  "query": "an agent-owned technical decision row needs a one-word change that does not alter what the user was told",
+  "expected_behavior": [
+    "the row is edited in place with a dated note in its Why",
+    "no superseding row is added",
+    "a user-owned row, or a change that alters what the user was told, still gets a superseding row"
+  ]
+}

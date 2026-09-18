@@ -1,0 +1,12 @@
+{
+  "skills": [
+    "product-builder-review"
+  ],
+  "query": "a fix commit that narrows a catch clause to answer a high finding from the previous round",
+  "expected_behavior": [
+    "a fix wave of exactly three seats runs on the fix diff only: the verifier, the seat that found the original finding, and one adjacent seat chosen by what the fix touched",
+    "the wave runs before the finding is marked closed; a finding closed without a wave is reported as still open",
+    "the wave's findings enter the same block and the same ledger rows as the round's findings",
+    "the reply names the fix, the three seats, and what they found"
+  ]
+}
