@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-15
 **Status:** Plan. Nothing built yet except the drafted files under `skills/product-builder/` in this folder (the mode skill, README, templates with the Definition of Ready and Definition of Done, principles, the interaction model, writing rules, a worked example profile, the research landscape).
-**Read with:** `skills/product-builder/SKILL.md` (the mode: non-negotiables, principles, autonomy, subagents, reply rules, playbook table), `skills/product-builder/references/templates.md` (plan file templates, Definition of Ready, Definition of Done), `skills/product-builder/references/principles.md`, `skills/product-builder/references/landscape.md` (the research behind every choice, with sources), `profiles/example-sveltekit-monorepo.md` (the worked example profile).
+**Read with:** `skills/product-builder/SKILL.md` (the mode: non-negotiables, principles, autonomy, subagents, reply rules, playbook table), `skills/product-builder/references/templates.md` (plan file templates, Definition of Ready, Definition of Done), `skills/product-builder/references/principles.md`, `skills/product-builder/references/landscape.md` (the research behind every choice, with sources), `profiles/example-calcom.md` (the worked example profile).
 **Audience of the suite:** product engineers. One person owns a feature from the first conversation to the post-ship check, and the suite is tuned so that planning the feature and building it are handled completely.
 
 ## Contents
@@ -196,7 +196,7 @@ The mode skill carries the rules (Non-negotiables, Autonomy, Subagents, Writing 
 
 ### 4.1 Discovery
 
-Every skill starts by reading `${CLAUDE_PROJECT_DIR}/.product-builder/profile.md`. If it is missing, say so, invoke `product-builder-setup`, then continue. The plugin ships `profiles/default.md` (generic: no agents, commands discovered from the package manager, paper-mode personas) and `profiles/example-sveltekit-monorepo.md` (the worked example).
+Every skill starts by reading `${CLAUDE_PROJECT_DIR}/.product-builder/profile.md`. If it is missing, say so, invoke `product-builder-setup`, then continue. The plugin ships `profiles/default.md` (generic: no agents, commands discovered from the package manager, paper-mode personas) and `profiles/example-calcom.md` (the worked example).
 
 ### 4.2 `profile.md` schema
 
@@ -765,7 +765,7 @@ product-builder/                         the new repo
     product-builder-review/  -verify/  -resume/  -reflect/  -plain/
   profiles/
     default.md                           generic profile
-    example-sveltekit-monorepo.md        worked example
+    example-calcom.md                    worked example (calcom/cal.com)
   docs/guide/                            01-setup, 02-the-mode, 03-plan, 04-build, 05-verify-and-ship, 06-engineering-playbooks,
                                          07-overnight, 08-principles, 09-make-it-yours, 10-recipes-and-pitfalls
   evals/                                 scenario files, see §8
@@ -782,7 +782,7 @@ Build in the order that gives an end-to-end path soonest, and dogfood each phase
 
 | Phase | Build | Exit criterion |
 |---|---|---|
-| 0 Skeleton | repo, manifest, README, the `product-builder` mode and `references/{principles,templates,interaction,writing,landscape}.md` (move the drafts as they are), `profiles/default.md` (write it), `profiles/example-sveltekit-monorepo.md` (the worked example) | plugin installs; `/product-builder` matches a playbook, opens its steps in the todo list, and sizes a made-up request |
+| 0 Skeleton | repo, manifest, README, the `product-builder` mode and `references/{principles,templates,interaction,writing,landscape}.md` (move the drafts as they are), `profiles/default.md` (write it), `profiles/example-calcom.md` (the worked example) | plugin installs; `/product-builder` matches a playbook, opens its steps in the todo list, and sizes a made-up request |
 | 1 Setup + understand | `product-builder-setup` (with `models.md`), `-how`, `-why`, `-verify`, `-resume`, `-plain`, the investigation and pickup-and-pause playbooks | in a real repo: `.product-builder/` written with fewer than five `UNKNOWN`s; `drive.md` validated by a real launch and screenshot; `/product-builder-how` on one subsystem returns an explanation with file:line |
 | 2 Plan core | the plan playbook (steps 0-4, 7) with `plan-interview.md`, `-research`, `-pm`, `-techlead` | a Bounded feature planned end to end: four files, at most five questions, tech-lead findings ruled and applied, Definition of Ready green |
 | 3 Plan verification | `product-builder-prototype`, `-personas` | a Feature with a UX fork: prototype passes the readiness check, three or more personas with five-second answers and think-aloud logs, rulings in the ledger, one story rewritten from a persona finding |
