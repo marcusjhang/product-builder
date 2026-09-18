@@ -102,3 +102,14 @@ Everything done to pressure-test the suite, in order, with what was found and wh
 - `playbook-dependency-upgrade`: the changelog was read with `cat`, not the Read tool; the grader now looks for the path in the trace. The upgrade itself landed every breaking change with the backwards-compatibility seat cast.
 - `playbook-pickup`: finished the slice and opened the PR at turn 121 against a cap of 120; every grader passed. Budget raised to 200.
 - The runner exited 127 after the batch because `evals/run.sh` was edited while the batch was in flight and bash re-read the changed file mid-execution. The script body is now a function, parsed whole before it runs.
+
+## 2026-09-19 · Playbook batch B and cal.com, run 1 (`docs/evals/runs/2026-09-18T19-18-12Z`, `2026-09-18T20-11-02Z`)
+
+Both batches hit the account's monthly spend limit partway: 10 of 12 batch B runs and 4 of 5 cal.com runs ended with "You've hit your monthly spend limit" and their scores are harness failures, not findings. They are rerun below. Four runs completed and were verified:
+
+- `playbook-babysit` (88 turns): read the PR and its checks through the forge stub, triaged the three comments (act, dismissed with a byte-level check that no trailing whitespace exists, act with a push-back on a wrong premise that it disproved by replaying the baseline handler), fixed, and ran two fix waves. It never invoked `product-builder-verify` after the pushes; it ran the CI lane itself. F8, fixed: babysit step 4 now says the verify skill is invoked with the Skill tool after each push, and a test run in the session is not that.
+- `playbook-bug-fix` (220 turns, timed out at 2400 s): reproduced, root-caused at `src/tasks.js`, fixed with a named error, then review found six defects in the fix's own surroundings including a crash on `GET /` and the run fixed all of them, reshaped history, and regenerated evidence until the clock ran out with no PR. F9, fixed: the bug-fix playbook bounds the loop (three rounds, fix waves on the fix diff only) and sends every finding that is not about the named mechanism to "your call"; a fix that grows past the mechanism is a Hardening or a Plan. A grader now checks the scope held.
+- `playbook-built-first` (113 turns): derived the plan, cast the panels, printed the Definition of Ready. Its two failures were the glob file graders already replaced.
+- `calcom-investigation` (22 turns, $3.92): the how skill through the Skill tool, explorers, anchors under `apps/` and `packages/`, no change made. Clean.
+
+**Harness.** Both runs reported that the sandbox refuses `listen` on any address, so every socket-bound test and every live HTTP check fails inside a run. `sandbox.network.allowLocalBinding: true` is now set in the user settings so sandboxed commands may bind localhost; whether the eval runner honours it is checked by rerunning `leaf-verify`, which launches the fixture's server.

@@ -1,0 +1,654 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.277",
+  "startedAt": "2026-09-18T20:11:02.790Z",
+  "durationSeconds": 523,
+  "costUsd": 11.763032500000005,
+  "partial": false,
+  "suite": {
+    "root": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo",
+    "ablation": "none",
+    "tagFilters": [
+      "calcom"
+    ],
+    "threshold": 1,
+    "concurrency": 2,
+    "plugins": [
+      {
+        "name": "product-builder",
+        "version": "0.1.0",
+        "path": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "calcom-built-first",
+      "dir": "evals/calcom-built-first",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder review what I built on this branch before I open the PR\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the Definition of Ready is printed and the hand-off is stated. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 3600,
+      "maxTurns": 200,
+      "graders": [
+        {
+          "name": "anchors",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "(apps|packages)/[\\w/.-]+\\.tsx?:\\d+",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "assumed-derived",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "ASSUMED: derived from the diff",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "derived-plan",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "docs/plans/*/decisions.md",
+            "exists": true
+          }
+        },
+        {
+          "name": "dor-printed",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Definition of Ready",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "review-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-review\""
+          }
+        },
+        {
+          "name": "route-built-first",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/built-first\\.md"
+          }
+        },
+        {
+          "name": "techlead-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-techlead\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.7142857142857143,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 6.7124590000000035,
+            "judgeCostUsd": 0,
+            "durationSeconds": 508,
+            "startedAt": "2026-09-18T20:11:02.905Z",
+            "error": "exit 1: You've hit your monthly spend limit · raise it at claude.ai/settings/usage?from=cc_cli_limit_message · your session limit resets 6:20am (Asia/Singapore)",
+            "tracePath": "/private/tmp/e-Y4kKkE/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "anchors",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched (apps|packages)/[\\w/.-]+\\.tsx?:\\d+",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "assumed-derived",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ASSUMED: derived from the diff",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "derived-plan",
+                "passed": true,
+                "weight": 1,
+                "explanation": "docs/plans/*/decisions.md exists as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "dor-printed",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "review-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-built-first",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "techlead-invoked",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.7142857142857143,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "calcom-investigation",
+      "dir": "evals/calcom-investigation",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder how does a booking get confirmed after the attendee submits the booking form, and where is the confirmation email sent?",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1800,
+      "maxTurns": 80,
+      "graders": [
+        {
+          "name": "anchors",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "(apps|packages)/[\\w/.-]+\\.tsx?:\\d+",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "explorers",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ee][Xx][Pp][Ll][Oo][Rr][Ee][Rr]|[Aa][Nn][Gg][Ll][Ee]",
+            "min": 1
+          }
+        },
+        {
+          "name": "how-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-how\""
+          }
+        },
+        {
+          "name": "no-change",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "apps/**",
+            "exists": false
+          }
+        },
+        {
+          "name": "route-investigation",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/investigation\\.md"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 22,
+            "costUsd": 3.924272750000001,
+            "judgeCostUsd": 0,
+            "durationSeconds": 338,
+            "startedAt": "2026-09-18T20:11:02.905Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-c5zGDh/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "anchors",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched (apps|packages)/[\\w/.-]+\\.tsx?:\\d+",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "explorers",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 4x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "how-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-change",
+                "passed": true,
+                "weight": 1,
+                "explanation": "apps/** absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-investigation",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "calcom-plan-bounded",
+      "dir": "evals/calcom-plan-bounded",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder plan: on the booking success page, add a Copy link button that copies the booking's reschedule link\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the Definition of Ready is printed or the intake probe stops the plan. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 3600,
+      "maxTurns": 200,
+      "graders": [
+        {
+          "name": "anchors",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "(apps|packages)/[\\w/.-]+\\.tsx?:\\d+",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "dor-or-stop",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Definition of Ready|already ships|nothing to do",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "probe-ran",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "git grep|git ls-tree|origin/main",
+            "min": 1
+          }
+        },
+        {
+          "name": "route-plan",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/plan\\.md"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.75,
+            "passed": false,
+            "turns": 33,
+            "costUsd": 1.12630075,
+            "judgeCostUsd": 0,
+            "durationSeconds": 156,
+            "startedAt": "2026-09-18T20:16:41.126Z",
+            "error": "exit 1: You've hit your monthly spend limit · raise it at claude.ai/settings/usage?from=cc_cli_limit_message · your session limit resets 6:20am (Asia/Singapore)",
+            "tracePath": "/private/tmp/e-4M2AVi/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "anchors",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched (apps|packages)/[\\w/.-]+\\.tsx?:\\d+",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "dor-or-stop",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "probe-ran",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 4x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-plan",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.75,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "calcom-review",
+      "dir": "evals/calcom-review",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-review --diff main..pr-embed-guard",
+      "runsPerCase": 1,
+      "timeoutSeconds": 2400,
+      "maxTurns": 100,
+      "graders": [
+        {
+          "name": "by-signal-seat",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ff][Rr][Oo][Nn][Tt][Ee][Nn][Dd]|[Ss][Ee][Cc][Uu][Rr][Ii][Tt][Yy]|[Ii][Nn][Tt][Ee][Gg][Rr][Aa][Tt][Ii][Oo][Nn]|[Ss][Ii][Ll][Ee][Nn][Tt].[Ff][Aa][Ii][Ll][Uu][Rr][Ee]|[Bb][Aa][Cc][Kk][Ww][Aa][Rr][Dd][Ss]",
+            "min": 1
+          }
+        },
+        {
+          "name": "findings-block",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "act on|consider|noted|dismissed",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "no-edit",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Edit",
+            "input_match": ".",
+            "min": 0,
+            "max": 0
+          }
+        },
+        {
+          "name": "seats-cast",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ss][Tt][Aa][Ff][Ff]|[Ss][Ii][Mm][Pp][Ll][Ii][Cc][Ii][Tt][Yy]|[Qq][Aa]|[Pp][Rr][Oo][Dd][Uu][Cc][Tt] [Oo][Ww][Nn][Ee][Rr]",
+            "min": 3
+          }
+        },
+        {
+          "name": "verifier",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "verif",
+            "flags": "i",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.4,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 14,
+            "startedAt": "2026-09-18T20:19:17.449Z",
+            "error": "exit 1: You've hit your monthly spend limit · raise it at claude.ai/settings/usage?from=cc_cli_limit_message · your session limit resets 6:20am (Asia/Singapore)",
+            "tracePath": "/private/tmp/e-EFE0VZ/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "by-signal-seat",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Agent called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "findings-block",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-edit",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Edit called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "seats-cast",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Agent called 0x (expected 3..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "verifier",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched verif",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.4,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "calcom-setup",
+      "dir": "evals/calcom-setup",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-setup\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the four files are written. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 2400,
+      "maxTurns": 100,
+      "graders": [
+        {
+          "name": "drive",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": ".product-builder/drive.md",
+            "exists": true
+          }
+        },
+        {
+          "name": "forge-unknown-honest",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": ".product-builder/profile.md"
+            },
+            "pattern": "UNKNOWN|fixture|denied",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "profile",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": ".product-builder/profile.md",
+            "exists": true
+          }
+        },
+        {
+          "name": "stack-detected",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": ".product-builder/profile.md"
+            },
+            "pattern": "yarn|turbo|prisma|next",
+            "flags": "i",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 15,
+            "startedAt": "2026-09-18T20:19:31.144Z",
+            "error": "exit 1: You've hit your monthly spend limit · raise it at claude.ai/settings/usage?from=cc_cli_limit_message · your session limit resets 6:20am (Asia/Singapore)",
+            "tracePath": "/private/tmp/e-QcMiQu/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "drive",
+                "passed": false,
+                "weight": 1,
+                "explanation": ".product-builder/drive.md missing (expected present)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "forge-unknown-honest",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: case \"calcom-setup\" grader focus file \".product-builder/profile.md\": path \".product-builder/profile.md\" does not exist",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "profile",
+                "passed": false,
+                "weight": 1,
+                "explanation": ".product-builder/profile.md missing (expected present)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "stack-detected",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: case \"calcom-setup\" grader focus file \".product-builder/profile.md\": path \".product-builder/profile.md\" does not exist",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 5,
+    "casesPassed": 1,
+    "overallScore": 0.5728571428571428,
+    "overallPassRate": 0.2
+  }
+}

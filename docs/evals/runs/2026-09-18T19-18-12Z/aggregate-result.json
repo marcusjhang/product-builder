@@ -1,0 +1,1966 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.277",
+  "startedAt": "2026-09-18T19:18:13.323Z",
+  "durationSeconds": 3679,
+  "costUsd": 54.07555525000001,
+  "partial": false,
+  "suite": {
+    "root": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo",
+    "ablation": "none",
+    "tagFilters": [
+      "pbB"
+    ],
+    "threshold": 1,
+    "concurrency": 2,
+    "plugins": [
+      {
+        "name": "product-builder",
+        "version": "0.1.0",
+        "path": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "playbook-babysit",
+      "dir": "evals/playbook-babysit",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder get PR 7 merge-ready: the check is red and there are review comments\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the PR is merge-ready or the blocker is named. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 2400,
+      "maxTurns": 120,
+      "graders": [
+        {
+          "name": "fix-wave",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "fix wave",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "never-merges",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "pr merge",
+            "min": 0,
+            "max": 0
+          }
+        },
+        {
+          "name": "readme-fixed",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "README.md"
+            },
+            "pattern": "priority",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "reads-pr",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "gh pr (view|checks|list)",
+            "min": 1
+          }
+        },
+        {
+          "name": "route-babysit",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/babysit\\.md"
+          }
+        },
+        {
+          "name": "triage-table",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "act|push back|clarify",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "verify-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-verify\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.8571428571428571,
+            "passed": false,
+            "turns": 88,
+            "costUsd": 8.449565500000002,
+            "judgeCostUsd": 0,
+            "durationSeconds": 969,
+            "startedAt": "2026-09-18T19:18:13.429Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-y70sUy/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "fix-wave",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fix wave",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "never-merges",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "readme-fixed",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched priority",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "reads-pr",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-babysit",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "triage-table",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched act|push back|clarify",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "verify-invoked",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.8571428571428571,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "playbook-bug-fix",
+      "dir": "evals/playbook-bug-fix",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder fix: completing an archived task should be rejected. tests/complete-archived.test.js fails on main.\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the PR is opened with bin/gh. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 2400,
+      "maxTurns": 120,
+      "graders": [
+        {
+          "name": "mechanism-named",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "src/tasks\\.js:\\d+",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "no-blanket-catch",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "src/tasks.js"
+            },
+            "pattern": "try\\s*\\{",
+            "flags": "",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "pr-created",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": ".forge/created.txt",
+            "exists": true
+          }
+        },
+        {
+          "name": "repro-first",
+          "type": "tool_order",
+          "weight": 1,
+          "config": {
+            "before": {
+              "tool": "Bash",
+              "input_match": "complete-archived"
+            },
+            "after": {
+              "tool": "Edit"
+            }
+          }
+        },
+        {
+          "name": "review-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-review\""
+          }
+        },
+        {
+          "name": "root-cause-fix",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "src/tasks.js"
+            },
+            "pattern": "archived",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "route-bug-fix",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/bug-fix\\.md"
+          }
+        },
+        {
+          "name": "verify-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-verify\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.75,
+            "passed": false,
+            "turns": 220,
+            "costUsd": 14.65321325,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2401,
+            "startedAt": "2026-09-18T19:18:13.429Z",
+            "error": "timed out after 2400s",
+            "tracePath": "/private/tmp/e-usxrjV/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "mechanism-named",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-blanket-catch",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "pr-created",
+                "passed": false,
+                "weight": 1,
+                "explanation": ".forge/created.txt missing (expected present)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "repro-first",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash@8 precedes Edit@17",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "review-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "root-cause-fix",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched archived",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-bug-fix",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "verify-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.75,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "playbook-built-first",
+      "dir": "evals/playbook-built-first",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder review what I built on this branch before I open the PR\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the Definition of Ready is printed and the hand-off is stated. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 3600,
+      "maxTurns": 200,
+      "graders": [
+        {
+          "name": "assumed-derived",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/*/decisions.md"
+            },
+            "pattern": "ASSUMED: derived from the diff",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "derived-plan",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "docs/plans/*/decisions.md",
+            "exists": true
+          }
+        },
+        {
+          "name": "dor-printed",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Definition of Ready",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "pm-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-pm\""
+          }
+        },
+        {
+          "name": "review-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-review\""
+          }
+        },
+        {
+          "name": "round-trip",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "round.trip|displays|removes",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "route-built-first",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/built-first\\.md"
+          }
+        },
+        {
+          "name": "status-derived",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/*/product.md"
+            },
+            "pattern": "Derived",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "techlead-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-techlead\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.7777777777777778,
+            "passed": false,
+            "turns": 113,
+            "costUsd": 11.406464500000006,
+            "judgeCostUsd": 0,
+            "durationSeconds": 1303,
+            "startedAt": "2026-09-18T19:34:22.579Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-teJS5k/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "assumed-derived",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: case \"playbook-built-first\" grader focus file \"docs/plans/*/decisions.md\": path \"docs/plans/*/decisions.md\" does not exist",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "derived-plan",
+                "passed": true,
+                "weight": 1,
+                "explanation": "docs/plans/*/decisions.md exists as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "dor-printed",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Definition of Ready",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "pm-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "review-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "round-trip",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched round.trip|displays|removes",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-built-first",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "status-derived",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: case \"playbook-built-first\" grader focus file \"docs/plans/*/product.md\": path \"docs/plans/*/product.md\" does not exist",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "techlead-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.7777777777777778,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "playbook-data-migration",
+      "dir": "evals/playbook-data-migration",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder move task tags out of data/tasks.json into their own file data/tags.json with a backfill, keeping every reader working during the move\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the slices are planned, the migration is replayed on a scratch copy, and the first PR is opened with bin/gh. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 3600,
+      "maxTurns": 150,
+      "graders": [
+        {
+          "name": "db-seat",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Dd][Aa][Tt][Aa][Bb][Aa][Ss][Ee]|[Rr][Ee][Ll][Ee][Aa][Ss][Ee] [Ee][Nn][Gg][Ii][Nn][Ee][Ee][Rr]",
+            "min": 1
+          }
+        },
+        {
+          "name": "five-steps",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "expand[\\s\\S]*backfill[\\s\\S]*cut ?over[\\s\\S]*contract",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "migration-file",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "migrations/003*",
+            "exists": true
+          }
+        },
+        {
+          "name": "replayed",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "migrate",
+            "min": 1
+          }
+        },
+        {
+          "name": "route-migration",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/data-migration\\.md"
+          }
+        },
+        {
+          "name": "techlead-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-techlead\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.8333333333333334,
+            "passed": false,
+            "turns": 92,
+            "costUsd": 10.416416249999997,
+            "judgeCostUsd": 0,
+            "durationSeconds": 1390,
+            "startedAt": "2026-09-18T19:56:05.284Z",
+            "error": "exit 1: You've hit your monthly spend limit · raise it at claude.ai/settings/usage?from=cc_cli_limit_message · your session limit resets 6:20am (Asia/Singapore)",
+            "tracePath": "/private/tmp/e-i3YyhB/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "db-seat",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 2x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "five-steps",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched expand[\\s\\S]*backfill[\\s\\S]*cut ?over[\\s\\S]*contract",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "migration-file",
+                "passed": false,
+                "weight": 1,
+                "explanation": "migrations/003* missing (expected present)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "replayed",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 6x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-migration",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "techlead-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.8333333333333334,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "playbook-hardening",
+      "dir": "evals/playbook-hardening",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder add tests and error handling to src/import.js; it swallows every error today\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the PR is opened with bin/gh. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 2400,
+      "maxTurns": 150,
+      "graders": [
+        {
+          "name": "gap-table",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "gap",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "how-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-how\""
+          }
+        },
+        {
+          "name": "no-bare-catch",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "src/import.js"
+            },
+            "pattern": "catch\\s*\\{\\s*\\}",
+            "flags": "",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "review-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-review\""
+          }
+        },
+        {
+          "name": "route-hardening",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/hardening\\.md"
+          }
+        },
+        {
+          "name": "silent-failure-seat",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ss][Ii][Ll][Ee][Nn][Tt].[Ff][Aa][Ii][Ll][Uu][Rr][Ee]",
+            "min": 1
+          }
+        },
+        {
+          "name": "tests-added",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "tests/import*.test.js",
+            "exists": true
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 111,
+            "costUsd": 9.14989575,
+            "judgeCostUsd": 0,
+            "durationSeconds": 1278,
+            "startedAt": "2026-09-18T19:58:14.101Z",
+            "error": "exit 1: You've hit your monthly spend limit · raise it at claude.ai/settings/usage?from=cc_cli_limit_message · your session limit resets 6:20am (Asia/Singapore)",
+            "tracePath": "/private/tmp/e-ysxVtg/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "gap-table",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched gap",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "how-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-bare-catch",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "review-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-hardening",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "silent-failure-seat",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 2x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "tests-added",
+                "passed": true,
+                "weight": 1,
+                "explanation": "tests/import*.test.js exists as expected",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "playbook-implement",
+      "dir": "evals/playbook-implement",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder go: build keyboard-archive\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the PR is opened with bin/gh and its URL is in the reply. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 3600,
+      "maxTurns": 200,
+      "graders": [
+        {
+          "name": "flags-route",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "src/server.js"
+            },
+            "pattern": "/flags",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "ledger-row",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/keyboard-archive/decisions.md"
+            },
+            "pattern": "\\| P1 \\|.*keyboard-archive/p1",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "pr-created",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": ".forge/created.txt",
+            "exists": true
+          }
+        },
+        {
+          "name": "review-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-review\""
+          }
+        },
+        {
+          "name": "route-implement",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/implement\\.md"
+          }
+        },
+        {
+          "name": "slice-branch",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "keyboard-archive/p1",
+            "min": 1
+          }
+        },
+        {
+          "name": "tests-run",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "node --test",
+            "min": 1
+          }
+        },
+        {
+          "name": "verify-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-verify\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.125,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 1,
+            "startedAt": "2026-09-18T20:19:15.322Z",
+            "error": "exit 1: You've hit your monthly spend limit · raise it at claude.ai/settings/usage?from=cc_cli_limit_message · your session limit resets 6:20am (Asia/Singapore)",
+            "tracePath": "/private/tmp/e-VamfjE/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "flags-route",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched /flags",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-row",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in file docs/plans/keyboard-archive/decisions.md",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "pr-created",
+                "passed": false,
+                "weight": 1,
+                "explanation": ".forge/created.txt missing (expected present)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "review-invoked",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-implement",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Read called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "slice-branch",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Bash called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "tests-run",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Bash called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "verify-invoked",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.125,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "playbook-implement-parallel",
+      "dir": "evals/playbook-implement-parallel",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder go: build keyboard-archive --parallel 2\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until both slices are built and reviewed and their PRs are opened with bin/gh. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 3600,
+      "maxTurns": 200,
+      "graders": [
+        {
+          "name": "implementers-dispatched",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Ii][Mm][Pp][Ll][Ee][Mm][Ee][Nn][Tt][Ee][Rr]|[Cc][Oo][Nn][Tt][Rr][Aa][Cc][Tt]|[Dd][Oo][Nn][Ee]_[Ww][Ii][Tt][Hh]_[Cc][Oo][Nn][Cc][Ee][Rr][Nn][Ss]|[Nn][Ee][Ee][Dd][Ss]_[Cc][Oo][Nn][Tt][Ee][Xx][Tt]",
+            "min": 2
+          }
+        },
+        {
+          "name": "ledger-two-rows",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/keyboard-archive/decisions.md"
+            },
+            "pattern": "\\| P2 \\|",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "pr-created",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": ".forge/created.txt",
+            "exists": true
+          }
+        },
+        {
+          "name": "review-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-review\""
+          }
+        },
+        {
+          "name": "route-implement",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/implement\\.md"
+          }
+        },
+        {
+          "name": "two-branches",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "keyboard-archive/p2",
+            "min": 1
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 1,
+            "startedAt": "2026-09-18T20:19:16.768Z",
+            "error": "exit 1: You've hit your monthly spend limit · raise it at claude.ai/settings/usage?from=cc_cli_limit_message · your session limit resets 6:20am (Asia/Singapore)",
+            "tracePath": "/private/tmp/e-BfeX7t/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "implementers-dispatched",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Agent called 0x (expected 2..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-two-rows",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in file docs/plans/keyboard-archive/decisions.md",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "pr-created",
+                "passed": false,
+                "weight": 1,
+                "explanation": ".forge/created.txt missing (expected present)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "review-invoked",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-implement",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Read called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "two-branches",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Bash called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "playbook-plan-bounded",
+      "dir": "evals/playbook-plan-bounded",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder plan: add an Archive button to the page for each open task, so people can archive without the CLI\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the Definition of Ready is printed. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 3600,
+      "maxTurns": 200,
+      "graders": [
+        {
+          "name": "assumed-rows",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "ASSUMED",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "dor-printed",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Definition of Ready",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "ledger-written",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "docs/plans/*/decisions.md",
+            "exists": true
+          }
+        },
+        {
+          "name": "probe-partial",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS if the run's replies say the archive route already exists on the default branch behind the archive flag (the probe verdict partial or a similar statement) and the plan is only the page control. FAIL if the plan re-implements the route or never mentions that it exists.",
+          "config": {
+            "criteria": "PASS if the run's replies say the archive route already exists on the default branch behind the archive flag (the probe verdict partial or a similar statement) and the plan is only the page control. FAIL if the plan re-implements the route or never mentions that it exists.",
+            "focus": "trace"
+          }
+        },
+        {
+          "name": "research-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-research\""
+          }
+        },
+        {
+          "name": "route-plan",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/plan\\.md"
+          }
+        },
+        {
+          "name": "size-bounded",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "Bounded",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "techlead-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-techlead\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-18T20:19:17.989Z",
+            "error": "exit 1: You've hit your monthly spend limit · raise it at claude.ai/settings/usage?from=cc_cli_limit_message · your session limit resets 6:20am (Asia/Singapore)",
+            "tracePath": "/private/tmp/e-r4IWja/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "assumed-rows",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in trace",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "dor-printed",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-written",
+                "passed": false,
+                "weight": 1,
+                "explanation": "docs/plans/*/decisions.md missing (expected present)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "probe-partial",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: You've hit your monthly spend limit · raise it at claude.ai/settings/usage?from=cc_cli_limit_message · your session limit resets 6:20am (Asia/Singapore)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "research-invoked",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-plan",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Read called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "size-bounded",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in trace",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "techlead-invoked",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "playbook-plan-feature",
+      "dir": "evals/playbook-plan-feature",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder plan: recurring tasks: a task can repeat daily or weekly, the next one appears when the current one is completed, and a weekly digest lists what is due\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the Definition of Ready is printed. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 3600,
+      "maxTurns": 200,
+      "graders": [
+        {
+          "name": "arena-architects",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Aa][Rr][Cc][Hh][Ii][Tt][Ee][Cc][Tt]|[Mm][Ii][Nn][Ii][Mm][Aa][Ll] [Cc][Hh][Aa][Nn][Gg][Ee]|[Cc][Ll][Ee][Aa][Nn] [Ss][Hh][Aa][Pp][Ee]|[Pp][Rr][Aa][Gg][Mm][Aa][Tt][Ii][Cc]",
+            "min": 2
+          }
+        },
+        {
+          "name": "dor-printed",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Definition of Ready",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "personas-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-personas\""
+          }
+        },
+        {
+          "name": "plan-files",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "docs/plans/*/implementation.md",
+            "exists": true
+          }
+        },
+        {
+          "name": "pm-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-pm\""
+          }
+        },
+        {
+          "name": "research-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-research\""
+          }
+        },
+        {
+          "name": "route-plan",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/plan\\.md"
+          }
+        },
+        {
+          "name": "size-feature",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "Feature",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "techlead-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-techlead\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 1,
+            "startedAt": "2026-09-18T20:19:19.849Z",
+            "error": "exit 1: You've hit your monthly spend limit · raise it at claude.ai/settings/usage?from=cc_cli_limit_message · your session limit resets 6:20am (Asia/Singapore)",
+            "tracePath": "/private/tmp/e-hoIGTW/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "arena-architects",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Agent called 0x (expected 2..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "dor-printed",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "personas-invoked",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "plan-files",
+                "passed": false,
+                "weight": 1,
+                "explanation": "docs/plans/*/implementation.md missing (expected present)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "pm-invoked",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "research-invoked",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-plan",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Read called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "size-feature",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in trace",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "techlead-invoked",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "playbook-plan-program",
+      "dir": "evals/playbook-plan-program",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder plan: a team edition: accounts with login, shared boards with members and roles, real-time updates between members, email notifications, and a mobile app\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the program overview README and its parts table are written and the first part's intake has run. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 2400,
+      "maxTurns": 150,
+      "graders": [
+        {
+          "name": "overview-written",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "docs/plans/*/README.md",
+            "exists": true
+          }
+        },
+        {
+          "name": "parts-table",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/*/README.md"
+            },
+            "pattern": "part",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "route-program",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/program\\.md"
+          }
+        },
+        {
+          "name": "size-program",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "Program",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "walking-skeleton",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS if the overview names part 1 as a shippable increment that is the walking skeleton and orders parts by risk then value. FAIL if parts are layers (database, backend, frontend) rather than user-facing increments.",
+          "config": {
+            "criteria": "PASS if the overview names part 1 as a shippable increment that is the walking skeleton and orders parts by risk then value. FAIL if parts are layers (database, backend, frontend) rather than user-facing increments.",
+            "focus": {
+              "source": "file",
+              "path": "docs/plans/*/README.md"
+            }
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 1,
+            "startedAt": "2026-09-18T20:19:21.148Z",
+            "error": "exit 1: You've hit your monthly spend limit · raise it at claude.ai/settings/usage?from=cc_cli_limit_message · your session limit resets 6:20am (Asia/Singapore)",
+            "tracePath": "/private/tmp/e-ecPupw/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "overview-written",
+                "passed": false,
+                "weight": 1,
+                "explanation": "docs/plans/*/README.md missing (expected present)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "parts-table",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: case \"playbook-plan-program\" grader focus file \"docs/plans/*/README.md\": path \"docs/plans/*/README.md\" does not exist",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-program",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Read called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "size-program",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in trace",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "walking-skeleton",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: case \"playbook-plan-program\" grader focus file \"docs/plans/*/README.md\": path \"docs/plans/*/README.md\" does not exist",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "playbook-qa",
+      "dir": "evals/playbook-qa",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder test keyboard-archive end to end\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until qa-report.md is written with a verdict. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 2400,
+      "maxTurns": 150,
+      "graders": [
+        {
+          "name": "flag-both-states",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "flag off",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "personas-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-personas\""
+          }
+        },
+        {
+          "name": "report-written",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "docs/plans/keyboard-archive/qa-report.md",
+            "exists": true
+          }
+        },
+        {
+          "name": "route-qa",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/qa\\.md"
+          }
+        },
+        {
+          "name": "tests-run",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "node --test",
+            "min": 1
+          }
+        },
+        {
+          "name": "verdict",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/keyboard-archive/qa-report.md"
+            },
+            "pattern": "verdict",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "verify-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-verify\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-18T20:19:22.384Z",
+            "error": "exit 1: You've hit your monthly spend limit · raise it at claude.ai/settings/usage?from=cc_cli_limit_message · your session limit resets 6:20am (Asia/Singapore)",
+            "tracePath": "/private/tmp/e-4XI375/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "flag-both-states",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in trace",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "personas-invoked",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "report-written",
+                "passed": false,
+                "weight": 1,
+                "explanation": "docs/plans/keyboard-archive/qa-report.md missing (expected present)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-qa",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Read called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "tests-run",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Bash called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "verdict",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: case \"playbook-qa\" grader focus file \"docs/plans/keyboard-archive/qa-report.md\": path \"docs/plans/keyboard-archive/qa-report.md\" does not exist",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "verify-invoked",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "playbook-ship",
+      "dir": "evals/playbook-ship",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder ship keyboard-archive\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the rollout stages are prepared and the reply says what the user flips. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 1800,
+      "maxTurns": 100,
+      "graders": [
+        {
+          "name": "dod-printed",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Definition of Done",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "no-flag-flip",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "flags\\.json",
+            "min": 0,
+            "max": 0
+          }
+        },
+        {
+          "name": "route-ship",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/ship\\.md"
+          }
+        },
+        {
+          "name": "user-flips",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS if the reply prepares rollout stages with a gate each and says the user flips the flag and announces; the run itself does not edit data/flags.json. FAIL if the run flips the flag or declares the feature shipped.",
+          "config": {
+            "criteria": "PASS if the reply prepares rollout stages with a gate each and says the user flips the flag and announces; the run itself does not edit data/flags.json. FAIL if the run flips the flag or declares the feature shipped.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.25,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-18T20:19:23.925Z",
+            "error": "exit 1: You've hit your monthly spend limit · raise it at claude.ai/settings/usage?from=cc_cli_limit_message · your session limit resets 6:20am (Asia/Singapore)",
+            "tracePath": "/private/tmp/e-8g9B2e/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "dod-printed",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-flag-flip",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-ship",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Read called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "user-flips",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: You've hit your monthly spend limit · raise it at claude.ai/settings/usage?from=cc_cli_limit_message · your session limit resets 6:20am (Asia/Singapore)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.25,
+        "passRate": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 12,
+    "casesPassed": 1,
+    "overallScore": 0.382771164021164,
+    "overallPassRate": 0.08333333333333333
+  }
+}

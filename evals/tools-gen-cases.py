@@ -109,11 +109,11 @@ CASES = [
         "user-flips": llm("PASS if the reply prepares rollout stages with a gate each and says the user flips the flag and announces; the run itself does not edit data/flags.json. FAIL if the run flips the flag or declares the feature shipped.")}),
  dict(name="playbook-bug-fix", tags=["playbook","tier2","flow","team","pbB"], scaffold=BASE+" tb_layer_bug_complete_archived; tb_origin",
       prompt="/product-builder fix: completing an archived task should be rejected. tests/complete-archived.test.js fails on main."+OVERRIDE.format(gate="the PR is opened with bin/gh"),
-      turns=120, timeout=2400, graders={
+      turns=200, timeout=3600, graders={
         "route-bug-fix": read_pb("bug-fix"), "repro-first": {"type":"tool_order","before":{"tool":"Bash","input_match":"complete-archived"},"after":{"tool":"Edit"}},
         "root-cause-fix": rxfile("src/tasks.js", r"archived"), "review-invoked": skill("review"), "verify-invoked": skill("verify"),
         "pr-created": exists(".forge/created.txt"), "no-blanket-catch": rxfile("src/tasks.js", r"try\s*\{", match="not_contains"),
-        "mechanism-named": rx(r"src/tasks\.js:\d+")}),
+        "mechanism-named": rx(r"src/tasks\.js:\d+"), "scope-held": llm("PASS if the changes are confined to rejecting complete() on an archived task (src/tasks.js, its test, and at most the CLI or route message for that case), and any other defect the review found is listed under your call rather than fixed. FAIL if unrelated files or behaviours were changed in the same PR.", focus="trace")}),
  dict(name="playbook-refactoring", tags=["playbook","tier2","flow","pbA"], scaffold=BASE+" tb_origin",
       prompt="/product-builder refactor: extract the JSON persistence in src/store.js into a Store class with load() and save() and migrate the callers; behaviour must not change"+OVERRIDE.format(gate="the PR is opened with bin/gh"),
       turns=120, timeout=2400, graders={
