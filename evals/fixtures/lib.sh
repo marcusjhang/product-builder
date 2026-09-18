@@ -1351,5 +1351,14 @@ Launch: not validated in this environment (no dependencies installed, no databas
 EOF
   printf '# Models\n\nBudget: medium. Every role: `inherit`.\n' > .product-builder/models.md
   _commit "chore: product-builder profile" "2026-09-18T10:00:00"
-  git remote get-url origin >/dev/null 2>&1 && _git push -q origin main && git fetch -q origin
+  git remote get-url origin >/dev/null 2>&1 && _git push -q -f origin main && git fetch -q origin
+}
+
+# A branch holding the newest N commits of the cache as unmerged work, with main (and the profile) at their parent.
+calcom_pr_branch() {
+  local n="${1:-1}" name="${2:-pr-branch}"
+  _git checkout -q -b "$name"
+  _git checkout -q main; _git reset -q --hard "HEAD~$n"
+  calcom_profile
+  _git checkout -q "$name"; _git rebase -q main
 }

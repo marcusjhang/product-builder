@@ -68,6 +68,12 @@ CASES = [
         "tests-run": bash(r"node --test"), "review-invoked": skill("review"), "verify-invoked": skill("verify"),
         "pr-created": exists(".forge/created.txt"), "ledger-row": rxfile("docs/plans/keyboard-archive/decisions.md", r"\| P1 \|.*keyboard-archive/p1"),
         "flags-route": rxfile("src/server.js", r"/flags")}),
+ dict(name="playbook-implement-parallel", tags=["playbook","tier2","flow","team"], scaffold=BASE+" tb_layer_plan 'Ready to implement'; tb_layer_plan_two_slices; tb_origin",
+      prompt="/product-builder go: build keyboard-archive --parallel 2"+OVERRIDE.format(gate="both slices are built and reviewed and their PRs are opened with bin/gh"),
+      turns=200, timeout=3600, graders={
+        "route-implement": read_pb("implement"), "implementers-dispatched": agent(r"(?i)implementer|contract|DONE_WITH_CONCERNS|NEEDS_CONTEXT", 2),
+        "two-branches": bash(r"keyboard-archive/p2"), "review-invoked": skill("review"), "ledger-two-rows": rxfile("docs/plans/keyboard-archive/decisions.md", r"\| P2 \|"),
+        "pr-created": exists(".forge/created.txt")}),
  dict(name="playbook-qa", tags=["playbook","tier2","flow","team"], scaffold=BASE+" tb_layer_plan 'Ready to implement'; tb_layer_p1_merged; tb_plan_status keyboard-archive Built; tb_origin",
       prompt="/product-builder test keyboard-archive end to end"+OVERRIDE.format(gate="qa-report.md is written with a verdict"),
       turns=150, timeout=2400, graders={
@@ -290,6 +296,16 @@ CASES = [
       turns=80, timeout=1800, graders={
         "route-investigation": read_pb("investigation"), "how-invoked": skill("how"), "explorers": agent(r"(?i)explorer|angle", 1),
         "anchors": rx(r"(apps|packages)/[\w/.-]+\.tsx?:\d+"), "no-change": exists("apps/**", False)}),
+ dict(name="calcom-built-first", tags=["calcom","tier3","flow","team"], scaffold="calcom_base; calcom_pr_branch 1 pr-embed-guard",
+      prompt="/product-builder review what I built on this branch before I open the PR"+OVERRIDE.format(gate="the Definition of Ready is printed and the hand-off is stated"),
+      turns=200, timeout=3600, graders={
+        "route-built-first": read_pb("built-first"), "derived-plan": exists("docs/plans/*/decisions.md"), "assumed-derived": rxfile("docs/plans/*/decisions.md", r"ASSUMED: derived from the diff"),
+        "review-invoked": skill("review"), "techlead-invoked": skill("techlead"), "anchors": rx(r"(apps|packages)/[\w/.-]+\.tsx?:\d+", "trace"), "dor-printed": rx(r"Definition of Ready")}),
+ dict(name="calcom-review", tags=["calcom","tier3","team"], scaffold="calcom_base; calcom_pr_branch 1 pr-embed-guard; git checkout -q main",
+      prompt="/product-builder-review --diff main..pr-embed-guard",
+      turns=100, timeout=2400, graders={
+        "seats-cast": agent(r"(?i)staff|simplicity|QA|product owner", 3), "by-signal-seat": agent(r"(?i)frontend|security|integration|silent.failure|backwards", 1),
+        "verifier": rx(r"(?i)verif", "trace"), "findings-block": rx(r"(?i)act on|consider|noted|dismissed"), "no-edit": never("Edit", r".")}),
  dict(name="calcom-plan-bounded", tags=["calcom","tier3","flow"], scaffold="calcom_base; calcom_profile",
       prompt="/product-builder plan: on the booking success page, add a Copy link button that copies the booking's reschedule link"+OVERRIDE.format(gate="the Definition of Ready is printed or the intake probe stops the plan"),
       turns=200, timeout=3600, graders={
