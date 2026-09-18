@@ -23,7 +23,7 @@ First run in a repo:
 /product-builder-setup
 ```
 
-It reads the repo before it asks you anything, then writes `.product-builder/profile.md`, `personas.md`, `drive.md`, and `models.md`. Every skill reads those instead of guessing. `profiles/default.md` is the shape; `profiles/example-sveltekit-monorepo.md` is a worked example.
+It reads the repo before it asks you anything, then writes `.product-builder/profile.md`, `personas.md`, `drive.md`, and `models.md`. Every skill reads those instead of guessing. `profiles/default.md` is the shape; `profiles/example-calcom.md` is a worked example filled in from the public [calcom/cal.com](https://github.com/calcom/cal.com) repository, every fact with the file it was read from.
 
 Prerequisite: the `grill-me` skill (Matt Pocock, MIT) at `~/.claude/skills/grill-me` for the interview discipline; the rules are also inlined in `skills/product-builder/playbooks/plan-interview.md`. A browser driver that subagents can reach (Playwright MCP, Claude in Chrome) makes persona click-throughs and live verification real; without one they run in paper mode and say so.
 
