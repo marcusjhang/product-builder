@@ -1,0 +1,10 @@
+schema_version: "1.1"
+name: gate-one-question-default
+tags: ["gate", "tier1"]
+runs: 1
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 60
+  timeout_seconds: 1200
+  allowed_tools: [Read, Glob, Grep, Skill, Agent, TodoWrite]

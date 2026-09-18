@@ -97,7 +97,7 @@ Seventeen, in `skills/product-builder/references/principles.md`. The ones that s
 
 ## Docs
 
-`docs/PLAN.md` is the design plan with every playbook and skill specified. `docs/landscape.md` records what was studied to shape it (pstack, Matt Pocock's skills, superpowers, Spec Kit, OpenSpec, BMAD, Kiro, Shape Up, UXAgent, gstack, Anthropic's guidance) and what was taken from each. `docs/stress-test.md` is the record of six scenario runs against a real repo with simulated users, the scores, and the fixes they produced. `docs/journal.md` is the run journal: one entry per field run, what the suite did or would have done, and the changes it produced, with no repository named.
+`docs/PLAN.md` is the design plan with every playbook and skill specified. `docs/landscape.md` records what was studied to shape it (pstack, Matt Pocock's skills, superpowers, Spec Kit, OpenSpec, BMAD, Kiro, Shape Up, UXAgent, gstack, Anthropic's guidance) and what was taken from each. `docs/stress-test.md` is the record of six scenario runs against a real repo with simulated users, the scores, and the fixes they produced. `docs/journal.md` is the run journal: one entry per field run, what the suite did or would have done, and the changes it produced, with no repository named. `docs/eval-log.md` is the log of the eval loop, with saved results under `docs/evals/runs/`. The wiring of the whole suite is drawn on an Excalidraw board (scene `Z07dYjHJBO`, `https://app.excalidraw.com/s/919s34P0y0E/Z07dYjHJBO`), kept current with every structural change per `CLAUDE.md`.
 
 ## License
 

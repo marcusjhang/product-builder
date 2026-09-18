@@ -1,0 +1,118 @@
+#!/usr/bin/env python3
+"""check: structural checks over the suite. Run from anywhere; exits 1 on the first class of failure found.
+
+Checks: every SKILL.md has name (matching its directory), description (<= 1536 chars), and only spec fields;
+every ${CLAUDE_SKILL_DIR} path resolves under a plugin install and under a copy of skills/* alone; every
+playbooks/*.md, references/*.md, scripts/* and product-builder-* name mentioned in a skill or playbook exists;
+"step N" ranges point inside the target playbook; no em or en dash in prose files; every JSON parses; hook
+commands point at files; scripts are executable; playbooks have the house shape (### title, bold owner line,
+numbered steps, a Reply line). With --plugin-validate also runs `claude plugin validate --strict`.
+"""
+import json, os, re, subprocess, sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[3]
+SKILLS = ROOT / "skills"
+SPEC_FIELDS = {"name", "description", "when_to_use", "argument-hint", "arguments", "disable-model-invocation",
+               "user-invocable", "allowed-tools", "disallowed-tools", "model", "effort", "context", "agent",
+               "background", "hooks", "paths", "shell", "metadata", "license", "compatibility"}
+problems = []
+def fail(msg): problems.append(msg)
+
+def frontmatter(text):
+    m = re.match(r"^---\n(.*?)\n---\n", text, re.S)
+    if not m: return None
+    fm = {}
+    for line in m.group(1).splitlines():
+        if ":" in line:
+            k, v = line.split(":", 1); fm[k.strip()] = v.strip()
+    return fm
+
+# 1. frontmatter
+for d in sorted(SKILLS.iterdir()):
+    f = d / "SKILL.md"
+    if not f.exists(): fail(f"{d.name}: no SKILL.md"); continue
+    fm = frontmatter(f.read_text())
+    if fm is None: fail(f"{f}: no frontmatter"); continue
+    if fm.get("name") != d.name: fail(f"{f}: name {fm.get('name')!r} != directory {d.name!r}")
+    if not fm.get("description"): fail(f"{f}: no description")
+    elif len(fm["description"]) > 1536: fail(f"{f}: description {len(fm['description'])} chars > 1536")
+    for k in fm:
+        if k not in SPEC_FIELDS: fail(f"{f}: unknown frontmatter field {k!r}")
+    if sum(1 for _ in f.open()) > 500: fail(f"{f}: over 500 lines")
+
+# 2. skill-relative paths, both install shapes
+pat = re.compile(r"\$\{CLAUDE_SKILL_DIR\}([^ `)\"'\n]*)")
+for d in sorted(SKILLS.iterdir()):
+    for f in d.rglob("*"):
+        if not f.is_file() or f.suffix not in {".md", ".json", ""}: continue
+        try: text = f.read_text()
+        except UnicodeDecodeError: continue
+        for rel in set(pat.findall(text)):
+            target = (d / rel.lstrip("/")).resolve() if rel else d
+            if not target.exists(): fail(f"{f.relative_to(ROOT)}: ${{CLAUDE_SKILL_DIR}}{rel} does not exist (plugin install)")
+            if "/../../" in rel or rel.startswith("/../../"): fail(f"{f.relative_to(ROOT)}: ${{CLAUDE_SKILL_DIR}}{rel} leaves skills/ (breaks a copy-install)")
+
+# 3. cross-references by name
+mode = SKILLS / "product-builder"
+texts = {p: p.read_text() for p in list(SKILLS.rglob("*.md")) + [ROOT / "README.md"]}  # docs/PLAN.md is the design record, not the shipped suite
+for p, text in texts.items():
+    for m in re.finditer(r"playbooks/([a-z-]+\.md)", text):
+        if not (mode / "playbooks" / m.group(1)).exists(): fail(f"{p.relative_to(ROOT)}: missing playbook {m.group(1)}")
+    for m in re.finditer(r"references/([a-z-]+\.(?:md|json))", text):
+        if not (mode / "references" / m.group(1)).exists() and not (p.parent / "references" / m.group(1)).exists():
+            fail(f"{p.relative_to(ROOT)}: missing reference {m.group(1)}")
+    for m in re.finditer(r"product-builder-([a-z]+)\b", text):
+        if not (SKILLS / f"product-builder-{m.group(1)}").exists(): fail(f"{p.relative_to(ROOT)}: missing skill product-builder-{m.group(1)}")
+    for m in re.finditer(r"scripts/([a-z-]+(?:\.sh)?)\b", text):
+        name = m.group(1)
+        if not any((s / "scripts" / name).exists() for s in SKILLS.iterdir()): fail(f"{p.relative_to(ROOT)}: missing script {name}")
+
+# 4. step ranges
+steps = {}
+for pb in (mode / "playbooks").glob("*.md"):
+    steps[pb.name] = len(re.findall(r"^\d+\. ", pb.read_text(), re.M))
+for p, text in texts.items():
+    for m in re.finditer(r"`playbooks/([a-z-]+\.md)` steps? (\d+)(?: to (\d+))?", text):
+        hi = int(m.group(3) or m.group(2))
+        if hi > steps.get(m.group(1), 0): fail(f"{p.relative_to(ROOT)}: step {hi} beyond {m.group(1)} ({steps.get(m.group(1))} steps)")
+
+# 5. dashes in prose we own
+for p in list(SKILLS.rglob("*.md")) + list((ROOT / "docs").glob("*.md")) + [ROOT / "README.md", ROOT / "CHANGELOG.md"]:
+    if p.name in {"landscape.md", "stress-test.md", "PLAN.md"}: continue
+    for i, line in enumerate(p.read_text().splitlines(), 1):
+        if re.search(r"[–—]", line): fail(f"{p.relative_to(ROOT)}:{i}: long dash")
+
+# 6. json
+for p in list(ROOT.rglob("*.json")):
+    if ".git" in p.parts or "results" in p.parts or "node_modules" in p.parts: continue
+    try: json.load(p.open())
+    except Exception as e: fail(f"{p.relative_to(ROOT)}: {e}")
+
+# 7. hooks
+hooks = json.load((ROOT / "hooks" / "hooks.json").open())
+for ev, arr in hooks["hooks"].items():
+    for m in arr:
+        for h in m["hooks"]:
+            for rel in re.findall(r"\$\{CLAUDE_PLUGIN_ROOT\}([^\"\s]+)", h["command"]):
+                if not (ROOT / rel.lstrip("/")).exists(): fail(f"hooks.json: {ev} command path missing: {rel}")
+
+# 8. executables
+for s in SKILLS.rglob("scripts/*"):
+    if s.is_file() and not os.access(s, os.X_OK): fail(f"{s.relative_to(ROOT)}: not executable")
+
+# 9. playbook shape
+for pb in (mode / "playbooks").glob("*.md"):
+    t = pb.read_text()
+    if pb.name == "plan-interview.md": continue
+    if not t.startswith("### "): fail(f"{pb.name}: no ### title")
+    if not re.search(r"^\*\*[^*]+\*\*", t, re.M): fail(f"{pb.name}: no bold owner line")
+    if "**Reply" not in t: fail(f"{pb.name}: no Reply line")
+
+if "--plugin-validate" in sys.argv:
+    r = subprocess.run(["claude", "plugin", "validate", str(ROOT), "--strict"], capture_output=True, text=True)
+    if r.returncode != 0 or "failed" in (r.stdout + r.stderr).lower(): fail("claude plugin validate --strict: " + (r.stdout + r.stderr).strip().splitlines()[-1])
+
+if problems:
+    print("\n".join(problems)); print(f"{len(problems)} problem(s)"); sys.exit(1)
+print("check: ok")
