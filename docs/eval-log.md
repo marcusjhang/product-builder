@@ -89,3 +89,16 @@ Everything done to pressure-test the suite, in order, with what was found and wh
 - Also seen in that trace: `git fetch` inside the sandbox failed with the xcrun cache error on `git-upload-pack`, because only `git` had a wrapper. `run.sh` now wraps `git-upload-pack`, `git-receive-pack`, and `git-upload-archive` too.
 - `gate-one-question-default`: the behaviour is right (one question, three options with buys and costs, a recommendation, "Reply ok for (a), or name the letter", eight lines before Q1). Two grader defects: the regex expected the ok line directly under the Recommended line, and the judge could not count lines. Both are regexes now.
 - `leaf-plain`: 315 characters, meaning kept, no dashes; the judge failed it for the word "baseline". The rubric now names the three phrases that count as jargon and allows ordinary words.
+
+## 2026-09-19 · Playbook batch A, run 1 (`docs/evals/runs/2026-09-18T19-00-03Z`)
+
+15 cases, 4119 s wall at concurrency 3, about $104 at list price, 12 of 15 clean: flaky-test (quantified alone and in CI's lane, fixed at the cause, four seats plus a fix wave, PR opened), incident, intake-ships (stopped at the probe with one question), investigation (how skill invoked through the Skill tool, four explorers), pause (handoff written, WIP saved), perf-issue (bench run twice, one change), pickup (resumed the slice, finished it, opened the PR), refactoring (Store class, characterisation, review), release (changelog written, tag and publish shown and not run), removal (inventory with named searches, why skill, delete in order), revise (re-slice with a revision-log row and the tech lead on the new boundary), spike (probe script, verdict, branch not merged).
+
+**Suite defect (fixed).**
+- F7 `playbook-opening-a-pr`: "open a PR for this branch" on a finished branch with no plan folder routed to Built first (the state rule for unplanned code) and ran the derived plan, three panels, a fix wave, and evidence capture for 80 turns without reaching the PR. The words named a playbook trigger and should have won. Fix: the mode's routing says "open a PR" on that state routes to Opening a PR, which names the missing plan under Why and offers Built first as the next move; the playbook's owner line says the same.
+
+**Grader and harness defects (fixed).**
+- `playbook-decision-record`: a file-source grader with a glob path ("docs/adr/0002-*.md") is refused by the runner. Every glob file grader (program overview, built-first derived plan, the ADR) now reads the written content from the Write inputs in the trace. The ADR itself was written with a Consequences section and linked both ways.
+- `playbook-dependency-upgrade`: the changelog was read with `cat`, not the Read tool; the grader now looks for the path in the trace. The upgrade itself landed every breaking change with the backwards-compatibility seat cast.
+- `playbook-pickup`: finished the slice and opened the PR at turn 121 against a cap of 120; every grader passed. Budget raised to 200.
+- The runner exited 127 after the batch because `evals/run.sh` was edited while the batch was in flight and bash re-read the changed file mid-execution. The script body is now a function, parsed whole before it runs.
