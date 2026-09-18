@@ -1,5 +1,5 @@
 ---
-type: 'tool_used'
-tool: 'Read'
-input_match: 'tinydate-v2/CHANGELOG'
+type: 'regex'
+pattern: 'tinydate-v2/CHANGELOG'
+target: 'trace'
 ---

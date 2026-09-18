@@ -3,6 +3,8 @@
 # Usage: evals/run.sh [claude plugin eval options...]   e.g. evals/run.sh --case 'playbook-*' --tag tier2 -j 4
 # Every run's aggregate JSON and a Markdown summary are copied to docs/evals/runs/<timestamp>/ so results are kept.
 set -euo pipefail
+# The whole body is a function so bash parses it before running it; editing this file while a batch is in flight is then safe.
+main() {
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 EH="${PB_EVAL_HOME:-$HOME/.pb-eval-home}"
 # A clean HOME that links only what Claude Code needs: the runner's sandbox refuses to start when the real home
@@ -27,3 +29,5 @@ set -e
 python3 "$ROOT/evals/summarize.py" "$OUT/aggregate-result.json" > "$OUT/summary.md" 2>/dev/null || true
 echo "saved: $OUT (exit $status)"
 exit $status
+}
+main "$@"

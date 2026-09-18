@@ -1,6 +1,6 @@
 ### Opening a PR
 
-**Invoked at the end of every playbook that changed code.**
+**Invoked at the end of every playbook that changed code, and directly by "open a PR".** Invoked directly on a branch with no plan folder, it runs the checks and writes the body below with `Plan: none` under Why; it does not derive a plan or cast panels, and the reply offers Built first as the next move.
 
 Commits: rebase into small ordered commits grouped in dependency order (schema, core logic, wiring, UI, tests). After any history rewrite, compare the tree hash with the original before pushing. Prefer five narrow PRs to one wide one; a dependent PR targets its parent branch.
 

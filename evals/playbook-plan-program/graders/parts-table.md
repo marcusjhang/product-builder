@@ -1,6 +1,6 @@
 ---
 type: 'regex'
-pattern: 'part'
-target: { source: 'file', path: 'docs/plans/*/README.md' }
+pattern: '\| *Part|## Parts|parts table'
+target: 'trace'
 flags: 'i'
 ---

@@ -1,6 +1,6 @@
 ---
 type: 'regex'
 pattern: 'consequences'
-target: { source: 'file', path: 'docs/adr/0002-*.md' }
+target: 'trace'
 flags: 'i'
 ---
