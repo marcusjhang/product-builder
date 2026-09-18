@@ -1,7 +1,7 @@
 ---
 name: product-builder
 description: The product engineer's working mode. Matches a task to a playbook (plan, revise, implement, qa, ship, program, built first, investigation, bug fix, refactor, perf, incident, spike, dependency upgrade, data migration, removal, flaky test, release, decision record, hardening, opening a PR, babysit), opens a todo list with the playbook's steps, routes to leaf skills as the steps require, names the principles that shaped each decision, verifies on the real surface, and writes a short evidence-first reply. Use for "product-builder", "/product-builder", "plan this", "build it", "fix this", "ship it", "review what I built", "production is down", or any task that needs rigor. Stays on for the rest of the session unless the user opts out.
-argument-hint: [what you want done, in plain words]
+argument-hint: [playbook:] [what you want done, in plain words]
 ---
 
 # product-builder

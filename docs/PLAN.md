@@ -162,7 +162,7 @@ Sizing decides which steps run and how much each may cost. The mode states the s
 | Size | Signal | Interviews | Research | Docs | Prototype | Verification | Slices |
 |---|---|---|---|---|---|---|---|
 | **Trivial** | 1-2 files, obvious approach, no product call | none; do the work without the suite | | | | | |
-| **Bounded** | one subsystem, one PR, at most one product call | one combined interview, at most 5 questions | one explorer, no fan-out; prior art and spikes only when a fact blocks | at most one page each | only for a UX fork | tech lead, 1-2 seats; product panel and personas on request | 1 |
+| **Bounded** | one subsystem, one PR, at most one product call | one combined interview, at most 5 questions | one explorer, no fan-out, or none when this session already read the area at the baseline; prior art and spikes only when a fact blocks | at most two pages and three, Bounded template variant | only for a UX fork | tech lead plus at most one seat by signal; product panel and personas on request | 1 |
 | **Feature** | 2-4 PRs, one or two subsystems, real product calls | interview 1 at most 8; interview 2 at most 8 plus the story set | 2-4 explorers, 3-5 prior-art products, spikes as needed | about 2 pages and 3 pages | when a decision needs feel | personas 3-5, product panel 3-4 seats, tech lead 2-4 seats | 2-4, riskiest first |
 | **Program** | more than 4 PRs, several surfaces or subsystems, several independent user-facing changes | overview interview at most 6; each part runs Feature budgets | per part | overview at most one page plus parts | per part | per part, plus one tech-lead pass on the overview's ordering | parts ordered by risk then value; part 1 is the walking skeleton |
 
@@ -790,11 +790,11 @@ product-builder/                         the new repo
                                          dependency-upgrade.md, data-migration.md, removal.md, flaky-test.md,
                                          release.md, decision-record.md, hardening.md
       scripts/                           judge, question-gate (PreToolUse hook), first-run (SessionStart hook)
-      references/                        principles.md, templates.md, interaction.md, writing.md, landscape.md
+      references/                        principles.md, templates.md, interaction.md, writing.md, profile.md (the profile schema), judge-questions.json
     product-builder-setup/  -how/  -why/  -research/  -prototype/  -personas/  -pm/  -techlead/
     product-builder-review/  -verify/  -resume/  -reflect/  -plain/
   profiles/
-    default.md                           generic profile
+    default.md                           link to skills/product-builder/references/profile.md
     example-calcom.md                    worked example (calcom/cal.com)
   docs/guide/                            01-setup, 02-the-mode, 03-plan, 04-build, 05-verify-and-ship, 06-engineering-playbooks,
                                          07-overnight, 08-principles, 09-make-it-yours, 10-recipes-and-pitfalls

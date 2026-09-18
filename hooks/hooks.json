@@ -1,5 +1,4 @@
 {
-  "description": "product-builder hooks. first-run: at session start, one line when the repo has no .product-builder/profile.md (silent otherwise, or with PRODUCT_BUILDER_NUDGE=0). question-gate: runs the profile's judge over every question before the question tool opens; silent when the profile names no judge or no key is set.",
   "hooks": {
     "SessionStart": [
       {

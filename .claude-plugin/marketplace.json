@@ -1,11 +1,14 @@
 {
   "name": "product-builder",
-  "owner": { "name": "marcusjhang" },
+  "owner": {
+    "name": "marcusjhang"
+  },
   "plugins": [
     {
       "name": "product-builder",
       "source": ".",
-      "description": "Plan, build, QA and ship features as a product engineer: one mode, fourteen playbooks, thirteen leaf skills, one per-repo profile."
+      "description": "Plan, build, QA and ship features as a product engineer: one mode, twenty-four playbooks, thirteen leaf skills, one per-repo profile, an optional judge."
     }
-  ]
+  ],
+  "description": "product-builder: a working mode for product engineers in Claude Code, from the first conversation about a feature to the post-ship check."
 }
