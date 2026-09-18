@@ -1351,4 +1351,5 @@ Launch: not validated in this environment (no dependencies installed, no databas
 EOF
   printf '# Models\n\nBudget: medium. Every role: `inherit`.\n' > .product-builder/models.md
   _commit "chore: product-builder profile" "2026-09-18T10:00:00"
+  git remote get-url origin >/dev/null 2>&1 && _git push -q origin main && git fetch -q origin
 }

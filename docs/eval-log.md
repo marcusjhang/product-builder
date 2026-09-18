@@ -38,3 +38,15 @@ Everything done to pressure-test the suite, in order, with what was found and wh
 
 - F1 `playbook-investigation`: the investigation playbook says "Route through the product-builder-how skill"; the run read the playbook, then did the reading itself: no `Skill` call, no `Agent` call, no read of `product-builder-how/SKILL.md`. The answer was correct and anchored. Open: decide whether a one-module question may skip the how skill, or whether the playbook must say "invoke it with the Skill tool".
 - F2 `leaf-plain`: the restatement turned "the probe returned partial" into "I only got part of the picture" (a wrong meaning), came out longer than the original, and used two em dashes against the writing rules. The plain skill is seven lines and says "shorter, no jargon"; it does not say "keep every fact's meaning; when a term is ambiguous keep it in quotes", nor does it point at the writing rules.
+
+## 2026-09-19 · Tier 0 results
+
+- `skills/product-builder/scripts/check --plugin-validate`: clean after two adjustments to the check itself (the design record `docs/PLAN.md` is not lint-checked for cross-references, since it names files as they were planned; playbooks may use inline step lists).
+- Judge, live against the API for the first time (the CHANGELOG had said "not yet run against the live API"), model `jev-1.13.0`, latency 0.7 to 0.95 s per call:
+  - `anchor`: a true claim about `archive()` scored holds at 0.98; a false claim ("refuses to archive a done task") scored refuted at 0.70.
+  - `question-gate`: a question with no recommended answer returned `fix:add_default` before any deflection; a naming question with a default returned `ask` (product or preference 0.64).
+  - `spec-line`: a domain-level test for a UI acceptance line returned uncovered ("does not exercise the WHEN/THEN" 0.66), which is right since the line says a click with the flag on; a test whose subject is a mock returned uncovered with "the subject is mocked away" 0.75.
+  - `finding`: a real auth bypass returned act on at 0.94, severity critical.
+  - `finding-pair`: two seats' wordings of the same bypass returned same at 0.96.
+  - `pr-comment`: a human accessibility comment returned act with real bug 0.84; a bot's trailing-whitespace comment returned act at 0.98 with real bug 0.19, so the bucket rule treats a trivial lint as actionable rather than noise. Noted for the babysit playbook's triage, where `dismissed` is the bucket the playbook expects for bot noise; the verdict carries the real-bug score, so the step can still route on it. Not changed.
+- The structure board exists (scene `Z07dYjHJBO`) and `CLAUDE.md` tells every session to keep it current.
