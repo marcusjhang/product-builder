@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: playbook-bug-fix
-tags: ["playbook", "tier2", "flow", "team", "pbB", "retest2"]
+tags: ["playbook", "tier2", "flow", "team", "pbB", "retest1"]
 runs: 1
 context:
   scaffold_script: scaffold.sh

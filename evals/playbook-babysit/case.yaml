@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: playbook-babysit
-tags: ["playbook", "tier2", "flow", "pbB", "retest1"]
+tags: ["playbook", "tier2", "flow", "pbB"]
 runs: 1
 context:
   scaffold_script: scaffold.sh
