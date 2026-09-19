@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.277",
+  "startedAt": "2026-09-19T03:22:35.852Z",
+  "durationSeconds": 19,
+  "costUsd": 0.19098749999999998,
+  "partial": false,
+  "suite": {
+    "root": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo",
+    "ablation": "none",
+    "caseFilter": "leaf-plain",
+    "threshold": 1,
+    "concurrency": 1,
+    "plugins": [
+      {
+        "name": "product-builder",
+        "version": "0.1.0",
+        "path": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "leaf-plain",
+      "dir": "evals/leaf-plain",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder-plain Restate my last reply, which was: \"The intake probe returned partial: the archive route ships at src/server.js:36 behind the archive flag, but the page has no control. Size is provisional Bounded pending research. Baseline 3f1c2a0, 0 behind. Budgets: one interview of at most five questions after research, one explorer, tech lead plus one seat.\"",
+      "runsPerCase": 1,
+      "timeoutSeconds": 300,
+      "maxTurns": 5,
+      "graders": [
+        {
+          "name": "no-jargon",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^(?:(?!provisional|intake probe|Budgets|G1|DoR).){0,800}$",
+            "flags": "s",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "plain",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS if the reply keeps each fact's meaning (part of the archive feature already exists on the server behind a flag, the page has no control, the size is a first guess, the commit is current, the question and reviewer limits) in everyday words a non-engineer could follow, and does not use the phrases 'intake probe', 'provisional', or 'budgets'. Words like commit, flag, route, baseline are fine. FAIL only if a meaning changed, a fact was dropped, or one of those three phrases appears.",
+          "config": {
+            "criteria": "PASS if the reply keeps each fact's meaning (part of the archive feature already exists on the server behind a flag, the page has no control, the size is a first guess, the commit is current, the question and reviewer limits) in everyday words a non-engineer could follow, and does not use the phrases 'intake probe', 'provisional', or 'budgets'. Words like commit, flag, route, baseline are fine. FAIL only if a meaning changed, a fact was dropped, or one of those three phrases appears.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.19098749999999998,
+            "judgeCostUsd": 0.001032,
+            "durationSeconds": 19,
+            "startedAt": "2026-09-19T03:22:36.004Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-W5Ruuj/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-jargon",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^(?:(?!provisional|intake probe|Budgets|G1|DoR).){0,800}$",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "plain",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Part of the archive feature already exists.\n\nThe route is in the code at `src/server.js:36`, behind the archive flag. The page has no control that reaches it.\n\nI am calling the size \"Bounded\" for now, and research will confirm or change that.\n\nThe baseline is commit 3f1c2a0, with nothing landed on top of it (0 behind).\n\nLimits for the rest of the work: after research I ask you one round of questions, five at most. One explorer runs. The plan review is the tech lead plus one other seat."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1
+  }
+}

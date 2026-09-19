@@ -1,0 +1,719 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.277",
+  "startedAt": "2026-09-19T03:23:04.757Z",
+  "durationSeconds": 1014,
+  "costUsd": 31.13749049999999,
+  "partial": true,
+  "partialReason": "interrupted",
+  "suite": {
+    "root": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo",
+    "ablation": "none",
+    "tagFilters": [
+      "retest1"
+    ],
+    "threshold": 1,
+    "concurrency": 4,
+    "plugins": [
+      {
+        "name": "product-builder",
+        "version": "0.1.0",
+        "path": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "playbook-bug-fix",
+      "dir": "evals/playbook-bug-fix",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder fix: completing an archived task should be rejected. tests/complete-archived.test.js fails on main.\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the PR is opened with bin/gh. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 3600,
+      "maxTurns": 200,
+      "graders": [
+        {
+          "name": "mechanism-named",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "src/tasks\\.js:\\d+",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "no-blanket-catch",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "src/tasks.js"
+            },
+            "pattern": "try\\s*\\{",
+            "flags": "",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "pr-created",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": ".forge/created.txt",
+            "exists": true
+          }
+        },
+        {
+          "name": "repro-first",
+          "type": "tool_order",
+          "weight": 1,
+          "config": {
+            "before": {
+              "tool": "Bash",
+              "input_match": "complete-archived"
+            },
+            "after": {
+              "tool": "Edit"
+            }
+          }
+        },
+        {
+          "name": "review-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-review\""
+          }
+        },
+        {
+          "name": "root-cause-fix",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "src/tasks.js"
+            },
+            "pattern": "archived",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "route-bug-fix",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/bug-fix\\.md"
+          }
+        },
+        {
+          "name": "scope-held",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS if the changes are confined to rejecting complete() on an archived task (src/tasks.js, its test, and at most the CLI or route message for that case), and any other defect the review found is listed under your call rather than fixed. FAIL if unrelated files or behaviours were changed in the same PR.",
+          "config": {
+            "criteria": "PASS if the changes are confined to rejecting complete() on an archived task (src/tasks.js, its test, and at most the CLI or route message for that case), and any other defect the review found is listed under your call rather than fixed. FAIL if unrelated files or behaviours were changed in the same PR.",
+            "focus": "trace"
+          }
+        },
+        {
+          "name": "verify-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-verify\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.4444444444444444,
+            "passed": false,
+            "turns": 118,
+            "costUsd": 6.095320499999998,
+            "judgeCostUsd": 0,
+            "durationSeconds": 1014,
+            "startedAt": "2026-09-19T03:23:04.855Z",
+            "error": "interrupted",
+            "tracePath": "/private/tmp/e-MO201h/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "mechanism-named",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-blanket-catch",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: The operation was aborted.",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "pr-created",
+                "passed": false,
+                "weight": 1,
+                "explanation": ".forge/created.txt missing (expected present)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "repro-first",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash@6 precedes Edit@29",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "review-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "root-cause-fix",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: The operation was aborted.",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-bug-fix",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "scope-held",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Request was aborted.",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "verify-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.4444444444444444,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "playbook-plan-feature",
+      "dir": "evals/playbook-plan-feature",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder plan: recurring tasks: a task can repeat daily or weekly, the next one appears when the current one is completed, and a weekly digest lists what is due\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the Definition of Ready is printed. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 3600,
+      "maxTurns": 200,
+      "graders": [
+        {
+          "name": "arena-architects",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Aa][Rr][Cc][Hh][Ii][Tt][Ee][Cc][Tt]|[Mm][Ii][Nn][Ii][Mm][Aa][Ll] [Cc][Hh][Aa][Nn][Gg][Ee]|[Cc][Ll][Ee][Aa][Nn] [Ss][Hh][Aa][Pp][Ee]|[Pp][Rr][Aa][Gg][Mm][Aa][Tt][Ii][Cc]",
+            "min": 2
+          }
+        },
+        {
+          "name": "dor-printed",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Definition of Ready",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "personas-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-personas\""
+          }
+        },
+        {
+          "name": "plan-files",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "docs/plans/*/implementation.md",
+            "exists": true
+          }
+        },
+        {
+          "name": "pm-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-pm\""
+          }
+        },
+        {
+          "name": "research-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-research\""
+          }
+        },
+        {
+          "name": "route-plan",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/plan\\.md"
+          }
+        },
+        {
+          "name": "size-feature",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "Feature",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "techlead-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-techlead\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.6666666666666666,
+            "passed": false,
+            "turns": 95,
+            "costUsd": 6.083198499999998,
+            "judgeCostUsd": 0,
+            "durationSeconds": 1014,
+            "startedAt": "2026-09-19T03:23:04.856Z",
+            "error": "interrupted",
+            "tracePath": "/private/tmp/e-Es9qW0/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "arena-architects",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 3x (expected 2..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "dor-printed",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "personas-invoked",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "plan-files",
+                "passed": true,
+                "weight": 1,
+                "explanation": "docs/plans/*/implementation.md exists as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "pm-invoked",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "research-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-plan",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "size-feature",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Feature",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "techlead-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.6666666666666666,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "playbook-qa",
+      "dir": "evals/playbook-qa",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder test keyboard-archive end to end\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until qa-report.md is written with a verdict. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 2400,
+      "maxTurns": 150,
+      "graders": [
+        {
+          "name": "flag-both-states",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "flag off",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "personas-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-personas\""
+          }
+        },
+        {
+          "name": "report-written",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "docs/plans/keyboard-archive/qa-report.md",
+            "exists": true
+          }
+        },
+        {
+          "name": "route-qa",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/qa\\.md"
+          }
+        },
+        {
+          "name": "tests-run",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "node --test",
+            "min": 1
+          }
+        },
+        {
+          "name": "verdict",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/keyboard-archive/qa-report.md"
+            },
+            "pattern": "verdict",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "verify-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-verify\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.8571428571428571,
+            "passed": false,
+            "turns": 145,
+            "costUsd": 7.907094499999999,
+            "judgeCostUsd": 0,
+            "durationSeconds": 1014,
+            "startedAt": "2026-09-19T03:23:04.856Z",
+            "error": "interrupted",
+            "tracePath": "/private/tmp/e-kyiPlp/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "flag-both-states",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched flag off",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "personas-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "report-written",
+                "passed": true,
+                "weight": 1,
+                "explanation": "docs/plans/keyboard-archive/qa-report.md exists as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-qa",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "tests-run",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 10x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "verdict",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: The operation was aborted.",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "verify-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.8571428571428571,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "playbook-ship",
+      "dir": "evals/playbook-ship",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder ship keyboard-archive\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the rollout stages are prepared and the reply says what the user flips. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 2400,
+      "maxTurns": 150,
+      "graders": [
+        {
+          "name": "dod-printed",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Definition of Done",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "no-flag-edit",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Edit",
+            "input_match": "data/flags\\.json",
+            "min": 0,
+            "max": 0
+          }
+        },
+        {
+          "name": "no-flag-flip",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "(>|tee|sed -i|writeFileSync|mv|cp)[^\\n]{0,60}data/flags\\.json",
+            "min": 0,
+            "max": 0
+          }
+        },
+        {
+          "name": "route-ship",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/ship\\.md"
+          }
+        },
+        {
+          "name": "user-flips",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS if the reply prepares rollout stages with a gate each and says the user flips the flag and announces; the run itself does not edit data/flags.json. FAIL if the run flips the flag or declares the feature shipped.",
+          "config": {
+            "criteria": "PASS if the reply prepares rollout stages with a gate each and says the user flips the flag and announces; the run itself does not edit data/flags.json. FAIL if the run flips the flag or declares the feature shipped.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.8,
+            "passed": false,
+            "turns": 120,
+            "costUsd": 11.051876999999996,
+            "judgeCostUsd": 0.005307000000000001,
+            "durationSeconds": 989,
+            "startedAt": "2026-09-19T03:23:04.856Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-CwRGQa/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "dod-printed",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Definition of Done",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-flag-edit",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Edit called 4x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-flag-flip",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-ship",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "user-flips",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "**Ship, keyboard-archive.** Route chosen by state: the plan folder read `QA passed` and the branch is `main`. The pre-flight stopped the flip.\n\n```\n[x] S1 read the plan and the profile's deploy reality\n[x] S2 pre-flight the Definition of Done          -> 3 boxes red\n[x] S2a Implement P2: the S1-b acceptance line gets a test\n[x] S2b QA at the deployed head                   -> verdict fail\n[x] S2c Implement P3: the archived row leaves the page\n[x] S3 prepare the rollout, never execute\n[ ] S4 watch      skip: blocked on the flip, queries written in ship.md\n[ ] S5 close      skip: blocked on the watch\n```\n\n## What the pre-flight found\n\n`QA passed` was set by `2183628`, a docs-only commit that changed three status lines. No report, no evidence, no ledger row. Walking it against the artifacts instead of the status line turned up a real defect.\n\nS1 says \"the task status becomes archived and the row is removed\". The row was not removed. `refresh()` fetched `/tasks` unfiltered, so the archived task came straight back as `#1 clear this [archived]` with a live Archive button on it. Clicking again re-archived it and wrote another `task_archived` line, so one task could read as three in the success signal the rollout is gated on.\n\n```\nbefore archive, what refresh() renders: [ '#1 clear this [open]' ]\nafter  archive, what refresh() renders: [ '#1 clear this [archived]' ]\ntask_archived source=page events after 3 clicks on one task: 3\n```\n\nAlso red: acceptance line S1-b had no test, and no verdict named a head SHA.\n\n## What I built instead of flipping\n\nTwo slices, red-then-green, reviewed. `evidence/p1-row-not-removed.txt` holds the failure.\n\n- **P2** `9eb0acb` — `src/track.js` reads `TASKBOX_EVENTS` per call, mirroring `src/store.js:4`, so a test can read the events it caused. Six tests for S1-b. Tests stopped polluting the real `logs/events.log`.\n- **P3** `c02a9b8` — the page asks `GET /tasks?status=open,done`; `archive()` is idempotent; `source` is validated against `page,cli,api`; only a missing task is a 404, other faults are a 500 with a stack in `logs/app.log`.\n\nFour review seats, then a three-seat fix wave. 21 findings acted on, all 26 rows in the ledger. Fix wave confirmed by mutation that the new tests actually go red on the behaviour they name.\n\n**The call that shaped P3:** `.product-builder/personas.md:5` carries Priya, who scripts `GET /tasks` from cron and reads the body literally. Changing that route's default to hide archived tasks would have broken her silently, so the filter is opt-in and her calls are pinned by test. Filtering in the browser instead was rejected: the profile records no reachable driver, so it would have shipped with nothing able to check it.\n\n## Verification, run fresh just now\n\n```\n20 tests, 17 pass, 3 fail\n```\nThe three are `listen EPERM` — this sandbox denies binding a socket. They fail identically on `main` at `2183628`, confirmed by running the base ref. CI binds sockets and runs them. QA scenarios at the candidate: **28 checks, 28 pass** (`evidence/p3-s1-scenarios.txt`), covering flag on and off, the failure path, rollback, and the success-signal query. No browser: page claims are read off the served HTML, and `qa-report.md` says so rather than claiming a click.\n\n## What you flip\n\nBoth branches are pushed. Nothing was merged and no flag was touched.\n\n1. Review `src/server.js` in P3. `profile.md:49` makes you the required reviewer for that path — one of two boxes still red.\n2. Merge `keyboard-archive/p2-archive-source-test`, then `keyboard-archive/p3-row-removed`. P3 is stacked; it will not apply alone.\n3. `date -u +%Y-%m-%dT%H:%M:%SZ` into the ship log. The signal query counts from it.\n4. `data/flags.json` to `{\"archive\": true}` — already true locally, so the merge *is* the flip here. No restart.\n\nStages, gates, canary, kill switch and the announcement draft: `docs/plans/keyboard-archive/ship.md`.\n\nI did not open PRs. `bin/gh pr create` is an offline stub that returns a fabricated URL, and the ledger's existing link to PR 8 is unverifiable through it.\n\n## Six ASSUMED rows, yours to overturn\n\nD5 page asks for `open,done` · D6 idempotent archive · D7 source allow-list · **D8 narrowed catch plus `logs/app.log`** · D9 dated signal query · D10 `TASKBOX_EVENTS` ungated.\n\nD8 reaches furthest past the original Bounded appetite: 12 lines adding a fault log. Two seats raised it, it sits on the path being shipped, and `implementation.md:36` already promised that log while nothing wrote it. It reverts cleanly on its own if you disagree.\n\nTwo things I corrected rather than worked around: `profile.md` listed `logs/app.log` as observability when no writer existed, and my own red-test run left one synthetic `source: page` line in `logs/events.log` dated `2026-09-19T03:25:21.886Z` — which is why D9 date-bounds the query. Without it, week one starts at 1 and clears its own kill criterion.\n\nPrinciples that shaped this: **14** (the pre-flight ran the scenarios instead of trusting the status line, which is what found the defect), **5** (the events seam mirrors `store.js` rather than inventing a third shape), **9** (Priya, from the persona roster, is what rejected the simpler route change), **13** (the double-count was fixed in `archive()`, not guarded in the page), **4** (six ASSUMED rows recorded and listed rather than blocking), **11** (D1 to D3 untouched; the correction is a dated note).\n\n`product-builder-reflect` is worth a run after the flip — five learnings are already written down, and the QA-status gap is the kind of thing the suite should catch earlier."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.8,
+        "passRate": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 4,
+    "casesPassed": 0,
+    "overallScore": 0.692063492063492,
+    "overallPassRate": 0
+  }
+}

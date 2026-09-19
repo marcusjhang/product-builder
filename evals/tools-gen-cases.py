@@ -336,8 +336,8 @@ CASES = [
 ]
 
 # Cases to rerun after the latest fixes: tagged retest1 (short) and retest2 (long flows). Edit per loop iteration.
-RETEST1 = {"playbook-bug-fix","playbook-plan-program","playbook-ship"}
-RETEST2 = {"playbook-plan-feature","playbook-qa"}
+RETEST1 = {"playbook-bug-fix","playbook-ship","playbook-plan-feature","playbook-qa"}
+RETEST2 = set()
 for c in CASES:
     if c["name"] in RETEST1: c["tags"] = c["tags"] + ["retest1"]
     if c["name"] in RETEST2: c["tags"] = c["tags"] + ["retest2"]
