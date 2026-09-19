@@ -1,0 +1,383 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.277",
+  "startedAt": "2026-09-19T01:00:16.607Z",
+  "durationSeconds": 741,
+  "costUsd": 13.9562285,
+  "partial": false,
+  "suite": {
+    "root": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo",
+    "ablation": "none",
+    "tagFilters": [
+      "retest2"
+    ],
+    "threshold": 1,
+    "concurrency": 2,
+    "plugins": [
+      {
+        "name": "product-builder",
+        "version": "0.1.0",
+        "path": "/Users/marcusjhang/.superset/worktrees/0c82ace1-8c87-46b8-8acd-07b6565b45b4/clean-repo"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "playbook-plan-feature",
+      "dir": "evals/playbook-plan-feature",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder plan: recurring tasks: a task can repeat daily or weekly, the next one appears when the current one is completed, and a weekly digest lists what is due\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until the Definition of Ready is printed. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 3600,
+      "maxTurns": 200,
+      "graders": [
+        {
+          "name": "arena-architects",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Agent",
+            "input_match": "[Aa][Rr][Cc][Hh][Ii][Tt][Ee][Cc][Tt]|[Mm][Ii][Nn][Ii][Mm][Aa][Ll] [Cc][Hh][Aa][Nn][Gg][Ee]|[Cc][Ll][Ee][Aa][Nn] [Ss][Hh][Aa][Pp][Ee]|[Pp][Rr][Aa][Gg][Mm][Aa][Tt][Ii][Cc]",
+            "min": 2
+          }
+        },
+        {
+          "name": "dor-printed",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Definition of Ready",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "personas-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-personas\""
+          }
+        },
+        {
+          "name": "plan-files",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "docs/plans/*/implementation.md",
+            "exists": true
+          }
+        },
+        {
+          "name": "pm-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-pm\""
+          }
+        },
+        {
+          "name": "research-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-research\""
+          }
+        },
+        {
+          "name": "route-plan",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/plan\\.md"
+          }
+        },
+        {
+          "name": "size-feature",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "Feature",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "techlead-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-techlead\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.4444444444444444,
+            "passed": false,
+            "turns": 71,
+            "costUsd": 7.80160325,
+            "judgeCostUsd": 0,
+            "durationSeconds": 741,
+            "startedAt": "2026-09-19T01:00:16.700Z",
+            "error": "exit 1: You've hit your monthly spend limit · raise it at claude.ai/settings/usage?from=cc_cli_limit_message · your session limit resets 11:20am (Asia/Singapore)",
+            "tracePath": "/private/tmp/e-Fzdv2w/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "arena-architects",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Agent called 3x (expected 2..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "dor-printed",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "personas-invoked",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "plan-files",
+                "passed": false,
+                "weight": 1,
+                "explanation": "docs/plans/*/implementation.md missing (expected present)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "pm-invoked",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "research-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-plan",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "size-feature",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Feature",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "techlead-invoked",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.4444444444444444,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "playbook-qa",
+      "dir": "evals/playbook-qa",
+      "source": "mixed",
+      "promptMarkdown": "/product-builder test keyboard-archive end to end\n\nSession override: you decide. Take every recommended answer as accepted, record each as ASSUMED in the ledger, and keep going until qa-report.md is written with a verdict. Never stop to ask; there is no one to answer.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 2400,
+      "maxTurns": 150,
+      "graders": [
+        {
+          "name": "flag-both-states",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "trace",
+            "pattern": "flag off",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "personas-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-personas\""
+          }
+        },
+        {
+          "name": "report-written",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "docs/plans/keyboard-archive/qa-report.md",
+            "exists": true
+          }
+        },
+        {
+          "name": "route-qa",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Read",
+            "input_match": "playbooks/qa\\.md"
+          }
+        },
+        {
+          "name": "tests-run",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "node --test",
+            "min": 1
+          }
+        },
+        {
+          "name": "verdict",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/plans/keyboard-archive/qa-report.md"
+            },
+            "pattern": "verdict",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "verify-invoked",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?product-builder-verify\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.5714285714285714,
+            "passed": false,
+            "turns": 73,
+            "costUsd": 6.15462525,
+            "judgeCostUsd": 0,
+            "durationSeconds": 723,
+            "startedAt": "2026-09-19T01:00:16.700Z",
+            "error": "exit 1: You've hit your monthly spend limit · raise it at claude.ai/settings/usage?from=cc_cli_limit_message · your session limit resets 11:20am (Asia/Singapore)",
+            "tracePath": "/private/tmp/e-IIFerz/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "flag-both-states",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched flag off",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "personas-invoked",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "report-written",
+                "passed": false,
+                "weight": 1,
+                "explanation": "docs/plans/keyboard-archive/qa-report.md missing (expected present)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "route-qa",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Read called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "tests-run",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Bash called 3x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "verdict",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: case \"playbook-qa\" grader focus file \"docs/plans/keyboard-archive/qa-report.md\": path \"docs/plans/keyboard-archive/qa-report.md\" does not exist",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "verify-invoked",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.5714285714285714,
+        "passRate": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 2,
+    "casesPassed": 0,
+    "overallScore": 0.5079365079365079,
+    "overallPassRate": 0
+  }
+}

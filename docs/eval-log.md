@@ -140,3 +140,14 @@ The 11 long flows the spend limit had killed, 5897 s, about $145 at list price, 
 **Fixture defect (fixed).** The merged P1 in the fixture did not pass `source: page` from the Archive button through the route, so the plan's instrumentation line was false and the ship run was right to find it. The page now sends `?source=page` and the route passes it.
 
 **Grader defects (fixed).** `playbook-ship`'s "no flag flip" grader counted `cat data/flags.json`; it now matches writes only, plus an Edit on the file. `playbook-plan-program`'s judge could not see the overview (the Write sits mid-trace, outside the judge's first and last twelve messages); the overview's parts are user-facing increments with part 1 the skeleton, so the grader is now a regex over the trace.
+
+## 2026-09-19 · Retest waves 3 and 4 (`docs/evals/runs/2026-09-19T01-00-00Z`, `2026-09-19T01-00-15Z`)
+
+All five reruns (bug-fix, plan-program, ship, plan-feature, qa) hit the account's monthly spend limit within their first minutes; only `playbook-plan-program` completed before it and scored 1.0 (grader fix confirmed). The other four scores are harness failures and say nothing about F11 to F13. Stopped here at the user's request.
+
+## Where the loop stands
+
+- **Clean, verified against traces**: Tier 1 (11 of 11 after fixes), leaf skills and seats (13 of 13), playbook batch A (15 of 15 after fixes), cal.com (5 of 5: setup, investigation, review, built-first, plan-bounded), and from batch B: babysit, built-first, data-migration, implement, implement-parallel, plan-bounded, plan-program, opening-a-pr, pickup, pause, and the rest listed in the batch entries above. Every playbook ran at least once; every review, tech-lead, and product-panel seat, the personas, explorers, architects, parallel implementers, the verifier, and the judge's gates were observed in a transcript.
+- **Fixed after the last clean run and not yet re-verified** (the spend limit blocked the reruns): F11 (a playbook continues after a leaf skill returns; `playbook-bug-fix`), F12 (Feature plans need both panels cast; `playbook-plan-feature`), F13 (Ship never fixes a red item inline; `playbook-ship`), and the fixture's `source=page` change (`playbook-qa`). Rerun with `evals/run.sh --tag retest1 --ablation none` and `--tag retest2` once the limit resets; the tags are set for exactly these cases.
+- **Not done**: the final `runs: 2` pass over the whole set that the plan of record named as the closing condition.
+- **Cost of the loop so far**, at list price as the runner estimates it: about $480 across nine batches.
